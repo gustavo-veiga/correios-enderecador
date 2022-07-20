@@ -1,6 +1,7 @@
 package br.com.correios.enderecador;
 
 import br.com.correios.enderecador.telas.TelaPrincipal;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 
@@ -11,8 +12,7 @@ public class ControleEnderecador {
     }
 
     public void ControleTela() {
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        JDialog.setDefaultLookAndFeelDecorated(true);
+        FlatLightLaf.setup();
         TelaPrincipal frame = new TelaPrincipal();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);

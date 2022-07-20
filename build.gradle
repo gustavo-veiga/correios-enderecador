@@ -25,6 +25,9 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'com.formdev', name: 'flatlaf', version: '2.4'
+
+    // Old
     implementation group: 'hsqldb', name: 'hsqldb', version: '1.8.0.1'
     implementation group: 'org.netbeans.external', name: 'AbsoluteLayout', version: 'RELEASE90'
     implementation group: 'log4j', name: 'log4j', version: '1.2.8'
