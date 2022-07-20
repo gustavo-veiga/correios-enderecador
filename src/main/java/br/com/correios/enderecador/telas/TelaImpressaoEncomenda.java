@@ -68,7 +68,7 @@ public class TelaImpressaoEncomenda extends JInternalFrame implements Observer {
 
     private JCheckBox jchkTelRemetente;
 
-    private JComboBox<String> jcmbRemetente;
+    private JComboBox<RemetenteBean> jcmbRemetente;
 
     private JLabel jlblImpressao;
 
@@ -149,7 +149,7 @@ public class TelaImpressaoEncomenda extends JInternalFrame implements Observer {
             this.jcmbRemetente.removeAllItems();
             ArrayList<RemetenteBean> arrayRemetente = RemetenteDao.getInstance().recuperaRemetente("");
             for (RemetenteBean remetenteBean : arrayRemetente)
-                this.jcmbRemetente.addItem(remetenteBean.getNome());
+                this.jcmbRemetente.addItem(remetenteBean);
         } catch (DaoException e) {
             logger.error(e.getMessage(), e);
             JOptionPane.showMessageDialog(this.frmParent, "Não foi possivel carregar relação de remetentes", "Endereçador ECT", JOptionPane.WARNING_MESSAGE);
@@ -483,7 +483,7 @@ public class TelaImpressaoEncomenda extends JInternalFrame implements Observer {
         if (arg instanceof RemetenteBean) {
             RemetenteBean remetente = (RemetenteBean) arg;
             this.jcmbRemetente.removeItem(remetente);
-            this.jcmbRemetente.addItem(remetente.getNome());
+            this.jcmbRemetente.addItem(remetente);
         } else if (arg instanceof DestinatarioBean) {
             DestinatarioBean destinatario = (DestinatarioBean) arg;
             int index = this.model.indexOf(destinatario);
