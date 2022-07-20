@@ -287,7 +287,7 @@ public class TelaEditarRemetente extends JDialog {
         setSize(new Dimension(600, 400));
         setResizable(false);
         jToolBar1.setBorder(BorderFactory.createEtchedBorder());
-        jbtnConfirmar.setFont(new Font("MS Sans Serif", 0, 9));
+        jbtnConfirmar.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtnConfirmar.setIcon(new ImageIcon(getClass().getResource("/imagens/OK.gif")));
         jbtnConfirmar.setText("Confirmar");
         jbtnConfirmar.setHorizontalTextPosition(0);
@@ -295,7 +295,7 @@ public class TelaEditarRemetente extends JDialog {
         jbtnConfirmar.setVerticalTextPosition(3);
         jbtnConfirmar.addActionListener(TelaEditarRemetente.this::jbtnConfirmarActionPerformed);
         jToolBar1.add(jbtnConfirmar);
-        jbtnLimpar.setFont(new Font("MS Sans Serif", 0, 9));
+        jbtnLimpar.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtnLimpar.setIcon(new ImageIcon(getClass().getResource("/imagens/cancelar.gif")));
         jbtnLimpar.setText("Limpar tela");
         jbtnLimpar.setHorizontalTextPosition(0);
@@ -303,7 +303,7 @@ public class TelaEditarRemetente extends JDialog {
         jbtnLimpar.setVerticalTextPosition(3);
         jbtnLimpar.addActionListener(TelaEditarRemetente.this::jbtnLimparActionPerformed);
         jToolBar1.add(jbtnLimpar);
-        jbtnVoltar.setFont(new Font("MS Sans Serif", 0, 9));
+        jbtnVoltar.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtnVoltar.setIcon(new ImageIcon(getClass().getResource("/imagens/sair.gif")));
         jbtnVoltar.setText("Voltar");
         jbtnVoltar.setHorizontalTextPosition(0);
@@ -312,7 +312,7 @@ public class TelaEditarRemetente extends JDialog {
         jbtnVoltar.addActionListener(TelaEditarRemetente.this::jbtnVoltarActionPerformed);
         jToolBar1.add(jbtnVoltar);
         getContentPane().add(jToolBar1, "North");
-        jPanel1.setLayout((LayoutManager) new AbsoluteLayout());
+        jPanel1.setLayout(new AbsoluteLayout());
         jPanel1.setBorder(BorderFactory.createEtchedBorder());
         jLabel2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         jLabel2.setText("* Empresa/Nome (Linha 1):");
