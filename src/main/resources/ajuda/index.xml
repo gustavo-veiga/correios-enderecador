@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+<!DOCTYPE index
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/index_1_0.dtd">
+
+<index version="1.0">
+    <indexitem text="Cadastros" target="cadastro">
+        <indexitem text="Cadastrar Remetentes" target ="cadRemetentes"/>
+        <indexitem text="Cadastrar Destinatários" target ="cadDestinatarios"/>
+        <indexitem text="Cadastrar Grupos" target="cadGrupos"/>
+    </indexitem>
+    
+    <indexitem text="Chave de Registro" target="chaveRegistro"/>   
+    
+    
+    <indexitem text="Impressão" target="impressao">
+        <indexitem text="Etiquetas para Encomendas" target="impressaoEncomenda"/>
+        <indexitem text="Etiquetas para Cartas" target="impressaoCarta"/>
+        <indexitem text="Impressão Direta em Envelopes" target="impressaoEnvelopes"/>
+        <indexitem text="Etiquetas" target="etiquetas"/>
+        <indexitem text="Envelopes" target="envelopes"/>
+    </indexitem>
+    
+    <indexitem text="Ferramentas" target="ferramentas"> 
+        <indexitem text="Importar Dados" target="importar"/>
+        <indexitem text="Exportar Dados" target="exportar"/>
+        <indexitem text="Configurar Proxy" target="configurarProxy"/>
+        <indexitem text="Configurar Usuário de Rede" target="configurarUsuario"/>
+    </indexitem>
+    
+    <indexitem text="Tópicos da Ajuda" target="topicosAjuda"> 
+        <indexitem text="Sobre" target="sobre"/>
+         <indexitem text="Atualizar Versão" target="atualizarVersao"/>
+    </indexitem>
+</index>

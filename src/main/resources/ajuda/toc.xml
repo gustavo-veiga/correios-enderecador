@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+<!DOCTYPE toc
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<toc version="2.0">
+    <tocitem text="Endereçador Escritório" image="ico_topico">
+    
+        <tocitem text="Seja Bem Vindo" target="apresentacao"/>
+    
+        <tocitem text="Cadastro" target="cadastro" image="ico_topico">
+            <tocitem text="Cadastro de Remetentes" target="cadRemetentes"/>
+            <tocitem text="Cadastro de Destinatários" target="cadDestinatarios"/>
+            <tocitem text="Cadastro de Grupos" target="cadGrupos"/>
+        </tocitem>
+    
+         <tocitem text="Chave de registro" target="chaveRegistro" image="ico_topico"/>    
+         
+        <tocitem text="Impressão" target="impressao"  image="ico_topico">
+            <tocitem text="Etiquetas para Encomendas" target="impressaoEncomenda"/>
+            <tocitem text="Etiquetas para Cartas" target="impressaoCarta"/>        
+            <tocitem text="Impressão Direta em Envelope" target="impressaoEnvelopes"/>
+            <tocitem text="Etiquetas" target="etiquetas"/>
+            <tocitem text="Envelopes" target="envelopes"/>
+        </tocitem>
+    
+        <tocitem text="Ferramentas" target="ferramentas" image="ico_topico">
+            <tocitem text="Importar Dados" target="importar"/>
+            <tocitem text="Exportar Dados" target="exportar"/>
+            <tocitem text="Configurar Proxy" target="configurarProxy"/>
+            <tocitem text="Configurar usuário de rede" target="configurarUsuario"/>
+        </tocitem>
+    
+       
+    
+        <tocitem text="Tópicos da Ajuda" target="topicosAjuda" image="ico_topico">   
+                <tocitem text="Sobre" target="sobre"/>
+                <tocitem text="Atualizar Versão" target="atualizarVersao"/>
+        </tocitem>
+</toc>

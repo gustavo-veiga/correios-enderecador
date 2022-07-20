@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/map_1_0.dtd">
+
+<map version="1.0">
+        <mapID target="apresentacao" url="Seja_Bem_vindo.htm" />
+        <mapID target="cadastro" url="Cadastro.htm" />
+        <mapID target="cadRemetentes" url="cadastrar/Cadastrar_Remetentes.htm" />
+        <mapID target="cadDestinatarios" url="cadastrar/Cadastrar_Destinatarios.htm" />
+        <mapID target="cadGrupos" url="cadastrar/Cadastrar_Grupos.htm" /> 
+        <mapID target="chaveRegistro" url="Chave_de_Registro.htm" />
+        <mapID target="impressao" url="Impressao.htm" />
+        <mapID target="impressaoCarta" url="impressao/Impressao_Etiquetas_Cartas.htm" />
+        <mapID target="impressaoEncomenda" url="impressao/Impressao_Etiquetas_Encomendas.htm" />
+        <mapID target="impressaoEnvelopes" url="impressao/Impressao_Envelopes.htm" />
+        <mapID target="ferramentas" url="Ferramentas.htm" />
+        <mapID target="configurarProxy" url="ferramentas/Configurar_Proxy.htm" />
+        <mapID target="configurarUsuario" url="ferramentas/Configurar_Usuario_de_Rede.htm" />
+        <mapID target="importar" url="ferramentas/Importar_Dados.htm" />
+        <mapID target="exportar" url="ferramentas/Exportar_Dados.htm" />
+        <mapID target="topicosAjuda" url="Topicos_da_Ajuda.htm" />
+        <mapID target="sobre" url="ajuda/Sobre.htm" />
+        <mapID target="atualizarVersao" url="ajuda/Atualizar_Versao.htm" />
+        <mapID target="etiquetas" url="impressao/tipoEtiqueta.htm" />
+        <mapID target="envelopes" url="impressao/tipoEnvelope.htm" />
+        
+        <!-- Imagens -->
+        <mapID target="ico_topico" url="../imagens/topico.gif" />
+        <mapID target="ico_ajuda" url="Black_Book_Open.gif" />
+</map>
