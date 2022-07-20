@@ -112,17 +112,17 @@ public class TelaSobre extends JDialog {
     jLabel1.setHorizontalAlignment(0);
     jLabel1.setIcon(new ImageIcon(getClass().getResource("/imagens/logo_enderecador.gif")));
     jLabel1.setHorizontalTextPosition(0);
-    jLabel2.setFont(new Font("MS Sans Serif", 0, 10));
+    jLabel2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
     jLabel2.setText("Todos os direitos reservados, 2007");
-    jLabel3.setFont(new Font("MS Sans Serif", 0, 13));
+    jLabel3.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
     jLabel3.setText("Endereçador Escritório");
-    jLabel4.setFont(new Font("MS Sans Serif", 1, 13));
+    jLabel4.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
     jLabel4.setText("Empresa Brasileira de Correios e Telégrafos");
     this.jlVersao.setFont(new Font("MS Sans Serif", 1, 14));
     this.jlVersao.setText("Versão");
-    jLabel9.setFont(new Font("Tahoma", 1, 11));
+    jLabel9.setFont(new Font("Tahoma", Font.BOLD, 11));
     jLabel9.setText("Sugestões e aperfeiçoamentos: ");
-    jLabel11.setFont(new Font("Tahoma", 1, 11));
+    jLabel11.setFont(new Font("Tahoma", Font.BOLD, 11));
     jLabel11.setText("<html><head></head><body><a href=http://www.correios.com.br/servicos/falecomoscorreios/default.cfm>Fale com os Correios</a></body></html>");
     jLabel11.setToolTipText("");
     jLabel11.addMouseListener(new MouseAdapter() {
