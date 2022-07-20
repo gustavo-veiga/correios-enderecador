@@ -28,8 +28,6 @@ import org.apache.log4j.Logger;
 public class TelaPrincipal extends JFrame {
     private static final Logger logger = Logger.getLogger(TelaPrincipal.class);
 
-    private JDesktopPane desktop;
-
     private JSeparator jSeparator2;
 
     private JSeparator jSeparator3;
@@ -58,7 +56,7 @@ public class TelaPrincipal extends JFrame {
         try {
             Geral.displayURL(ConfiguracaoBean.getInstance().getPaginaEnderecador());
         } catch (EnderecadorExcecao ex) {
-            logger.error(ex.getMessage(), (Throwable) ex);
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -69,7 +67,7 @@ public class TelaPrincipal extends JFrame {
             this.hb = this.hs.createHelpBroker();
             this.hb.enableHelpKey(getRootPane(), "apresentacao", this.hs);
             CSH.setHelpIDString(topics, "apresentacao");
-            topics.addActionListener((ActionListener) new CSH.DisplayHelpFromSource(this.hb));
+            topics.addActionListener(new CSH.DisplayHelpFromSource(this.hb));
         } catch (Exception e) {
             System.out.print(e.getMessage());
         }
@@ -88,18 +86,8 @@ public class TelaPrincipal extends JFrame {
         return hs;
     }
 
-    private boolean frameExiste(JInternalFrame f) {
-        boolean retorno = false;
-        for (int i = 0; i < (this.desktop.getAllFrames()).length; i++) {
-            JInternalFrame t = this.desktop.getAllFrames()[i];
-            if (t.equals(f))
-                retorno = true;
-        }
-        return retorno;
-    }
-
     private void initComponents() {
-        this.desktop = new JDesktopPane();
+        JDesktopPane desktop = new JDesktopPane();
         this.lblBackground = new JLabel();
         JToolBar jToolBar1 = new JToolBar();
         JButton jbtCadRemetente = new JButton();
@@ -146,12 +134,12 @@ public class TelaPrincipal extends JFrame {
                 TelaPrincipal.this.formWindowClosing(evt);
             }
         });
-        this.desktop.setBackground(getBackground());
-        this.desktop.setBorder(BorderFactory.createEtchedBorder());
+        desktop.setBackground(getBackground());
+        desktop.setBorder(BorderFactory.createEtchedBorder());
         this.lblBackground.setIcon(new ImageIcon(getClass().getResource("/imagens/logo_enderecador.gif")));
-        this.desktop.add(this.lblBackground);
+        desktop.add(this.lblBackground);
         this.lblBackground.setBounds(180, 100, 225, 100);
-        getContentPane().add(this.desktop, "Center");
+        getContentPane().add(desktop, "Center");
         jbtCadRemetente.setIcon(new ImageIcon(getClass().getResource("/imagens/remetente.gif")));
         jbtCadRemetente.setToolTipText("Cadastrar remetentes");
         jbtCadRemetente.setBorder(BorderFactory.createEtchedBorder());
@@ -317,33 +305,17 @@ public class TelaPrincipal extends JFrame {
     private void jbtEtiquetasCartasActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaImpressaoEnvelope telaImpressaoEnvelope = TelaImpressaoEnvelope.getInstance(this);
-        if (!frameExiste(telaImpressaoEnvelope))
-            this.desktop.add(telaImpressaoEnvelope);
         telaImpressaoEnvelope.setVisible(true);
         this.hb.enableHelpKey(telaImpressaoEnvelope, "impressaoCarta", this.hs);
-        try {
-            telaImpressaoEnvelope.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void jbtImpressaoEnvelopeActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaImpressaoDiretaEnvelope telaImpressaoDiretaEnvelope = TelaImpressaoDiretaEnvelope.getInstance(this);
         this.hb.enableHelpKey(telaImpressaoDiretaEnvelope, "impressaoEnvelopes", this.hs);
-        if (!frameExiste(telaImpressaoDiretaEnvelope))
-            this.desktop.add(telaImpressaoDiretaEnvelope);
         telaImpressaoDiretaEnvelope.setVisible(true);
-        try {
-            telaImpressaoDiretaEnvelope.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void mnEncomendasActionPerformed(ActionEvent evt) {
@@ -357,49 +329,25 @@ public class TelaPrincipal extends JFrame {
     private void jbtIncorporarDadosActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaIncorporarDados telaIncorporarDados = TelaIncorporarDados.getInstance();
-        if (!frameExiste(telaIncorporarDados))
-            this.desktop.add(telaIncorporarDados);
         telaIncorporarDados.setVisible(true);
         this.hb.enableHelpKey(telaIncorporarDados, "importar", this.hs);
-        try {
-            telaIncorporarDados.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void jbtEtiquetasEncomendasActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaImpressaoEncomenda telaImpressaoEncomenda = TelaImpressaoEncomenda.getInstance(this);
-        if (!frameExiste(telaImpressaoEncomenda))
-            this.desktop.add(telaImpressaoEncomenda);
         telaImpressaoEncomenda.setVisible(true);
         this.hb.enableHelpKey(telaImpressaoEncomenda, "impressaoEncomenda", this.hs);
-        try {
-            telaImpressaoEncomenda.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void jbtExportarDadosActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaExportarDados telaExportarDados = TelaExportarDados.getInstance(this);
-        if (!frameExiste(telaExportarDados))
-            this.desktop.add(telaExportarDados);
         telaExportarDados.setVisible(true);
         this.hb.enableHelpKey(telaExportarDados, "exportar", this.hs);
-        try {
-            telaExportarDados.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void mnSairActionPerformed(ActionEvent evt) {
@@ -417,17 +365,9 @@ public class TelaPrincipal extends JFrame {
     private void jbtCadGrupoActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaGrupo telaGrupo = TelaGrupo.getInstance(this);
-        if (!frameExiste(telaGrupo))
-            this.desktop.add(telaGrupo);
         telaGrupo.setVisible(true);
         this.hb.enableHelpKey(telaGrupo, "cadGrupos", this.hs);
-        try {
-            telaGrupo.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void mnProxyActionPerformed(ActionEvent evt) {
@@ -448,32 +388,16 @@ public class TelaPrincipal extends JFrame {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaDestinatario telaDestinatario = TelaDestinatario.getInstance(this);
         this.hb.enableHelpKey(telaDestinatario, "cadDestinatarios", this.hs);
-        if (!frameExiste(telaDestinatario))
-            this.desktop.add(telaDestinatario);
         telaDestinatario.setVisible(true);
-        try {
-            telaDestinatario.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void jbtCadRemetenteActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaRemetente telaRemetente = TelaRemetente.getInstance(this);
-        if (!frameExiste(telaRemetente))
-            this.desktop.add(telaRemetente);
         telaRemetente.setVisible(true);
         this.hb.enableHelpKey(telaRemetente, "cadRemetentes", this.hs);
-        try {
-            telaRemetente.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            logger.error(ex.getMessage(), ex);
-        } finally {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void jbtSairActionPerformed(ActionEvent evt) {

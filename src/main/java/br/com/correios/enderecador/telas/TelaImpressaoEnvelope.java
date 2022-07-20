@@ -19,23 +19,7 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.Document;
@@ -43,7 +27,7 @@ import javax.swing.text.Document;
 import org.apache.log4j.Logger;
 import org.jdesktop.layout.GroupLayout;
 
-public class TelaImpressaoEnvelope extends JInternalFrame implements Observer {
+public class TelaImpressaoEnvelope extends JFrame implements Observer {
     private static final Logger logger = Logger.getLogger(TelaImpressaoEnvelope.class);
 
     private final DestinatarioImpressaoTableModel model = new DestinatarioImpressaoTableModel("C");
@@ -188,12 +172,8 @@ public class TelaImpressaoEnvelope extends JInternalFrame implements Observer {
         this.jrbtRemetente = new JRadioButton();
         this.jrbtDestinatario = new JRadioButton();
         this.jrbtRemetenteDestinatario = new JRadioButton();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Etiquetas para cartas");
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         this.jbtSelecionarDestinatario.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         this.jbtSelecionarDestinatario.setIcon(new ImageIcon(getClass().getResource("/imagens/addusuario.gif")));
         this.jbtSelecionarDestinatario.setText("Selecionar destinatário");

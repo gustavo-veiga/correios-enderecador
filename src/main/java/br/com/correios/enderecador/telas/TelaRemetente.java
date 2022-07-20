@@ -10,34 +10,20 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
-public class TelaRemetente extends JInternalFrame implements Observer {
+public class TelaRemetente extends JFrame implements Observer {
     private static final Logger logger = Logger.getLogger(TelaRemetente.class);
 
     private final RemetenteTableModel remetenteTableModel = new RemetenteTableModel();
@@ -113,9 +99,6 @@ public class TelaRemetente extends JInternalFrame implements Observer {
         JLabel jLabel2 = new JLabel();
         this.jScrollPane1 = new JScrollPane();
         this.tabRemetente = new JTable();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Cadastro de remetentes");
         setPreferredSize(new Dimension(744, 434));

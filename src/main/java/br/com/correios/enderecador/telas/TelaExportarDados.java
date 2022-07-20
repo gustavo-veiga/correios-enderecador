@@ -22,21 +22,11 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
+import javax.swing.*;
 
 import org.apache.log4j.Logger;
 
-public class TelaExportarDados extends JInternalFrame implements Observer {
+public class TelaExportarDados extends JFrame implements Observer {
     private static final Logger logger = Logger.getLogger(TelaExportarDados.class);
 
     private final Frame frmParent;
@@ -90,13 +80,9 @@ public class TelaExportarDados extends JInternalFrame implements Observer {
         this.jchkExportarTodos = new JCheckBox();
         JScrollPane jScrollPane1 = new JScrollPane();
         this.jlstDestinatarios = new JList<>();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Exportar Dados");
         setPreferredSize(new Dimension(744, 434));
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         jToolBar1.setPreferredSize(new Dimension(325, 59));
         jbtExportar.setFont(new Font("MS Sans Serif", 0, 9));
         jbtExportar.setIcon(new ImageIcon(getClass().getResource("/imagens/OK.gif")));

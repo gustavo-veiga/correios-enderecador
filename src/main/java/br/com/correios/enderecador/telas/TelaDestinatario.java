@@ -13,23 +13,11 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -37,7 +25,7 @@ import org.apache.log4j.Logger;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
-public class TelaDestinatario extends JInternalFrame implements Observer {
+public class TelaDestinatario extends JFrame implements Observer {
     private static final Logger logger = Logger.getLogger(TelaDestinatario.class);
 
     private static TelaDestinatario instance;
@@ -115,20 +103,17 @@ public class TelaDestinatario extends JInternalFrame implements Observer {
         JButton jbtEditar = new JButton();
         JButton jbtPesquisar = new JButton();
         JButton jbtExcluir = new JButton();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Cadastro de destinatário");
         setPreferredSize(new Dimension(744, 434));
         jPanel1.setLayout(new BorderLayout());
         jPanel1.setBorder(BorderFactory.createEtchedBorder());
-        jPanel2.setLayout((LayoutManager) new AbsoluteLayout());
-        jLabel1.setFont(new Font("MS Sans Serif", Font.PLAIN, 10));
+        jPanel2.setLayout(new AbsoluteLayout());
+        jLabel1.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         jLabel1.setText("Procurar por:");
         jPanel2.add(jLabel1, new AbsoluteConstraints(10, 10, -1, 20));
         jPanel2.add(this.jtxtNomeDestinatario, new AbsoluteConstraints(90, 10, 300, -1));
-        jLabel2.setFont(new Font("MS Sans Serif", Font.PLAIN, 10));
+        jLabel2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         jLabel2.setText("Destinatários:");
         jPanel2.add(jLabel2, new AbsoluteConstraints(10, 30, -1, 30));
         jPanel1.add(jPanel2, "North");
@@ -137,7 +122,6 @@ public class TelaDestinatario extends JInternalFrame implements Observer {
         this.jScrollPane1.setViewportView(this.tabDestinatario);
         jPanel1.add(this.jScrollPane1, "Center");
         getContentPane().add(jPanel1, "Center");
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         jbtNovo.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtNovo.setIcon(new ImageIcon(getClass().getResource("/imagens/usuario.gif")));
         jbtNovo.setText("Novo destinatário");

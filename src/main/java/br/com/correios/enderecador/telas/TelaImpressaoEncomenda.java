@@ -23,22 +23,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -47,7 +32,7 @@ import javax.swing.text.Document;
 import org.apache.log4j.Logger;
 import org.jdesktop.layout.GroupLayout;
 
-public class TelaImpressaoEncomenda extends JInternalFrame implements Observer {
+public class TelaImpressaoEncomenda extends JFrame implements Observer {
     private static final Logger logger = Logger.getLogger(TelaImpressaoEncomenda.class);
 
     private final Frame frmParent;
@@ -90,7 +75,7 @@ public class TelaImpressaoEncomenda extends JInternalFrame implements Observer {
     }
 
     public static TelaImpressaoEncomenda getInstance(Frame parent) {
-        if (instance == null || instance.isClosed())
+        if (instance == null)
             instance = new TelaImpressaoEncomenda(parent);
         return instance;
     }
@@ -182,12 +167,8 @@ public class TelaImpressaoEncomenda extends JInternalFrame implements Observer {
         JScrollPane jScrollPane1 = new JScrollPane();
         this.jtblDestinatarioImpressao = new JTable();
         JLabel jLabel3 = new JLabel();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Etiquetas para encomendas");
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         jbtnSelecionarDestinatario.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtnSelecionarDestinatario.setIcon(new ImageIcon(getClass().getResource("/imagens/addusuario.gif")));
         jbtnSelecionarDestinatario.setText("Selecionar destinatário");

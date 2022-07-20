@@ -16,18 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -35,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.layout.GroupLayout;
 
-public class TelaGrupo extends JInternalFrame {
+public class TelaGrupo extends JFrame {
     private static final Logger logger = Logger.getLogger(TelaGrupo.class);
 
     private final Vector<GrupoBean> vecTelEndGrupo = new Vector<>();
@@ -83,12 +72,8 @@ public class TelaGrupo extends JInternalFrame {
         JScrollPane jScrollPane2 = new JScrollPane();
         this.jTDestinatario = new JTable();
         JLabel jLabel3 = new JLabel();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Cadastro de Grupos");
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         jToolBar1.setPreferredSize(new Dimension(100, 59));
         jbtNovo.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtNovo.setIcon(new ImageIcon(getClass().getResource("/imagens/usuarios.gif")));

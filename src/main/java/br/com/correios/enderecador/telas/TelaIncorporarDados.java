@@ -25,19 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -46,7 +34,7 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 import org.jdesktop.layout.GroupLayout;
 
-public class TelaIncorporarDados extends JInternalFrame {
+public class TelaIncorporarDados extends JFrame {
     private static final Logger logger = Logger.getLogger(TelaIncorporarDados.class);
 
     private final EnderecadorObservable observable = EnderecadorObservable.getInstance();
@@ -86,12 +74,8 @@ public class TelaIncorporarDados extends JInternalFrame {
         this.tabDestinatario = new JTable();
         JScrollPane jScrollPane2 = new JScrollPane();
         this.jtxtMensagem = new JTextArea();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Importar dados");
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         jbtnConfirmar.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtnConfirmar.setIcon(new ImageIcon(getClass().getResource("/imagens/OK.gif")));
         jbtnConfirmar.setText("Confirmar");

@@ -14,33 +14,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.layout.GroupLayout;
 
-public class TelaImpressaoDiretaEnvelope extends JInternalFrame implements Observer {
+public class TelaImpressaoDiretaEnvelope extends JFrame implements Observer {
     private final DestinatarioImpressaoTableModel model = new DestinatarioImpressaoTableModel("C");
 
     static Logger logger = Logger.getLogger(TelaEditarRemetente.class);
@@ -163,12 +146,8 @@ public class TelaImpressaoDiretaEnvelope extends JInternalFrame implements Obser
         this.jcmbTamanhoFonte = new JComboBox<>();
         JScrollPane jScrollPane1 = new JScrollPane();
         this.jtblDestinatarioImpressao = new JTable();
-        setClosable(true);
-        setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Impressão direta no envelope");
-        jToolBar1.setBorder(BorderFactory.createEtchedBorder());
         jbtSelecionarDestinatario.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
         jbtSelecionarDestinatario.setIcon(new ImageIcon(getClass().getResource("/imagens/addusuario.gif")));
         jbtSelecionarDestinatario.setText("Selecionar destinatário");
