@@ -10,12 +10,10 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyVetoException;
 import java.net.URL;
 import javax.help.CSH;
 import javax.help.HelpBroker;
@@ -23,6 +21,7 @@ import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.swing.*;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.apache.log4j.Logger;
 
 public class TelaPrincipal extends JFrame {
@@ -134,6 +133,7 @@ public class TelaPrincipal extends JFrame {
                 TelaPrincipal.this.formWindowClosing(evt);
             }
         });
+        this.setIconImage(new FlatSVGIcon("images/logo.svg", 16, 16).getImage());
         desktop.setBackground(getBackground());
         desktop.setBorder(BorderFactory.createEtchedBorder());
         this.lblBackground.setIcon(new ImageIcon(getClass().getResource("/imagens/logo_enderecador.gif")));
@@ -162,7 +162,7 @@ public class TelaPrincipal extends JFrame {
         jbtCadGrupo.setMinimumSize(new Dimension(45, 39));
         jbtCadGrupo.addActionListener(TelaPrincipal.this::jbtCadGrupoActionPerformed);
         jToolBar1.add(jbtCadGrupo);
-        jbtIncorporarDados.setIcon(new ImageIcon(getClass().getResource("/imagens/incorporaarquivo.gif")));
+        jbtIncorporarDados.setIcon(new FlatSVGIcon("images/icon/database.svg", 0.5f));
         jbtIncorporarDados.setToolTipText("Importar dados");
         jbtIncorporarDados.setBorder(BorderFactory.createEtchedBorder());
         jbtIncorporarDados.setHorizontalTextPosition(0);
@@ -187,13 +187,13 @@ public class TelaPrincipal extends JFrame {
         jbtEtiquetasCartas.setMaximumSize(new Dimension(60, 50));
         jbtEtiquetasCartas.addActionListener(TelaPrincipal.this::jbtEtiquetasCartasActionPerformed);
         jToolBar1.add(jbtEtiquetasCartas);
-        jbtImpressaoEnvelope.setIcon(new ImageIcon(getClass().getResource("/imagens/envelope.gif")));
+        jbtImpressaoEnvelope.setIcon(new FlatSVGIcon("images/icon/envelope.svg", 0.5f));
         jbtImpressaoEnvelope.setToolTipText("Impressão direta em envelope");
         jbtImpressaoEnvelope.setBorder(BorderFactory.createEtchedBorder());
         jbtImpressaoEnvelope.setMaximumSize(new Dimension(60, 50));
         jbtImpressaoEnvelope.addActionListener(TelaPrincipal.this::jbtImpressaoEnvelopeActionPerformed);
         jToolBar1.add(jbtImpressaoEnvelope);
-        jbtSair.setIcon(new ImageIcon(getClass().getResource("/imagens/sair.gif")));
+        jbtSair.setIcon(new FlatSVGIcon("images/icon/exit.svg", 0.5f));
         jbtSair.setToolTipText("Sair do programa");
         jbtSair.setBorder(BorderFactory.createEtchedBorder());
         jbtSair.setMaximumSize(new Dimension(60, 50));
@@ -305,6 +305,7 @@ public class TelaPrincipal extends JFrame {
     private void jbtEtiquetasCartasActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaImpressaoEnvelope telaImpressaoEnvelope = TelaImpressaoEnvelope.getInstance(this);
+        telaImpressaoEnvelope.setLocationRelativeTo(null);
         telaImpressaoEnvelope.setVisible(true);
         this.hb.enableHelpKey(telaImpressaoEnvelope, "impressaoCarta", this.hs);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -314,6 +315,7 @@ public class TelaPrincipal extends JFrame {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaImpressaoDiretaEnvelope telaImpressaoDiretaEnvelope = TelaImpressaoDiretaEnvelope.getInstance(this);
         this.hb.enableHelpKey(telaImpressaoDiretaEnvelope, "impressaoEnvelopes", this.hs);
+        telaImpressaoDiretaEnvelope.setLocationRelativeTo(null);
         telaImpressaoDiretaEnvelope.setVisible(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
@@ -330,6 +332,7 @@ public class TelaPrincipal extends JFrame {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaIncorporarDados telaIncorporarDados = TelaIncorporarDados.getInstance();
         telaIncorporarDados.setVisible(true);
+        telaIncorporarDados.setLocationRelativeTo(null);
         this.hb.enableHelpKey(telaIncorporarDados, "importar", this.hs);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
@@ -337,6 +340,7 @@ public class TelaPrincipal extends JFrame {
     private void jbtEtiquetasEncomendasActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaImpressaoEncomenda telaImpressaoEncomenda = TelaImpressaoEncomenda.getInstance(this);
+        telaImpressaoEncomenda.setLocationRelativeTo(null);
         telaImpressaoEncomenda.setVisible(true);
         this.hb.enableHelpKey(telaImpressaoEncomenda, "impressaoEncomenda", this.hs);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -345,6 +349,7 @@ public class TelaPrincipal extends JFrame {
     private void jbtExportarDadosActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaExportarDados telaExportarDados = TelaExportarDados.getInstance(this);
+        telaExportarDados.setLocationRelativeTo(null);
         telaExportarDados.setVisible(true);
         this.hb.enableHelpKey(telaExportarDados, "exportar", this.hs);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -365,6 +370,7 @@ public class TelaPrincipal extends JFrame {
     private void jbtCadGrupoActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaGrupo telaGrupo = TelaGrupo.getInstance(this);
+        telaGrupo.setLocationRelativeTo(null);
         telaGrupo.setVisible(true);
         this.hb.enableHelpKey(telaGrupo, "cadGrupos", this.hs);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -388,6 +394,7 @@ public class TelaPrincipal extends JFrame {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaDestinatario telaDestinatario = TelaDestinatario.getInstance(this);
         this.hb.enableHelpKey(telaDestinatario, "cadDestinatarios", this.hs);
+        telaDestinatario.setLocationRelativeTo(null);
         telaDestinatario.setVisible(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
@@ -395,6 +402,7 @@ public class TelaPrincipal extends JFrame {
     private void jbtCadRemetenteActionPerformed(ActionEvent evt) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TelaRemetente telaRemetente = TelaRemetente.getInstance(this);
+        telaRemetente.setLocationRelativeTo(null);
         telaRemetente.setVisible(true);
         this.hb.enableHelpKey(telaRemetente, "cadRemetentes", this.hs);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

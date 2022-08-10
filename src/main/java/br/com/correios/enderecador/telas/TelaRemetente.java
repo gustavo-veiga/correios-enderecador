@@ -19,9 +19,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.apache.log4j.Logger;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
+
+import static java.awt.Font.DIALOG;
+import static java.awt.Font.PLAIN;
 
 public class TelaRemetente extends JFrame implements Observer {
     private static final Logger logger = Logger.getLogger(TelaRemetente.class);
@@ -102,7 +106,7 @@ public class TelaRemetente extends JFrame implements Observer {
         setResizable(true);
         setTitle("Cadastro de remetentes");
         setPreferredSize(new Dimension(744, 434));
-        jbtNovo.setFont(new Font(Font.DIALOG, Font.PLAIN, 9));
+        jbtNovo.setFont(new Font(DIALOG, PLAIN, 9));
         jbtNovo.setIcon(new ImageIcon(getClass().getResource("/imagens/usuario.gif")));
         jbtNovo.setText("Novo remetente");
         jbtNovo.setHorizontalTextPosition(0);
@@ -112,7 +116,7 @@ public class TelaRemetente extends JFrame implements Observer {
         jbtNovo.setVerticalTextPosition(3);
         jbtNovo.addActionListener(TelaRemetente.this::jbtNovoActionPerformed);
         jToolBar1.add(jbtNovo);
-        jbtEditar.setFont(new Font(Font.DIALOG, Font.PLAIN, 9));
+        jbtEditar.setFont(new Font(DIALOG, PLAIN, 9));
         jbtEditar.setIcon(new ImageIcon(getClass().getResource("/imagens/editar.gif")));
         jbtEditar.setText("Editar");
         jbtEditar.setHorizontalTextPosition(0);
@@ -120,16 +124,16 @@ public class TelaRemetente extends JFrame implements Observer {
         jbtEditar.setVerticalTextPosition(3);
         jbtEditar.addActionListener(TelaRemetente.this::jbtEditarActionPerformed);
         jToolBar1.add(jbtEditar);
-        jbtPesquisar.setFont(new Font(Font.DIALOG, Font.PLAIN, 9));
-        jbtPesquisar.setIcon(new ImageIcon(getClass().getResource("/imagens/binoculo.gif")));
+        jbtPesquisar.setFont(new Font(DIALOG, PLAIN, 9));
+        jbtPesquisar.setIcon(new FlatSVGIcon("images/icon/search.svg", 24, 24));
         jbtPesquisar.setText("Pesquisar");
         jbtPesquisar.setHorizontalTextPosition(0);
         jbtPesquisar.setMaximumSize(new Dimension(90, 60));
         jbtPesquisar.setVerticalTextPosition(3);
         jbtPesquisar.addActionListener(TelaRemetente.this::jbtPesquisarActionPerformed);
         jToolBar1.add(jbtPesquisar);
-        jbtExcluir.setFont(new Font(Font.DIALOG, Font.PLAIN, 9));
-        jbtExcluir.setIcon(new ImageIcon(getClass().getResource("/imagens/TRASH.gif")));
+        jbtExcluir.setFont(new Font(DIALOG, PLAIN, 9));
+        jbtExcluir.setIcon(new FlatSVGIcon("images/icon/trash.svg", 24, 24));
         jbtExcluir.setText("Excluir");
         jbtExcluir.setHorizontalTextPosition(0);
         jbtExcluir.setMaximumSize(new Dimension(90, 60));
@@ -140,11 +144,11 @@ public class TelaRemetente extends JFrame implements Observer {
         jPanel1.setLayout(new BorderLayout());
         jPanel1.setBorder(BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new AbsoluteLayout());
-        jLabel1.setFont(new Font("MS Sans Serif", 0, 10));
+        jLabel1.setFont(new Font("MS Sans Serif", PLAIN, 10));
         jLabel1.setText("Procurar por:");
         jPanel2.add(jLabel1, new AbsoluteConstraints(10, 11, 70, 20));
         jPanel2.add(this.jtxtNomeRemetente, new AbsoluteConstraints(80, 10, 310, -1));
-        jLabel2.setFont(new Font("MS Sans Serif", 0, 10));
+        jLabel2.setFont(new Font("MS Sans Serif", PLAIN, 10));
         jLabel2.setText("Destinatários:");
         jPanel2.add(jLabel2, new AbsoluteConstraints(10, 30, 70, 30));
         jPanel1.add(jPanel2, "North");

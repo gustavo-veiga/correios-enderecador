@@ -56,7 +56,7 @@ public class TelaSobre extends JDialog {
     } catch (Exception ex) {
       logger.error(ex.getMessage(), ex);
       JOptionPane.showMessageDialog(null, "Não foi possível configurar interface GUI com o sistema operacional", "Erro", JOptionPane.ERROR_MESSAGE);
-    } 
+    }
   }
   
   private void configuracoesAdicionais() throws Exception {
