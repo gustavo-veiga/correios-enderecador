@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
 }
 
 group 'br.com.correios.enderecador'
@@ -25,7 +26,12 @@ repositories {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
     implementation group: 'com.formdev', name: 'flatlaf', version: '2.4'
+    implementation group: 'com.formdev', name: 'flatlaf-extras', version: '2.4'
+    implementation group: 'com.formdev', name: 'flatlaf-intellij-themes', version: '2.4'
+    implementation group: 'com.badoo.reaktive', name: 'reaktive', version: '1.2.1'
 
     // Old
     implementation group: 'hsqldb', name: 'hsqldb', version: '1.8.0.1'
