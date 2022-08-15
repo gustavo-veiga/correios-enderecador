@@ -16,6 +16,8 @@ import br.com.correios.enderecador.util.TextoCellRenderer
 import javax.swing.DefaultCellEditor
 import br.com.correios.enderecador.dao.RemetenteDao
 import br.com.correios.enderecador.dao.DaoException
+import br.com.correios.enderecador.dao.DestinatarioDao
+import br.com.correios.enderecador.dao.GrupoDao
 import javax.swing.JOptionPane
 import javax.swing.JToolBar
 import javax.swing.JButton
@@ -35,7 +37,11 @@ import java.awt.Font.SANS_SERIF
 import java.util.*
 
 @Singleton
-class TelaImpressaoEncomenda : JFrame(), Observer {
+class TelaImpressaoEncomenda(
+    private val grupoDao: GrupoDao,
+    private val remetenteDao: RemetenteDao,
+    private val destinatarioDao: DestinatarioDao
+) : JFrame(), Observer {
     private val model = DestinatarioImpressaoTableModel("E")
     private var vecDestinatarioImpressao = Vector<DestinatarioBean?>()
     private var relatorio = "Encomenda2_vizinho.jasper"
@@ -125,7 +131,7 @@ class TelaImpressaoEncomenda : JFrame(), Observer {
     private fun carregaRemetente() {
         try {
             jcmbRemetente.removeAllItems()
-            val arrayRemetente = RemetenteDao.instance!!.recuperaRemetente("")
+            val arrayRemetente = remetenteDao.recuperaRemetente("")
             for (remetenteBean in arrayRemetente) jcmbRemetente.addItem(remetenteBean)
         } catch (e: DaoException) {
             logger.error(e.message, e)
@@ -546,14 +552,14 @@ class TelaImpressaoEncomenda : JFrame(), Observer {
     }
 
     private fun jbtnSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatarioImpressao)
+        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatarioImpressao, grupoDao, destinatarioDao)
         telaPesquisarGrupo.isVisible = true
         model.destinatario = vecDestinatarioImpressao
         jtblDestinatarioImpressao.model = model
     }
 
     private fun jbtnSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatarioImpressao)
+        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatarioImpressao, destinatarioDao)
         telaPesquisaDestinatario.isVisible = true
         model.destinatario = vecDestinatarioImpressao
         jtblDestinatarioImpressao.model = model

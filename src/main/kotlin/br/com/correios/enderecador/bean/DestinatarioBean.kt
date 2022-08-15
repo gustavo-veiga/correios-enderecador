@@ -1,7 +1,9 @@
 package br.com.correios.enderecador.bean
 
+import org.koin.core.annotation.Singleton
 import java.util.Comparator
 
+@Singleton
 class DestinatarioBean : Comparator<Any?> {
     var numeroDestinatario = ""
     var apelido = ""
@@ -61,8 +63,8 @@ class DestinatarioBean : Comparator<Any?> {
         var result = false
         var contArroba = 0
         if (email != "" && email.length >= 5) {
-            for (i in 0 until email.length) {
-                if (email[i] == '@') contArroba++
+            for (element in email) {
+                if (element == '@') contArroba++
             }
             if (contArroba == 1) {
                 result = true

@@ -1,5 +1,8 @@
 package br.com.correios.enderecador.bean
 
+import org.koin.core.annotation.Singleton
+
+@Singleton
 class UsuarioBean {
     var pwd = ""
     var usuario = ""

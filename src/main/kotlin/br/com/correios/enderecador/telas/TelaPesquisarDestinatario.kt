@@ -27,7 +27,12 @@ import java.awt.Toolkit
 import java.lang.Exception
 import java.util.*
 
-class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario: Vector<DestinatarioBean?>) :
+class TelaPesquisarDestinatario(
+    parent: Frame?,
+    modal: Boolean,
+    vecDestinatario: Vector<DestinatarioBean?>,
+    private val destinatarioDao: DestinatarioDao
+) :
     JDialog(parent, modal) {
     private val vecDestinatario: Vector<DestinatarioBean>
     private var vecDestinatarioRetorno: Vector<DestinatarioBean?>
@@ -48,7 +53,7 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
 
     private fun carregaListaDestinatario() {
         try {
-            val arrayDestinatario = DestinatarioDao.instance!!.recuperaDestinatario("")
+            val arrayDestinatario = destinatarioDao.recuperaDestinatario("")
             vecDestinatario.addAll(arrayDestinatario)
             jlstDestinatario!!.setListData(vecDestinatario)
         } catch (e: DaoException) {

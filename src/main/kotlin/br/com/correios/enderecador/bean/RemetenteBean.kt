@@ -1,7 +1,9 @@
 package br.com.correios.enderecador.bean
 
+import org.koin.core.annotation.Singleton
 import java.io.Serializable
 
+@Singleton
 class RemetenteBean : Serializable {
     var numeroRemetente: String? = null
     var apelido: String? = null

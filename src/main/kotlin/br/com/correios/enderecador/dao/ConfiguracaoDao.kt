@@ -7,18 +7,22 @@ import br.com.correios.enderecador.conexao.ConnectException
 import java.sql.PreparedStatement
 import java.lang.StringBuilder
 import br.com.correios.enderecador.excecao.EnderecadorExcecao
+import org.koin.core.annotation.Singleton
 import java.sql.SQLException
 import java.sql.ResultSet
 import java.lang.Exception
 import java.sql.Connection
 import java.util.*
 
-class ConfiguracaoDao {
+@Singleton
+class ConfiguracaoDao(
+    private val conexaoBD: ConexaoBD
+) {
     private var conexao: Connection? = null
 
     init {
         try {
-            conexao = ConexaoBD.instance!!.recuperaConexao()
+            conexao = conexaoBD.recuperaConexao()
         } catch (e: ConnectException) {
             throw DaoException("Não foi possível recuperar a conexão")
         }
@@ -142,19 +146,5 @@ class ConfiguracaoDao {
             throw DaoException(e.message)
         }
         return dados
-    }
-
-    companion object {
-        private var configuracaoDao: ConfiguracaoDao? = null
-
-        @JvmStatic
-        @get:Throws(DaoException::class)
-        val instance: ConfiguracaoDao?
-            get() {
-                if (configuracaoDao == null) {
-                    configuracaoDao = ConfiguracaoDao()
-                }
-                return configuracaoDao
-            }
     }
 }

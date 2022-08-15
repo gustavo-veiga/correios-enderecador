@@ -21,6 +21,7 @@ import javax.swing.JOptionPane
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.DaoException
+import br.com.correios.enderecador.dao.DestinatarioDao
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
 import org.koin.core.annotation.Singleton
@@ -29,7 +30,10 @@ import java.awt.Font
 import java.util.*
 
 @Singleton
-class TelaGrupo : JFrame() {
+class TelaGrupo(
+    private val grupoDao: GrupoDao,
+    private val grupoDestinatarioDao: GrupoDestinatarioDao
+) : JFrame() {
     private val vecTelEndGrupo = Vector<GrupoBean>()
     private val vecTelEndDestinatarioGrupo = Vector<DestinatarioBean>()
     private var ultimaConsulta = ""
@@ -193,8 +197,8 @@ class TelaGrupo : JFrame() {
             if (resp == 0) {
                 grupoBean = vecTelEndGrupo[linhaSelecionada]
                 try {
-                    GrupoDestinatarioDao.instance!!.excluirGrupoDestinatario(grupoBean.numeroGrupo!!)
-                    GrupoDao.instance!!.excluirGrupo(grupoBean.numeroGrupo)
+                    grupoDestinatarioDao.excluirGrupoDestinatario(grupoBean.numeroGrupo!!)
+                    grupoDao.excluirGrupo(grupoBean.numeroGrupo)
                     recuperarListaGrupo()
                     jtxtGrupo!!.text = ""
                     JOptionPane.showMessageDialog(
@@ -251,7 +255,7 @@ class TelaGrupo : JFrame() {
         val model: DestinatarioTableModel?
         try {
             vecTelEndDestinatarioGrupo.removeAllElements()
-            val arrayGrupoDestinatario = GrupoDestinatarioDao.instance!!.recuperaGrupoDestinatario(nuGrupo)
+            val arrayGrupoDestinatario = grupoDestinatarioDao.recuperaGrupoDestinatario(nuGrupo)
             vecTelEndDestinatarioGrupo.addAll(arrayGrupoDestinatario)
             arrayGrupoDestinatario.sortWith(destinatarioSort)
             model = jTDestinatario!!.model as DestinatarioTableModel
@@ -271,7 +275,7 @@ class TelaGrupo : JFrame() {
         val model: DestinatarioTableModel
         try {
             vecTelEndGrupo.removeAllElements()
-            val arrayGrupo = GrupoDao.instance!!.recuperaGrupo("")
+            val arrayGrupo = grupoDao.recuperaGrupo("")
             val grupoBean: GrupoBean
             vecTelEndGrupo.addAll(arrayGrupo)
             if (vecTelEndGrupo.size >= 1) {

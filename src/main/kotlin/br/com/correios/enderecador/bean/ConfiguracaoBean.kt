@@ -5,12 +5,13 @@ import java.util.Locale
 import br.com.correios.enderecador.dao.*
 import kotlin.Throws
 import br.com.correios.enderecador.excecao.EnderecadorExcecao
+import org.koin.core.annotation.Singleton
 import java.io.File
 
-class ConfiguracaoBean private constructor() {
+@Singleton
+class ConfiguracaoBean {
     var caminhoImagem = "/imagens/"
     var caminhoImagem2d = File("").absolutePath
-    var mostraMensagem = "Sim"
     var versao = "2.4.4"
     var novaVersao = ""
     var caminhoRelatorio = "relatorios/"
@@ -20,16 +21,11 @@ class ConfiguracaoBean private constructor() {
     var dominio = ""
     var urlBanco = ""
     var senhaBanco = ""
-    var arquivoHelp = ""
     var driverBanco = "org.hsqldb.jdbcDriver"
     var usuarioBanco = "SA"
-    var paginaEnderecador = "http://www2.correios.com.br/enderecador/escritorio/default.cfm"
     var paginaPesquisaCep = "http://www.buscacep.correios.com.br/"
-    val urlBuscaCep = "http://www2.correios.com.br/enderecador/requisicao/xmlPesquisa.cfm"
     var paginaFaleConosco = "http://www2.correios.com.br/sistemas/falecomoscorreios/"
-    var utilizaProxy = false
     var banco: String? = null
-    var cepStrategy: StrategyCEP? = null
 
     init {
         val propriedades = GerenciadorPropriedades("/enderecador.properties")
@@ -37,11 +33,6 @@ class ConfiguracaoBean private constructor() {
             .trim { it <= ' ' }
             .uppercase(Locale.getDefault())
 
-        cepStrategy = if (banco.equals(GPBE, ignoreCase = true)) {
-            GpbeStrategyCEP()
-        } else {
-            DnecStrategyCEP()
-        }
         urlBanco = "jdbc:hsqldb:${System.getProperty("user.dir")}${System.getProperty("file.separator")}lib${
             System.getProperty("file.separator")
         }db${System.getProperty("file.separator")}dbenderecadorect"
@@ -49,6 +40,7 @@ class ConfiguracaoBean private constructor() {
 
     @Throws(EnderecadorExcecao::class)
     fun carregaVariaveis() {
+        /*
         try {
             val configuracaoDao = ConfiguracaoDao.instance
             val dadosConfig = configuracaoDao!!.recuperaConfiguracao("")
@@ -61,12 +53,11 @@ class ConfiguracaoBean private constructor() {
         } catch (ex: DaoException) {
             throw EnderecadorExcecao(ex.message, ex)
         }
+         */
     }
 
     companion object {
         private var configuracaoBean: ConfiguracaoBean? = null
-        const val GPBE = "GPBE"
-        const val DNEC = "DNEC"
         @JvmStatic
         val instance: ConfiguracaoBean?
             get() {

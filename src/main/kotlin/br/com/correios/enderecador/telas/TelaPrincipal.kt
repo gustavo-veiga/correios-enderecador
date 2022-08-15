@@ -22,6 +22,8 @@ class TelaPrincipal : JFrame(), KoinComponent {
     private val helpSet = helpSet()
     private val helpBroker = helpSet.createHelpBroker()
 
+    private val conexaoBD: ConexaoBD by inject()
+
     private val telaSobre: TelaSobre by inject()
     private val telaGrupo: TelaGrupo by inject()
     private val telaRemetente: TelaRemetente by inject()
@@ -322,7 +324,7 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
     private fun sairAplicacao() {
         try {
-            ConexaoBD.instance!!.liberarConexao()
+            conexaoBD.liberarConexao()
         } catch (ex: ConnectException) {
             logger.error(ex.message, ex)
         }

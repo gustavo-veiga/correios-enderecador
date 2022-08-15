@@ -1,21 +1,10 @@
 package br.com.correios.enderecador.bean
 
-class GrupoBean {
-    var numeroGrupo: String? = null
-    var descricaoGrupo: String? = null
+data class GrupoBean(
+    var numeroGrupo: String,
+    var descricaoGrupo: String,
+) {
     override fun toString(): String {
-        return descricaoGrupo!!
-    }
-
-    companion object {
-        private var grupoBean: GrupoBean? = null
-        @JvmStatic
-        val instance: GrupoBean?
-            get() {
-                if (grupoBean == null) {
-                    grupoBean = GrupoBean()
-                }
-                return grupoBean
-            }
+        return descricaoGrupo
     }
 }

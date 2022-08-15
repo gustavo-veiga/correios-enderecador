@@ -30,7 +30,9 @@ import javax.swing.JLabel.CENTER
 import javax.swing.table.DefaultTableCellRenderer
 
 @Singleton
-class TelaRemetente : JFrame(), Observer {
+class TelaRemetente(
+    private val remetenteDao: RemetenteDao
+) : JFrame(), Observer {
     private val remetenteTableModel = RemetenteTableModel()
     private val observable = EnderecadorObservable.instance
     private var ultimaConsulta = ""
@@ -47,7 +49,7 @@ class TelaRemetente : JFrame(), Observer {
 
     private fun recuperarDadosTabelaRemetente() {
         try {
-            val remetenteList = RemetenteDao.instance!!.recuperaRemetente("")
+            val remetenteList = remetenteDao.recuperaRemetente("")
             remetenteTableModel.setRemetente(remetenteList)
             tabRemetente.setSelectionMode(2)
 
@@ -216,7 +218,7 @@ class TelaRemetente : JFrame(), Observer {
             try {
                 for (linhasSelecionada in linhasSelecionadas) {
                     remetenteBean = remetenteTableModel.getRemetente(linhasSelecionada)!!
-                    RemetenteDao.instance!!.excluirRemetente(remetenteBean.numeroRemetente)
+                    remetenteDao.excluirRemetente(remetenteBean.numeroRemetente)
                     listaRemetentes.add(remetenteBean)
                 }
                 observable?.notifyObservers(listaRemetentes)

@@ -4,6 +4,7 @@ import br.com.correios.enderecador.conexao.ConexaoBD
 import kotlin.Throws
 import br.com.correios.enderecador.bean.RemetenteBean
 import br.com.correios.enderecador.conexao.ConnectException
+import org.koin.core.annotation.Singleton
 import java.sql.PreparedStatement
 import java.lang.StringBuilder
 import java.sql.SQLException
@@ -11,12 +12,15 @@ import java.sql.ResultSet
 import java.sql.Connection
 import java.util.ArrayList
 
-class RemetenteDao {
+@Singleton
+class RemetenteDao(
+    private val conexaoBD: ConexaoBD
+) {
     private var conexao: Connection? = null
 
     init {
         try {
-            conexao = ConexaoBD.instance!!.recuperaConexao()
+            conexao = conexaoBD.recuperaConexao()
         } catch (e: ConnectException) {
             throw DaoException("Não foi possível recuperar a conexão")
         }
@@ -177,19 +181,5 @@ class RemetenteDao {
             throw DaoException(e.message)
         }
         return dados
-    }
-
-    companion object {
-        private var remetenteDao: RemetenteDao? = null
-
-        @JvmStatic
-        @get:Throws(DaoException::class)
-        val instance: RemetenteDao?
-            get() {
-                if (remetenteDao == null) {
-                    remetenteDao = RemetenteDao()
-                }
-                return remetenteDao
-            }
     }
 }

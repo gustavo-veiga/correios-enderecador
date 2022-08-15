@@ -8,6 +8,7 @@ import javax.swing.JList
 import br.com.correios.enderecador.util.EnderecadorObservable
 import br.com.correios.enderecador.dao.DestinatarioDao
 import br.com.correios.enderecador.dao.DaoException
+import br.com.correios.enderecador.dao.GrupoDao
 import javax.swing.JOptionPane
 import javax.swing.JToolBar
 import javax.swing.JPanel
@@ -24,7 +25,10 @@ import java.awt.*
 import java.util.*
 
 @Singleton
-class TelaExportarDados : JFrame(), Observer {
+class TelaExportarDados(
+    private val grupoDao: GrupoDao,
+    private val destinatarioDao: DestinatarioDao
+) : JFrame(), Observer {
     private val vecDestinatario: Vector<DestinatarioBean?> = Vector()
     private var jbntDestinatario: JButton? = null
     private var jbntGrupo: JButton? = null
@@ -40,7 +44,7 @@ class TelaExportarDados : JFrame(), Observer {
 
     fun carregaListaDestinatario() {
         try {
-            val arrayDestinatario = DestinatarioDao.instance!!.recuperaDestinatario("")
+            val arrayDestinatario = destinatarioDao.recuperaDestinatario("")
             vecDestinatario.addAll(arrayDestinatario)
             jlstDestinatarios!!.setListData(vecDestinatario)
         } catch (e: DaoException) {
@@ -127,7 +131,7 @@ class TelaExportarDados : JFrame(), Observer {
 
     private fun jbntGrupoActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatario)
+        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatario, grupoDao, destinatarioDao)
         telaPesquisarGrupo.isVisible = true
         jlstDestinatarios!!.setListData(vecDestinatario)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
@@ -135,7 +139,7 @@ class TelaExportarDados : JFrame(), Observer {
 
     private fun jbntDestinatarioActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatario)
+        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatario, destinatarioDao)
         telaPesquisaDestinatario.isVisible = true
         jlstDestinatarios!!.setListData(vecDestinatario)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)

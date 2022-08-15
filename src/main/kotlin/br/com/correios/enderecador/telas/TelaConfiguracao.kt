@@ -25,7 +25,9 @@ import java.awt.*
 import java.lang.Exception
 
 @Singleton
-class TelaConfiguracao : JDialog() {
+class TelaConfiguracao(
+    private val configuracaoDao: ConfiguracaoDao
+) : JDialog() {
     private var configuracaoBean: ConfiguracaoBean? = null
     private var jbntAjuda: JButton? = null
     private var jchkProxy: JCheckBox? = null
@@ -239,7 +241,7 @@ class TelaConfiguracao : JDialog() {
                 configuracaoBean!!.proxy = jtxtEndereco!!.text
                 configuracaoBean!!.porta = jtxtPorta!!.text
                 configuracaoBean!!.dominio = jtxtDominio!!.text
-                ConfiguracaoDao.instance!!.alterarConfiguracao(configuracaoBean!!)
+                configuracaoDao.alterarConfiguracao(configuracaoBean!!)
             } catch (ex: DaoException) {
                 JOptionPane.showMessageDialog(
                     this,
@@ -253,8 +255,7 @@ class TelaConfiguracao : JDialog() {
                 configuracaoBean!!.proxy = ""
                 configuracaoBean!!.porta = ""
                 configuracaoBean!!.dominio = ""
-                val configuracaoDao = ConfiguracaoDao.instance
-                configuracaoDao!!.alterarConfiguracao(configuracaoBean!!)
+                configuracaoDao.alterarConfiguracao(configuracaoBean!!)
             } catch (ex: DaoException) {
                 JOptionPane.showMessageDialog(
                     this,

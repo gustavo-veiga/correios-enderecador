@@ -28,8 +28,10 @@ import java.awt.event.MouseEvent
 import java.lang.Exception
 
 @Singleton
-class TelaSobre : JDialog() {
-    private var configuracaoBean: ConfiguracaoBean? = null
+class TelaSobre(
+    private val configuracaoDao: ConfiguracaoDao,
+    private val configuracaoBean: ConfiguracaoBean
+) : JDialog() {
     private var jTabbedPane1: JTabbedPane? = null
     private var jlDirInstalacao: JLabel? = null
     private var jlJava: JLabel? = null
@@ -56,12 +58,13 @@ class TelaSobre : JDialog() {
 
     @Throws(Exception::class)
     private fun configuracoesAdicionais() {
-        configuracaoBean = ConfiguracaoBean.instance
-        configuracaoBean!!.carregaVariaveis()
-        if (configuracaoBean!!.chave != "" && configuracaoBean!!.chave != "") jtxtChave!!.text =
-            configuracaoBean!!.chave
-        if (configuracaoBean!!.versao != "") jlVersao!!.text =
-            "Versão " + configuracaoBean!!.versao + ", " + configuracaoBean!!.banco
+        configuracaoBean.carregaVariaveis()
+        if (configuracaoBean.chave.isEmpty() && configuracaoBean.chave.isEmpty()) {
+            jtxtChave!!.text = configuracaoBean.chave
+        }
+        if (configuracaoBean.versao != "") {
+            jlVersao!!.text = "Versão " + configuracaoBean.versao + ", " + configuracaoBean.banco
+        }
         jlSistemaOperacional!!.text =
             System.getProperty("os.name") + " versão " + System.getProperty("os.version") + " ( " + System.getProperty(
                 "os.arch"
@@ -71,7 +74,7 @@ class TelaSobre : JDialog() {
             System.getProperty("java.vm.name") + " versão " + System.getProperty("java.runtime.version")
         jlJavaHome!!.text = System.getProperty("java.home")
         jlDirInstalacao!!.text = System.getProperty("user.dir")
-        if (configuracaoBean!!.banco != "DNEC") jTabbedPane1!!.remove(1)
+        if (configuracaoBean.banco != "DNEC") jTabbedPane1!!.remove(1)
     }
 
     private fun initComponents() {
@@ -340,12 +343,12 @@ class TelaSobre : JDialog() {
 
     private fun jLabel11MouseClicked() {
         try {
-            Geral.displayURL(ConfiguracaoBean.instance!!.paginaFaleConosco)
+            Geral.displayURL(configuracaoBean.paginaFaleConosco)
         } catch (ex: EnderecadorExcecao) {
             logger.error(ex.message, ex)
             JOptionPane.showMessageDialog(
                 this,
-                "Não foi possível ativar seu browse, por favor entre no site: " + ConfiguracaoBean.instance!!.paginaFaleConosco,
+                "Não foi possível ativar seu browse, por favor entre no site: " + configuracaoBean.paginaFaleConosco,
                 "Endereçador",
                 2
             )
@@ -361,9 +364,9 @@ class TelaSobre : JDialog() {
     }
 
     private fun jbtnOkActionPerformed() {
-        configuracaoBean!!.chave = jtxtChave!!.text
+        configuracaoBean.chave = jtxtChave!!.text
         try {
-            ConfiguracaoDao.instance!!.alterarConfiguracao(configuracaoBean!!)
+            configuracaoDao.alterarConfiguracao(configuracaoBean)
         } catch (ex: DaoException) {
             logger.error(ex.message, ex)
             JOptionPane.showMessageDialog(this, "Não foi possível gravar chave.", "Endereçador", 2)

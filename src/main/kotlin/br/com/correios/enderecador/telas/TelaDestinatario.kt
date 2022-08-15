@@ -19,7 +19,10 @@ import javax.swing.JLabel.CENTER
 import javax.swing.table.DefaultTableCellRenderer
 
 @Singleton
-class TelaDestinatario : JFrame(), Observer {
+class TelaDestinatario(
+    private val destinatarioDao: DestinatarioDao,
+    private val grupoDestinatarioDao: GrupoDestinatarioDao
+) : JFrame(), Observer {
     private val destinatarioTableModel: DestinatarioTableModel = DestinatarioTableModel()
     private val observable: EnderecadorObservable? = EnderecadorObservable.instance
     private val jScrollPane =  JScrollPane()
@@ -36,7 +39,7 @@ class TelaDestinatario : JFrame(), Observer {
 
     private fun recuperarDadosTabelaDestinatario() {
         try {
-            val arrayDestinatario = DestinatarioDao.instance!!.recuperaDestinatario("")
+            val arrayDestinatario = destinatarioDao.recuperaDestinatario("")
             destinatarioTableModel.setDestinatario(arrayDestinatario)
             tabDestinatario.setSelectionMode(2)
 
@@ -164,7 +167,8 @@ class TelaDestinatario : JFrame(), Observer {
             )
             return
         }
-        val telaEditarDestinatrio = TelaEditarDestinatario(this, true, destinatarioTableModel.getDestinatario(tabDestinatario.selectedRow)!!)
+        val telaEditarDestinatrio = TelaEditarDestinatario(this, true,
+            destinatarioTableModel.getDestinatario(tabDestinatario.selectedRow)!!)
         telaEditarDestinatrio.isVisible = true
     }
 
@@ -229,8 +233,8 @@ class TelaDestinatario : JFrame(), Observer {
                 try {
                     for (linhasSelecionada in linhasSelecionadas) {
                         destinatarioBean = destinatarioTableModel.getDestinatario(linhasSelecionada)
-                        GrupoDestinatarioDao.instance!!.excluirDestinatarioDoGrupo(destinatarioBean!!.numeroDestinatario)
-                        DestinatarioDao.instance!!.excluirDestinatario(destinatarioBean.numeroDestinatario)
+                        grupoDestinatarioDao.excluirDestinatarioDoGrupo(destinatarioBean!!.numeroDestinatario)
+                        destinatarioDao.excluirDestinatario(destinatarioBean.numeroDestinatario)
                         listaDestinatarios.add(destinatarioBean)
                     }
                     observable?.notifyObservers(listaDestinatarios)

@@ -4,6 +4,7 @@ import br.com.correios.enderecador.conexao.ConexaoBD
 import kotlin.Throws
 import br.com.correios.enderecador.bean.GrupoBean
 import br.com.correios.enderecador.conexao.ConnectException
+import org.koin.core.annotation.Singleton
 import java.sql.PreparedStatement
 import java.lang.StringBuilder
 import java.sql.SQLException
@@ -11,12 +12,15 @@ import java.sql.ResultSet
 import java.sql.Connection
 import java.util.ArrayList
 
-class GrupoDao {
+@Singleton
+class GrupoDao(
+    private val conexaoBD: ConexaoBD
+) {
     private var conexao: Connection? = null
 
     init {
         try {
-            conexao = ConexaoBD.instance!!.recuperaConexao()
+            conexao = conexaoBD.recuperaConexao()
         } catch (e: ConnectException) {
             throw DaoException("Não foi possível recuperar a conexão")
         }
@@ -90,10 +94,10 @@ class GrupoDao {
             stmt = conexao!!.prepareStatement(sql.toString())
             rs = stmt.executeQuery()
             while (rs.next()) {
-                val grupoBean = GrupoBean()
-                grupoBean.numeroGrupo = rs.getString(1)
-                grupoBean.descricaoGrupo = rs.getString(2)
-                dados.add(grupoBean)
+                dados.add(GrupoBean(
+                    numeroGrupo = rs.getString(1),
+                    descricaoGrupo = rs.getString(2)
+                ))
             }
         } catch (e: SQLException) {
             throw DaoException(e.message, e)
@@ -117,17 +121,5 @@ class GrupoDao {
             throw DaoException(e.message)
         }
         return ultimoNumero
-    }
-
-    companion object {
-        private var grupoDao: GrupoDao? = null
-
-        @JvmStatic
-        @get:Throws(DaoException::class)
-        val instance: GrupoDao?
-            get() {
-                if (grupoDao == null) grupoDao = GrupoDao()
-                return grupoDao
-            }
     }
 }

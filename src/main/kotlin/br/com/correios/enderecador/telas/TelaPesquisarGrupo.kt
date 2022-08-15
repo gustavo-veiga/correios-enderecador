@@ -27,7 +27,13 @@ import java.awt.Font
 import java.awt.Frame
 import java.util.*
 
-class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector<DestinatarioBean?>) :
+class TelaPesquisarGrupo(
+    parent: Frame?,
+    modal: Boolean,
+    vecDestinatario: Vector<DestinatarioBean?>,
+    private val grupoDao: GrupoDao,
+    private val destinatarioDao: DestinatarioDao
+) :
     JDialog(parent, modal) {
     private var vecDestinatarioRetorno: Vector<DestinatarioBean?> = Vector()
     private val vecDestinatarioGrupo: Vector<GrupoBean?> = Vector()
@@ -46,7 +52,7 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
 
     private fun carregaListaGrupo() {
         try {
-            val arrayGrupo = GrupoDao.instance!!.recuperaGrupo("")
+            val arrayGrupo = grupoDao.recuperaGrupo("")
             vecDestinatarioGrupo.addAll(arrayGrupo)
             jlstGrupo!!.setListData(vecDestinatarioGrupo)
         } catch (e: DaoException) {
@@ -150,7 +156,7 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
                 val arrayIndex = jlstGrupo!!.selectedIndices
                 for (index in arrayIndex) {
                     val grupoBean = modelGrupo.getElementAt(index)
-                    val arrayDestinatarioGrupo = DestinatarioDao.instance!!.recuperaDestinatarioPorGrupo(
+                    val arrayDestinatarioGrupo = destinatarioDao.recuperaDestinatarioPorGrupo(
                         grupoBean.numeroGrupo!!
                     )
                     for (bean in arrayDestinatarioGrupo) {

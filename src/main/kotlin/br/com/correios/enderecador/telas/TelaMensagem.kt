@@ -1,6 +1,5 @@
 package br.com.correios.enderecador.telas
 
-import br.com.correios.enderecador.bean.GlobalBean.Companion.instance
 import javax.swing.JDialog
 import br.com.correios.enderecador.bean.GlobalBean
 import javax.swing.JCheckBox
@@ -12,7 +11,6 @@ import org.netbeans.lib.awtextra.AbsoluteLayout
 import org.netbeans.lib.awtextra.AbsoluteConstraints
 import java.awt.*
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 
 class TelaMensagem : JDialog() {
     private var globalBean: GlobalBean? = null
@@ -29,7 +27,6 @@ class TelaMensagem : JDialog() {
         if (dialogSize.height > screenSize.height) dialogSize.height = screenSize.height
         if (dialogSize.width > screenSize.width) dialogSize.width = screenSize.width
         setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2)
-        globalBean = instance
     }
 
     private fun initComponents() {

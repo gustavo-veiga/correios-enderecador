@@ -8,16 +8,20 @@ import java.lang.StringBuilder
 import java.sql.SQLException
 import br.com.correios.enderecador.bean.DestinatarioBean
 import br.com.correios.enderecador.conexao.ConnectException
+import org.koin.core.annotation.Singleton
 import java.sql.ResultSet
 import java.sql.Connection
 import java.util.ArrayList
 
-class GrupoDestinatarioDao {
+@Singleton
+class GrupoDestinatarioDao(
+    private val conexaoBD: ConexaoBD
+) {
     private var conexao: Connection? = null
 
     init {
         try {
-            conexao = ConexaoBD.instance!!.recuperaConexao()
+            conexao = conexaoBD.recuperaConexao()
         } catch (e: ConnectException) {
             throw DaoException("Não foi possível recuperar a conexão")
         }
@@ -113,19 +117,5 @@ class GrupoDestinatarioDao {
             throw DaoException(e.message)
         }
         return dados
-    }
-
-    companion object {
-        private var grupoDestinatarioDao: GrupoDestinatarioDao? = null
-
-        @JvmStatic
-        @get:Throws(DaoException::class)
-        val instance: GrupoDestinatarioDao?
-            get() {
-                if (grupoDestinatarioDao == null) {
-                    grupoDestinatarioDao = GrupoDestinatarioDao()
-                }
-                return grupoDestinatarioDao
-            }
     }
 }

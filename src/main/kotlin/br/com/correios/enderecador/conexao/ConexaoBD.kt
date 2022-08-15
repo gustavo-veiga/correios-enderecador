@@ -6,23 +6,27 @@ import java.sql.SQLException
 import java.sql.DriverManager
 import java.lang.ClassNotFoundException
 import org.apache.log4j.Logger
+import org.koin.core.annotation.Singleton
 import java.lang.Exception
 import java.sql.Connection
 import java.sql.Statement
 import javax.swing.JOptionPane
-import kotlin.jvm.JvmStatic
+import kotlin.system.exitProcess
 
-class ConexaoBD {
+@Singleton
+class ConexaoBD(
+    private val configuracaoBean: ConfiguracaoBean
+) {
     private var conexao: Connection? = null
 
     @Throws(ConnectException::class)
     fun recuperaConexao(): Connection? {
         try {
-            Class.forName(ConfiguracaoBean.instance!!.driverBanco)
+            Class.forName(configuracaoBean.driverBanco)
             conexao = DriverManager.getConnection(
-                ConfiguracaoBean.instance!!.urlBanco,
-                ConfiguracaoBean.instance!!.usuarioBanco,
-                ConfiguracaoBean.instance!!.senhaBanco
+                configuracaoBean.urlBanco,
+                configuracaoBean.usuarioBanco,
+                configuracaoBean.senhaBanco
             )
             if (conexao == null) throw ConnectException("A conexão com o banco de dados não foi criada!")
         } catch (e: ClassNotFoundException) {
@@ -30,7 +34,7 @@ class ConexaoBD {
         } catch (e: Exception) {
             logger.error(e.message, e)
             JOptionPane.showMessageDialog(null, "Já existe uma cópia deste programa rodando!", "Endereçador", 2)
-            System.exit(0)
+            exitProcess(0)
         }
         return conexao
     }
@@ -58,15 +62,6 @@ class ConexaoBD {
     }
 
     companion object {
-        @JvmStatic
-        var instance: ConexaoBD? = null
-            get() {
-                if (field == null) {
-                    field = ConexaoBD()
-                }
-                return field
-            }
-            private set
-        var logger = Logger.getLogger(ConexaoBD::class.java)
+        private val logger = Logger.getLogger(ConexaoBD::class.java)
     }
 }

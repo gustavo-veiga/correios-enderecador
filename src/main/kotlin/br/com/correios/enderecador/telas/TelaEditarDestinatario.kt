@@ -20,48 +20,50 @@ import javax.swing.JLabel
 import br.com.correios.enderecador.util.DocumentoPersonalizado
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import br.com.correios.enderecador.bean.UsuarioBean
 import br.com.correios.enderecador.excecao.ConfiguracaoProxyException
 import br.com.correios.enderecador.dao.ConnectionException
 import java.util.Locale
 import br.com.correios.enderecador.bean.GlobalBean
-import br.com.correios.enderecador.dao.CepInvalidoException
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.awt.*
 import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 import java.text.ParseException
 
-class TelaEditarDestinatario : JDialog {
+class TelaEditarDestinatario : KoinComponent, JDialog {
+    private val destinatarioDao: DestinatarioDao = get()
+
+    private val arrayUF = arrayOf(
+        "", "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO",
+        "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ",
+        "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"
+    )
+
     private val observable = EnderecadorObservable.instance
     private val blnIncluir: Boolean
-    private val arrayUF: Array<String>
     private var numeroDestinatario = ""
-    private var jbtnCapturaEndereco: JButton? = null
-    private var jbtnNaoSeiCep: JButton? = null
-    private var jcmbUfDestinatario: JComboBox<String>? = null
-    private var jtxtApelidoDestinatario: JTextField? = null
-    private var jtxtBairroDestinatario: JTextField? = null
-    private var jtxtCaixaPostalDestinatario: JTextField? = null
-    private var jtxtCepCaixaPostalDestinatario: JFormattedTextField? = null
-    private var jtxtCepDestinatario: JFormattedTextField? = null
-    private var jtxtCidadeDestinatario: JTextField? = null
-    private var jtxtComplementoDestinatario: JTextField? = null
-    private var jtxtEmailDestinatario: JTextField? = null
-    private var jtxtEnderecoDestinatario: JTextField? = null
-    private var jtxtFaxDestinatario: JTextField? = null
-    private var jtxtNomeDestinatario: JTextField? = null
-    private var jtxtNumeroDestinatario: JTextField? = null
-    private var jtxtTelefoneDestinatario: JTextField? = null
-    private var jtxtTituloDestinatario: JTextField? = null
+    private val jbtnCapturaEndereco = JButton()
+    private val jbtnNaoSeiCep = JButton()
+    private val jcmbUfDestinatario = JComboBox(arrayUF)
+    private val jtxtApelidoDestinatario = JTextField()
+    private val jtxtBairroDestinatario = JTextField()
+    private val jtxtCaixaPostalDestinatario = JTextField()
+    private val jtxtCepCaixaPostalDestinatario = JFormattedTextField()
+    private val jtxtCepDestinatario = JFormattedTextField()
+    private val jtxtCidadeDestinatario = JTextField()
+    private val jtxtComplementoDestinatario = JTextField()
+    private val jtxtEmailDestinatario = JTextField()
+    private val jtxtEnderecoDestinatario = JTextField()
+    private val jtxtFaxDestinatario = JTextField()
+    private val jtxtNomeDestinatario = JTextField()
+    private val jtxtNumeroDestinatario = JTextField()
+    private val jtxtTelefoneDestinatario = JTextField()
+    private val jtxtTituloDestinatario = JTextField()
 
     constructor(parent: Frame?, modal: Boolean) : super(parent, modal) {
-        arrayUF = arrayOf(
-            "", "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO",
-            "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ",
-            "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"
-        )
         initComponents()
         configuracoesAdicionais()
         initFormatters(jtxtCepDestinatario)
@@ -70,35 +72,31 @@ class TelaEditarDestinatario : JDialog {
     }
 
     constructor(parent: Frame?, modal: Boolean, destinatarioBean: DestinatarioBean) : super(parent, modal) {
-        arrayUF = arrayOf(
-            "", "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO",
-            "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ",
-            "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"
-        )
         initComponents()
         configuracoesAdicionais()
         initFormatters(jtxtCepDestinatario)
         initFormatters(jtxtCepCaixaPostalDestinatario)
         blnIncluir = false
+
         numeroDestinatario = destinatarioBean.numeroDestinatario
-        jtxtApelidoDestinatario!!.text = "" + destinatarioBean.apelido
-        jtxtTituloDestinatario!!.text = "" + destinatarioBean.titulo
-        jtxtNomeDestinatario!!.text = "" + destinatarioBean.nome
-        jtxtCepDestinatario!!.text = "" + destinatarioBean.cep
-        jtxtEnderecoDestinatario!!.text = "" + destinatarioBean.endereco
-        jtxtNumeroDestinatario!!.text = "" + destinatarioBean.numeroEndereco
-        jtxtComplementoDestinatario!!.text = "" + destinatarioBean.complemento
-        jtxtBairroDestinatario!!.text = "" + destinatarioBean.bairro
-        jtxtCidadeDestinatario!!.text = "" + destinatarioBean.cidade
+        jtxtApelidoDestinatario.text = "" + destinatarioBean.apelido
+        jtxtTituloDestinatario.text = "" + destinatarioBean.titulo
+        jtxtNomeDestinatario.text = "" + destinatarioBean.nome
+        jtxtCepDestinatario.text = "" + destinatarioBean.cep
+        jtxtEnderecoDestinatario.text = "" + destinatarioBean.endereco
+        jtxtNumeroDestinatario.text = "" + destinatarioBean.numeroEndereco
+        jtxtComplementoDestinatario.text = "" + destinatarioBean.complemento
+        jtxtBairroDestinatario.text = "" + destinatarioBean.bairro
+        jtxtCidadeDestinatario.text = "" + destinatarioBean.cidade
         val uf = destinatarioBean.uf
         for (i in arrayUF.indices) {
-            if (uf == arrayUF[i]) jcmbUfDestinatario!!.selectedIndex = i
+            if (uf == arrayUF[i]) jcmbUfDestinatario.selectedIndex = i
         }
-        jtxtEmailDestinatario!!.text = "" + destinatarioBean.email
-        jtxtTelefoneDestinatario!!.text = "" + destinatarioBean.telefone
-        jtxtFaxDestinatario!!.text = "" + destinatarioBean.fax
-        jtxtCepCaixaPostalDestinatario!!.text = "" + destinatarioBean.cepCaixaPostal
-        jtxtCaixaPostalDestinatario!!.text = "" + destinatarioBean.caixaPostal
+        jtxtEmailDestinatario.text = "" + destinatarioBean.email
+        jtxtTelefoneDestinatario.text = "" + destinatarioBean.telefone
+        jtxtFaxDestinatario.text = "" + destinatarioBean.fax
+        jtxtCepCaixaPostalDestinatario.text = "" + destinatarioBean.cepCaixaPostal
+        jtxtCaixaPostalDestinatario.text = "" + destinatarioBean.caixaPostal
     }
 
     private fun configuracoesAdicionais() {
@@ -119,30 +117,30 @@ class TelaEditarDestinatario : JDialog {
             )
             logger.error(ex.message, ex as Throwable)
         }
-        if (configuracaoBean!!.banco == "DNEC" && configuracaoBean.chave.trim { it <= ' ' } == "") {
-            jbtnCapturaEndereco!!.isEnabled = false
-            jbtnCapturaEndereco!!.toolTipText =
+        if (configuracaoBean!!.banco == "DNEC" && configuracaoBean.chave.isBlank()) {
+            jbtnCapturaEndereco.isEnabled = false
+            jbtnCapturaEndereco.toolTipText =
                 "Para habilitar esse botão é necessário informar a \n chave de registro no menu Ajuda - Sobre."
         }
-        jbtnNaoSeiCep!!.isVisible = configuracaoBean.banco == "DNEC"
+        jbtnNaoSeiCep.isVisible = configuracaoBean.banco == "DNEC"
     }
 
     private fun limparCampos() {
-        jtxtApelidoDestinatario!!.text = ""
-        jtxtTituloDestinatario!!.text = ""
-        jtxtNomeDestinatario!!.text = ""
-        jtxtCepDestinatario!!.text = ""
-        jtxtEnderecoDestinatario!!.text = ""
-        jtxtNumeroDestinatario!!.text = ""
-        jtxtComplementoDestinatario!!.text = ""
-        jtxtBairroDestinatario!!.text = ""
-        jtxtCidadeDestinatario!!.text = ""
-        jcmbUfDestinatario!!.selectedIndex = 0
-        jtxtEmailDestinatario!!.text = ""
-        jtxtTelefoneDestinatario!!.text = ""
-        jtxtFaxDestinatario!!.text = ""
-        jtxtCepCaixaPostalDestinatario!!.text = ""
-        jtxtCaixaPostalDestinatario!!.text = ""
+        jtxtApelidoDestinatario.text = ""
+        jtxtTituloDestinatario.text = ""
+        jtxtNomeDestinatario.text = ""
+        jtxtCepDestinatario.text = ""
+        jtxtEnderecoDestinatario.text = ""
+        jtxtNumeroDestinatario.text = ""
+        jtxtComplementoDestinatario.text = ""
+        jtxtBairroDestinatario.text = ""
+        jtxtCidadeDestinatario.text = ""
+        jcmbUfDestinatario.selectedIndex = 0
+        jtxtEmailDestinatario.text = ""
+        jtxtTelefoneDestinatario.text = ""
+        jtxtFaxDestinatario.text = ""
+        jtxtCepCaixaPostalDestinatario.text = ""
+        jtxtCaixaPostalDestinatario.text = ""
     }
 
     private fun initFormatters(jft: JFormattedTextField?) {
@@ -158,58 +156,58 @@ class TelaEditarDestinatario : JDialog {
 
     private fun gravaDestinatario() {
         var dadosValidos = false
-        if (jtxtNomeDestinatario!!.text.trim { it <= ' ' } == "") {
+        if (jtxtNomeDestinatario.text.isBlank()) {
             JOptionPane.showMessageDialog(
                 this,
                 "O campo Empresa/Nome (linha 1) deve ser preenchido!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jtxtNomeDestinatario!!.requestFocus()
-        } else if (jtxtCepDestinatario!!.text.trim { it <= ' ' } == "") {
+            jtxtNomeDestinatario.requestFocus()
+        } else if (jtxtCepDestinatario.text.isBlank()) {
             JOptionPane.showMessageDialog(
                 this,
                 "O campo CEP deve ser preenchido!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jtxtCepDestinatario!!.requestFocus()
-        } else if (jtxtEnderecoDestinatario!!.text.trim { it <= ' ' } == "") {
+            jtxtCepDestinatario.requestFocus()
+        } else if (jtxtEnderecoDestinatario.text.isBlank()) {
             JOptionPane.showMessageDialog(
                 this,
                 "O campo endereço deve ser preenchido!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jtxtEnderecoDestinatario!!.requestFocus()
-        } else if (jtxtNumeroDestinatario!!.text.trim { it <= ' ' } == "") {
+            jtxtEnderecoDestinatario.requestFocus()
+        } else if (jtxtNumeroDestinatario.text.isBlank()) {
             JOptionPane.showMessageDialog(
                 this,
                 "O campo Numero/Lote deve ser preenchido!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jtxtNumeroDestinatario!!.requestFocus()
-        } else if (jtxtCidadeDestinatario!!.text.trim { it <= ' ' } == "") {
+            jtxtNumeroDestinatario.requestFocus()
+        } else if (jtxtCidadeDestinatario.text.isBlank()) {
             JOptionPane.showMessageDialog(
                 this,
                 "O campo Cidade deve ser preenchido!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jtxtCidadeDestinatario!!.requestFocus()
-        } else if (jcmbUfDestinatario!!.selectedItem == "") {
+            jtxtCidadeDestinatario.requestFocus()
+        } else if (jcmbUfDestinatario.selectedItem == "") {
             JOptionPane.showMessageDialog(
                 this,
                 "O campo UF deve ser informado!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jcmbUfDestinatario!!.requestFocus()
-        } else if (jtxtEmailDestinatario!!.text.trim { it <= ' ' } != "" && !Geral.validaEmail(jtxtEmailDestinatario!!.text.trim { it <= ' ' })) {
+            jcmbUfDestinatario.requestFocus()
+        } else if (jtxtEmailDestinatario.text.isBlank() && !Geral.validaEmail(jtxtEmailDestinatario.text.trim())) {
             JOptionPane.showMessageDialog(this, "E-mail inválido!", "Endereçador", JOptionPane.WARNING_MESSAGE)
-            jtxtEmailDestinatario!!.requestFocus()
-        } else if (jtxtCepDestinatario!!.text.trim { it <= ' ' }.replace("[-_]".toRegex(), "").length == 8) {
+            jtxtEmailDestinatario.requestFocus()
+        } else if (jtxtCepDestinatario.text.trim().replace("[-_]".toRegex(), "").length == 8) {
             dadosValidos = true
         } else {
             JOptionPane.showMessageDialog(
@@ -218,33 +216,32 @@ class TelaEditarDestinatario : JDialog {
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
-            jtxtCepDestinatario!!.requestFocus()
+            jtxtCepDestinatario.requestFocus()
         }
         if (dadosValidos) {
             try {
                 val destinatarioBean = DestinatarioBean()
-                destinatarioBean.apelido = jtxtApelidoDestinatario!!.text
+                destinatarioBean.apelido = jtxtApelidoDestinatario.text
                 destinatarioBean.titulo = ""
-                destinatarioBean.titulo = jtxtTituloDestinatario!!.text
-                destinatarioBean.nome = jtxtNomeDestinatario!!.text
-                destinatarioBean.cep = jtxtCepDestinatario!!.text.replace("[-_]".toRegex(), "")
-                destinatarioBean.endereco = jtxtEnderecoDestinatario!!.text
-                destinatarioBean.numeroEndereco = jtxtNumeroDestinatario!!.text
-                destinatarioBean.complemento = jtxtComplementoDestinatario!!.text
-                destinatarioBean.bairro = jtxtBairroDestinatario!!.text
-                destinatarioBean.cidade = jtxtCidadeDestinatario!!.text
-                destinatarioBean.uf = (jcmbUfDestinatario!!.selectedItem as String)
-                destinatarioBean.email = jtxtEmailDestinatario!!.text
-                destinatarioBean.telefone = jtxtTelefoneDestinatario!!.text
-                destinatarioBean.fax = jtxtFaxDestinatario!!.text
-                destinatarioBean.cepCaixaPostal = jtxtCepCaixaPostalDestinatario!!.text
-                destinatarioBean.caixaPostal = jtxtCaixaPostalDestinatario!!.text
-                val destinatarioDao = DestinatarioDao.instance
+                destinatarioBean.titulo = jtxtTituloDestinatario.text
+                destinatarioBean.nome = jtxtNomeDestinatario.text
+                destinatarioBean.cep = jtxtCepDestinatario.text.replace("[-_]".toRegex(), "")
+                destinatarioBean.endereco = jtxtEnderecoDestinatario.text
+                destinatarioBean.numeroEndereco = jtxtNumeroDestinatario.text
+                destinatarioBean.complemento = jtxtComplementoDestinatario.text
+                destinatarioBean.bairro = jtxtBairroDestinatario.text
+                destinatarioBean.cidade = jtxtCidadeDestinatario.text
+                destinatarioBean.uf = (jcmbUfDestinatario.selectedItem as String)
+                destinatarioBean.email = jtxtEmailDestinatario.text
+                destinatarioBean.telefone = jtxtTelefoneDestinatario.text
+                destinatarioBean.fax = jtxtFaxDestinatario.text
+                destinatarioBean.cepCaixaPostal = jtxtCepCaixaPostalDestinatario.text
+                destinatarioBean.caixaPostal = jtxtCaixaPostalDestinatario.text
                 if (blnIncluir) {
-                    destinatarioDao!!.incluirDestinatario(destinatarioBean)
+                    destinatarioDao.incluirDestinatario(destinatarioBean)
                 } else {
                     destinatarioBean.numeroDestinatario = numeroDestinatario
-                    destinatarioDao!!.alterarDestinatario(destinatarioBean)
+                    destinatarioDao.alterarDestinatario(destinatarioBean)
                 }
                 JOptionPane.showMessageDialog(
                     this,
@@ -286,36 +283,19 @@ class TelaEditarDestinatario : JDialog {
         val jLabel10 = JLabel()
         val jLabel11 = JLabel()
         val jLabel12 = JLabel()
-        jtxtNomeDestinatario = JTextField()
-        jtxtNomeDestinatario!!.document = DocumentoPersonalizado(42, 5)
-        jtxtApelidoDestinatario = JTextField()
-        jtxtApelidoDestinatario!!.document = DocumentoPersonalizado(42, 5)
-        jbtnCapturaEndereco = JButton()
-        jbtnNaoSeiCep = JButton()
-        jtxtEnderecoDestinatario = JTextField()
-        jtxtEnderecoDestinatario!!.document = DocumentoPersonalizado(33, 5)
-        jtxtNumeroDestinatario = JTextField()
-        jtxtNumeroDestinatario!!.document = DocumentoPersonalizado(8, 5)
-        jtxtComplementoDestinatario = JTextField()
-        jtxtComplementoDestinatario!!.document = DocumentoPersonalizado(35, 5)
-        jtxtBairroDestinatario = JTextField()
-        jtxtBairroDestinatario!!.document = DocumentoPersonalizado(42, 5)
-        jtxtCidadeDestinatario = JTextField()
-        jtxtCidadeDestinatario!!.document = DocumentoPersonalizado(30, 5)
+        jtxtNomeDestinatario.document = DocumentoPersonalizado(42, 5)
+        jtxtApelidoDestinatario.document = DocumentoPersonalizado(42, 5)
+        jtxtEnderecoDestinatario.document = DocumentoPersonalizado(33, 5)
+        jtxtNumeroDestinatario.document = DocumentoPersonalizado(8, 5)
+        jtxtComplementoDestinatario.document = DocumentoPersonalizado(35, 5)
+        jtxtBairroDestinatario.document = DocumentoPersonalizado(42, 5)
+        jtxtCidadeDestinatario.document = DocumentoPersonalizado(30, 5)
         val jLabel13 = JLabel()
-        jcmbUfDestinatario = JComboBox(arrayUF)
-        jtxtEmailDestinatario = JTextField()
-        jtxtTelefoneDestinatario = JTextField()
-        jtxtTelefoneDestinatario!!.document = DocumentoPersonalizado(15, 5)
+        jtxtTelefoneDestinatario.document = DocumentoPersonalizado(15, 5)
         val jLabel14 = JLabel()
-        jtxtFaxDestinatario = JTextField()
         val jLabel15 = JLabel()
-        jtxtCaixaPostalDestinatario = JTextField()
         val jLabel16 = JLabel()
-        jtxtTituloDestinatario = JTextField()
-        jtxtApelidoDestinatario!!.document = DocumentoPersonalizado(42, 5)
-        jtxtCepDestinatario = JFormattedTextField()
-        jtxtCepCaixaPostalDestinatario = JFormattedTextField()
+        jtxtApelidoDestinatario.document = DocumentoPersonalizado(42, 5)
         val jLabel1 = JLabel()
         defaultCloseOperation = 2
         title = "Selecionar destinatário"
@@ -335,7 +315,7 @@ class TelaEditarDestinatario : JDialog {
         jbtnLimpar.horizontalTextPosition = 0
         jbtnLimpar.maximumSize = Dimension(90, 60)
         jbtnLimpar.verticalTextPosition = 3
-        jbtnLimpar.addActionListener { jbtnLimparActionPerformed() }
+        jbtnLimpar.addActionListener { limparCampos() }
         jToolBar1.add(jbtnLimpar)
         jbtnVoltar.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnVoltar.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
@@ -343,7 +323,7 @@ class TelaEditarDestinatario : JDialog {
         jbtnVoltar.horizontalTextPosition = 0
         jbtnVoltar.maximumSize = Dimension(90, 60)
         jbtnVoltar.verticalTextPosition = 3
-        jbtnVoltar.addActionListener { jbtnVoltarActionPerformed() }
+        jbtnVoltar.addActionListener { isVisible = false }
         jToolBar1.add(jbtnVoltar)
         contentPane.add(jToolBar1, "North")
         jPanel1.border = BorderFactory.createEtchedBorder()
@@ -369,17 +349,15 @@ class TelaEditarDestinatario : JDialog {
         jLabel11.text = "Telefone:"
         jLabel12.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel12.text = "CEP Caixa Postal:"
-        jbtnCapturaEndereco!!.font = Font(SANS_SERIF, PLAIN, 9)
-        jbtnCapturaEndereco!!.text = "Captura Endereço"
-        jbtnCapturaEndereco!!.addActionListener { jbtnCapturaEnderecoActionPerformed() }
-        jbtnNaoSeiCep!!.font = Font(SANS_SERIF, PLAIN, 9)
-        jbtnNaoSeiCep!!.foreground = Color(0, 0, 153)
-        jbtnNaoSeiCep!!.text = "Não sei o CEP"
-        jbtnNaoSeiCep!!.addActionListener { jbtnNaoSeiCepActionPerformed() }
-        jtxtEnderecoDestinatario!!.addActionListener { jtxtEnderecoDestinatarioActionPerformed() }
+        jbtnCapturaEndereco.font = Font(SANS_SERIF, PLAIN, 9)
+        jbtnCapturaEndereco.text = "Captura Endereço"
+        jbtnCapturaEndereco.addActionListener { jbtnCapturaEnderecoActionPerformed() }
+        jbtnNaoSeiCep.font = Font(SANS_SERIF, PLAIN, 9)
+        jbtnNaoSeiCep.foreground = Color(0, 0, 153)
+        jbtnNaoSeiCep.text = "Não sei o CEP"
+        jbtnNaoSeiCep.addActionListener { jbtnNaoSeiCepActionPerformed() }
         jLabel13.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel13.text = "* UF:"
-        jcmbUfDestinatario!!.addActionListener { jcmbUfDestinatarioActionPerformed() }
         jLabel14.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel14.text = "Fax:"
         jLabel15.font = Font(SANS_SERIF, PLAIN, 10)
@@ -611,24 +589,15 @@ class TelaEditarDestinatario : JDialog {
     }
 
     private fun jbtnCapturaEnderecoActionPerformed() {
-        var blnProxy = false
         val configuracaoBean = ConfiguracaoBean.instance
-        if (jtxtCepDestinatario!!.text.trim { it <= ' ' } == "") {
+        if (jtxtCepDestinatario.text.isBlank()) {
             JOptionPane.showMessageDialog(this, "O campo CEP deve ser preenchido!", "Endereçador", 2)
-            jtxtCepDestinatario!!.requestFocus()
+            jtxtCepDestinatario.requestFocus()
             return
         }
         try {
             configuracaoBean!!.carregaVariaveis()
-            if (configuracaoBean.banco.equals(
-                    "DNEC",
-                    ignoreCase = true
-                )
-            ) if (configuracaoBean.proxy != "" || configuracaoBean.porta != "") {
-                blnProxy = true
-                val usuarioBean = UsuarioBean.instance
-                if (usuarioBean!!.usuario == "" || usuarioBean.pwd == "");
-            }
+            /*
             val enderecoDao = configuracaoBean.cepStrategy!!.factory!!.endereco
             val enderecoBean = enderecoDao!!.consultar(jtxtCepDestinatario!!.text.trim { it <= ' ' }
                 .replace("[-_]".toRegex(), ""), blnProxy)
@@ -639,6 +608,8 @@ class TelaEditarDestinatario : JDialog {
             for (i in arrayUF.indices) {
                 if (uf == arrayUF[i]) jcmbUfDestinatario!!.selectedIndex = i
             }
+
+             */
         } catch (ex: ConfiguracaoProxyException) {
             logger.error(ex.message, ex as Throwable)
             JOptionPane.showMessageDialog(
@@ -649,9 +620,12 @@ class TelaEditarDestinatario : JDialog {
             )
         } catch (e: ConnectionException) {
             JOptionPane.showMessageDialog(this, e.message, "Endereçador", 2)
+        /*
         } catch (e: CepInvalidoException) {
             JOptionPane.showMessageDialog(this, "CEP inválido!", "Endereçador", 2)
             jtxtCepDestinatario!!.requestFocus()
+
+         */
         } catch (ex: DaoException) {
             logger.error(ex.message, ex as Throwable)
             JOptionPane.showMessageDialog(
@@ -675,7 +649,7 @@ class TelaEditarDestinatario : JDialog {
             val versaoAplicacao = configuracaoBean.versao.uppercase(Locale.getDefault()).replace("[.]".toRegex(), "")
                 .replace("BETA".toRegex(), "").trim { it <= ' ' }
                 .toInt()
-            if (novaVersao > versaoAplicacao) if (GlobalBean.instance!!.mostraMensagem == "SIM") {
+            if (novaVersao > versaoAplicacao) if (GlobalBean.mostraMensagem == "SIM") {
                 val telaMensagem = TelaMensagem()
                 telaMensagem.isVisible = true
             }
@@ -694,17 +668,6 @@ class TelaEditarDestinatario : JDialog {
             )
         }
     }
-
-    private fun jbtnVoltarActionPerformed() {
-        isVisible = false
-    }
-
-    private fun jbtnLimparActionPerformed() {
-        limparCampos()
-    }
-
-    private fun jcmbUfDestinatarioActionPerformed() {}
-    private fun jtxtEnderecoDestinatarioActionPerformed() {}
 
     companion object {
         private val logger = Logger.getLogger(TelaEditarDestinatario::class.java)

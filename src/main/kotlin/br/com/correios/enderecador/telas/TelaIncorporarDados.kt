@@ -39,7 +39,11 @@ import java.awt.Font
 import java.util.*
 
 @Singleton
-class TelaIncorporarDados : JFrame() {
+class TelaIncorporarDados(
+    private val grupoDao: GrupoDao,
+    private val destinatarioDao: DestinatarioDao,
+    private val grupoDestinatarioDao: GrupoDestinatarioDao
+) : JFrame() {
     private val observable = EnderecadorObservable.instance
     private var vecDestinatario: Vector<DestinatarioBean?>? = null
     private var destinatarioBean: DestinatarioBean? = null
@@ -344,7 +348,7 @@ class TelaIncorporarDados : JFrame() {
 
     fun carregaGrupo() {
         try {
-            val arrayGrupo = GrupoDao.instance!!.recuperaGrupo("")
+            val arrayGrupo = grupoDao.recuperaGrupo("")
             val vecGrupo = Vector<String?>()
             vecGrupo.add("(Selecione um grupo)")
             for (grupoBean in arrayGrupo) vecGrupo.add(grupoBean.descricaoGrupo)
@@ -371,15 +375,15 @@ class TelaIncorporarDados : JFrame() {
         } else if (vecDestinatario!!.size != 0) {
             try {
                 for (bean in vecDestinatario!!) {
-                    val destinatarioDao = DestinatarioDao.instance
-                    destinatarioDao!!.incluirDestinatario(bean!!)
+                    destinatarioDao.incluirDestinatario(bean!!)
                     observable?.notifyObservers(bean)
                     if (jcmbGrupo!!.selectedIndex != 0) {
                         val grupoBean = jcmbGrupo!!.selectedItem as GrupoBean
-                        val grupoDestinatarioBean = GrupoDestinatarioBean.instance
-                        grupoDestinatarioBean!!.numeroDestinatario = bean.numeroDestinatario
-                        grupoDestinatarioBean.numeroGrupo = grupoBean.numeroGrupo
-                        GrupoDestinatarioDao.instance!!.incluirGrupoDestinatario(grupoDestinatarioBean)
+                        grupoDestinatarioDao.incluirGrupoDestinatario(
+                            GrupoDestinatarioBean(
+                                numeroGrupo = grupoBean.numeroGrupo!!,
+                                numeroDestinatario = bean.numeroDestinatario,
+                        ))
                     }
                 }
                 JOptionPane.showMessageDialog(

@@ -1,6 +1,5 @@
 package br.com.correios.enderecador.telas
 
-
 import javax.swing.JDialog
 import br.com.correios.enderecador.bean.DestinatarioBean
 import javax.swing.JTable
@@ -22,6 +21,8 @@ import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.awt.Dimension
 import java.awt.Font
 import java.awt.Frame
@@ -29,19 +30,20 @@ import java.awt.Toolkit
 import java.lang.Exception
 import java.util.*
 
-class TelaEditarGrupo : JDialog {
+class TelaEditarGrupo : KoinComponent, JDialog {
+    private val grupoDao: GrupoDao = get()
+    private val destinatarioDao: DestinatarioDao = get()
+    private val grupoDestinatarioDao: GrupoDestinatarioDao = get()
+
     private var blnIncluir: Boolean
-    private var nuGrupo: String?
-    private var vecDestinatario: Vector<DestinatarioBean?>
-    private var vecDestinatarioGrupo: Vector<DestinatarioBean?>
-    private var jTDestinatario: JTable? = null
-    private var jTDestinatarioGrupo: JTable? = null
-    private var jtxtGrupo: JTextField? = null
+    private var nuGrupo: String = ""
+    private var vecDestinatario: Vector<DestinatarioBean?> = Vector()
+    private var vecDestinatarioGrupo: Vector<DestinatarioBean?> = Vector()
+    private val jTDestinatario = JTable()
+    private val jTDestinatarioGrupo =  JTable()
+    private val jtxtGrupo = JTextField()
 
     constructor(parent: Frame?, modal: Boolean) : super(parent, modal) {
-        nuGrupo = ""
-        vecDestinatario = Vector()
-        vecDestinatarioGrupo = Vector()
         initComponents()
         blnIncluir = true
         configuracoesAdicionais()
@@ -49,14 +51,11 @@ class TelaEditarGrupo : JDialog {
     }
 
     constructor(parent: Frame?, modal: Boolean, grupo: GrupoBean) : super(parent, modal) {
-        nuGrupo = ""
-        vecDestinatario = Vector()
-        vecDestinatarioGrupo = Vector()
         initComponents()
         blnIncluir = false
         configuracoesAdicionais()
         carregaListaDestinatario(grupo.numeroGrupo)
-        jtxtGrupo!!.text = grupo.descricaoGrupo
+        jtxtGrupo.text = grupo.descricaoGrupo
         nuGrupo = grupo.numeroGrupo
     }
 
@@ -66,8 +65,8 @@ class TelaEditarGrupo : JDialog {
         if (dialogSize.height > screenSize.height) dialogSize.height = screenSize.height
         if (dialogSize.width > screenSize.width) dialogSize.width = screenSize.width
         setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2)
-        jTDestinatario!!.model = DestinatarioTableModel()
-        jTDestinatarioGrupo!!.model = DestinatarioTableModel()
+        jTDestinatario.model = DestinatarioTableModel()
+        jTDestinatarioGrupo.model = DestinatarioTableModel()
     }
 
     private fun carregaListaDestinatario(grupo: String?) {
@@ -76,25 +75,25 @@ class TelaEditarGrupo : JDialog {
             val arrayDestinatarioGrupo: ArrayList<DestinatarioBean>
             val arrayDestinatario: ArrayList<DestinatarioBean>
             if (grupo == "") {
-                arrayDestinatario = DestinatarioDao.instance!!.recuperaDestinatario("")
+                arrayDestinatario = destinatarioDao.recuperaDestinatario("")
                 arrayDestinatarioGrupo = ArrayList()
             } else {
-                arrayDestinatario = DestinatarioDao.instance!!.recuperarDestinatarioForaDoGrupo(grupo!!)
-                arrayDestinatarioGrupo = DestinatarioDao.instance!!.recuperaDestinatarioPorGrupo(grupo)
+                arrayDestinatario = destinatarioDao.recuperarDestinatarioForaDoGrupo(grupo!!)
+                arrayDestinatarioGrupo = destinatarioDao.recuperaDestinatarioPorGrupo(grupo)
             }
             var i = 0
             while (i < arrayDestinatario.size) {
                 vecDestinatario.add(arrayDestinatario[i])
                 i++
             }
-            model = jTDestinatario!!.model as DestinatarioTableModel
+            model = jTDestinatario.model as DestinatarioTableModel
             model.setDestinatario(arrayDestinatario)
             i = 0
             while (i < arrayDestinatarioGrupo.size) {
                 vecDestinatarioGrupo.add(arrayDestinatarioGrupo[i])
                 i++
             }
-            model = jTDestinatarioGrupo!!.model as DestinatarioTableModel
+            model = jTDestinatarioGrupo.model as DestinatarioTableModel
             model.setDestinatario(arrayDestinatarioGrupo)
         } catch (e: DaoException) {
             logger.error(e.message, e as Throwable)
@@ -108,11 +107,8 @@ class TelaEditarGrupo : JDialog {
         val jbtVoltar = JButton()
         val jPanel1 = JPanel()
         val jLabel1 = JLabel()
-        jtxtGrupo = JTextField()
         val jScrollPane1 = JScrollPane()
-        jTDestinatario = JTable()
         val jScrollPane2 = JScrollPane()
-        jTDestinatarioGrupo = JTable()
         val jbtAdicionar = JButton()
         val jbtRemover = JButton()
         defaultCloseOperation = 2
@@ -137,7 +133,7 @@ class TelaEditarGrupo : JDialog {
         jPanel1.border = BorderFactory.createEtchedBorder()
         jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
         jLabel1.text = "Grupo:"
-        jTDestinatario!!.model = DefaultTableModel(
+        jTDestinatario.model = DefaultTableModel(
             arrayOf(
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null),
@@ -145,9 +141,9 @@ class TelaEditarGrupo : JDialog {
                 arrayOf(null, null, null, null)
             ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
         )
-        jTDestinatario!!.autoResizeMode = 0
+        jTDestinatario.autoResizeMode = 0
         jScrollPane1.setViewportView(jTDestinatario)
-        jTDestinatarioGrupo!!.model = DefaultTableModel(
+        jTDestinatarioGrupo.model = DefaultTableModel(
             arrayOf(
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null),
@@ -155,7 +151,7 @@ class TelaEditarGrupo : JDialog {
                 arrayOf(null, null, null, null)
             ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
         )
-        jTDestinatarioGrupo!!.autoResizeMode = 0
+        jTDestinatarioGrupo.autoResizeMode = 0
         jScrollPane2.setViewportView(jTDestinatarioGrupo)
         jbtAdicionar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtAdicionar.icon = ImageIcon(javaClass.getResource("/imagens/add.gif"))
@@ -242,13 +238,13 @@ class TelaEditarGrupo : JDialog {
         var arraySort = ArrayList<DestinatarioBean?>()
         var destinatarioBean: DestinatarioBean? = DestinatarioBean()
         try {
-            if (jTDestinatarioGrupo!!.selectedRowCount > 0) {
-                model = jTDestinatarioGrupo!!.model as DestinatarioTableModel
+            if (jTDestinatarioGrupo.selectedRowCount > 0) {
+                model = jTDestinatarioGrupo.model as DestinatarioTableModel
                 var i: Int
                 i = 0
-                while (i < jTDestinatarioGrupo!!.rowCount) {
+                while (i < jTDestinatarioGrupo.rowCount) {
                     destinatarioBean = model.getDestinatario(i)
-                    if (!jTDestinatarioGrupo!!.isRowSelected(i)) {
+                    if (!jTDestinatarioGrupo.isRowSelected(i)) {
                         vecTemp.add(destinatarioBean)
                     } else {
                         vecDestinatario.add(destinatarioBean)
@@ -263,7 +259,7 @@ class TelaEditarGrupo : JDialog {
                     i++
                 }
                 arraySort.sortWith(destinatarioBean!!)
-                model = jTDestinatarioGrupo!!.model as DestinatarioTableModel
+                model = jTDestinatarioGrupo.model as DestinatarioTableModel
                 model.setDestinatario(arraySort)
                 vecDestinatarioGrupo.removeAllElements()
                 i = 0
@@ -278,7 +274,7 @@ class TelaEditarGrupo : JDialog {
                     i++
                 }
                 arraySort.sortWith(destinatarioBean)
-                model = jTDestinatario!!.model as DestinatarioTableModel
+                model = jTDestinatario.model as DestinatarioTableModel
                 model.setDestinatario(arraySort)
                 vecDestinatario.removeAllElements()
                 i = 0
@@ -297,13 +293,13 @@ class TelaEditarGrupo : JDialog {
         val vecTemp = Vector<DestinatarioBean?>()
         var arraySort = ArrayList<DestinatarioBean?>()
         var destinatarioBean: DestinatarioBean? = DestinatarioBean()
-        if (jTDestinatario!!.selectedRowCount > 0) {
-            model = jTDestinatario!!.model as DestinatarioTableModel
+        if (jTDestinatario.selectedRowCount > 0) {
+            model = jTDestinatario.model as DestinatarioTableModel
             var i: Int
             i = 0
-            while (i < jTDestinatario!!.rowCount) {
+            while (i < jTDestinatario.rowCount) {
                 destinatarioBean = model.getDestinatario(i)
-                if (!jTDestinatario!!.isRowSelected(i)) {
+                if (!jTDestinatario.isRowSelected(i)) {
                     vecTemp.add(destinatarioBean)
                 } else {
                     vecDestinatarioGrupo.add(destinatarioBean)
@@ -318,7 +314,7 @@ class TelaEditarGrupo : JDialog {
                 i++
             }
             Collections.sort(arraySort, destinatarioBean)
-            model = jTDestinatario!!.model as DestinatarioTableModel
+            model = jTDestinatario.model as DestinatarioTableModel
             model.setDestinatario(arraySort)
             vecDestinatario.removeAllElements()
             i = 0
@@ -333,7 +329,7 @@ class TelaEditarGrupo : JDialog {
                 i++
             }
             Collections.sort(arraySort, destinatarioBean)
-            model = jTDestinatarioGrupo!!.model as DestinatarioTableModel
+            model = jTDestinatarioGrupo.model as DestinatarioTableModel
             model.setDestinatario(arraySort)
             vecDestinatarioGrupo.removeAllElements()
             i = 0
@@ -349,40 +345,39 @@ class TelaEditarGrupo : JDialog {
     }
 
     private fun jbtConfirmarActionPerformed() {
-        val grupoBean: GrupoBean?
-        val grupoDestinatarioBean: GrupoDestinatarioBean?
         var destinatarioBean: DestinatarioBean?
-        if (jtxtGrupo!!.text.trim { it <= ' ' } == "") {
+        if (jtxtGrupo.text.isEmpty()) {
             JOptionPane.showMessageDialog(this, "O campo grupo deve ser preenchido!", "Endereçador", 2)
-            jtxtGrupo!!.requestFocus()
+            jtxtGrupo.requestFocus()
         } else {
             try {
                 if (blnIncluir) {
-                    grupoBean = GrupoBean.instance
-                    grupoBean!!.descricaoGrupo = jtxtGrupo!!.text
-                    GrupoDao.instance!!.incluirGrupo(grupoBean)
-                    nuGrupo = GrupoDao.instance!!.recuperaUltimoGrupo()
-                    grupoDestinatarioBean = GrupoDestinatarioBean.instance
+                    grupoDao.incluirGrupo(GrupoBean(
+                            numeroGrupo = nuGrupo,
+                            descricaoGrupo = jtxtGrupo.text
+                    ))
+                    nuGrupo = grupoDao.recuperaUltimoGrupo()
                     for (bean in vecDestinatarioGrupo) {
-                        grupoDestinatarioBean!!.numeroGrupo = nuGrupo
                         destinatarioBean = bean
-                        grupoDestinatarioBean.numeroDestinatario = destinatarioBean!!.numeroDestinatario
-                        GrupoDestinatarioDao.instance!!.incluirGrupoDestinatario(grupoDestinatarioBean)
+                        grupoDestinatarioDao.incluirGrupoDestinatario(GrupoDestinatarioBean(
+                            numeroGrupo = nuGrupo,
+                            numeroDestinatario = destinatarioBean!!.numeroDestinatario
+                        ))
                     }
                     JOptionPane.showMessageDialog(null, "Dados gravados com sucesso!", "Endereçador", 1)
                     blnIncluir = false
                 } else {
-                    grupoBean = GrupoBean.instance
-                    grupoBean!!.numeroGrupo = nuGrupo
-                    grupoBean.descricaoGrupo = jtxtGrupo!!.text
-                    GrupoDao.instance!!.alterarGrupo(grupoBean)
-                    grupoDestinatarioBean = GrupoDestinatarioBean.instance
-                    GrupoDestinatarioDao.instance!!.excluirGrupoDestinatario(nuGrupo!!)
+                    grupoDao.alterarGrupo(GrupoBean(
+                        numeroGrupo = nuGrupo,
+                        descricaoGrupo = jtxtGrupo.text
+                    ))
+                    grupoDestinatarioDao.excluirGrupoDestinatario(nuGrupo)
                     for (bean in vecDestinatarioGrupo) {
-                        grupoDestinatarioBean!!.numeroGrupo = nuGrupo
                         destinatarioBean = bean
-                        grupoDestinatarioBean.numeroDestinatario = destinatarioBean!!.numeroDestinatario
-                        GrupoDestinatarioDao.instance!!.incluirGrupoDestinatario(grupoDestinatarioBean)
+                        grupoDestinatarioDao.incluirGrupoDestinatario(GrupoDestinatarioBean(
+                            numeroGrupo = nuGrupo,
+                            numeroDestinatario = destinatarioBean!!.numeroDestinatario
+                        ))
                     }
                     JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso!", "Endereçador", 1)
                 }
