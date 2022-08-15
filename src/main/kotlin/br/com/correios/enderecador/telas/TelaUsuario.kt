@@ -38,14 +38,14 @@ class TelaUsuario(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
         jPanel1.border = BorderFactory.createEtchedBorder()
         jLabel1.font = Font("MS Sans Serif", 0, 10)
         jLabel1.text = "Usuário:"
-        jtxtUsuario!!.addActionListener { evt -> jtxtUsuarioActionPerformed(evt) }
+        jtxtUsuario!!.addActionListener { jtxtUsuarioActionPerformed() }
         jLabel2.font = Font("MS Sans Serif", 0, 10)
         jLabel2.text = "Senha:"
         jPanel2.border = BorderFactory.createEtchedBorder()
         jPanel2.layout = AbsoluteLayout()
         jButton1.icon = ImageIcon(javaClass.getResource("/imagens/OK.gif"))
         jButton1.preferredSize = Dimension(70, 40)
-        jButton1.addActionListener { evt -> jButton1ActionPerformed(evt) }
+        jButton1.addActionListener { jButton1ActionPerformed() }
         jPanel2.add(jButton1, AbsoluteConstraints(300, 10, -1, 30))
         val jPanel1Layout = GroupLayout(jPanel1)
         jPanel1.layout = jPanel1Layout
@@ -88,12 +88,12 @@ class TelaUsuario(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
         setLocationRelativeTo(null)
     }
 
-    private fun jButton1ActionPerformed(evt: ActionEvent) {
+    private fun jButton1ActionPerformed() {
         val usuarioBean = instance
         usuarioBean!!.usuario = jtxtUsuario!!.text
         usuarioBean.pwd = String(jtxtSenha!!.password)
         isVisible = false
     }
 
-    private fun jtxtUsuarioActionPerformed(evt: ActionEvent) {}
+    private fun jtxtUsuarioActionPerformed() {}
 }

@@ -80,7 +80,7 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
         jbtConfirmar.horizontalTextPosition = 0
         jbtConfirmar.maximumSize = Dimension(90, 60)
         jbtConfirmar.verticalTextPosition = 3
-        jbtConfirmar.addActionListener { evt: ActionEvent -> jbtConfirmarActionPerformed(evt) }
+        jbtConfirmar.addActionListener { jbtConfirmarActionPerformed() }
         jToolBar1.add(jbtConfirmar)
         jbtPesquisar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtPesquisar.icon = ImageIcon(javaClass.getResource("/imagens/binoculo.gif"))
@@ -88,7 +88,7 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
         jbtPesquisar.horizontalTextPosition = 0
         jbtPesquisar.maximumSize = Dimension(90, 60)
         jbtPesquisar.verticalTextPosition = 3
-        jbtPesquisar.addActionListener { evt: ActionEvent -> jbtPesquisarActionPerformed(evt) }
+        jbtPesquisar.addActionListener { jbtPesquisarActionPerformed() }
         jToolBar1.add(jbtPesquisar)
         jbtSair.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtSair.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
@@ -97,7 +97,7 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
         jbtSair.maximumSize = Dimension(90, 60)
         jbtSair.preferredSize = Dimension(51, 27)
         jbtSair.verticalTextPosition = 3
-        jbtSair.addActionListener { evt: ActionEvent -> jbtSairActionPerformed(evt) }
+        jbtSair.addActionListener { jbtSairActionPerformed() }
         jToolBar1.add(jbtSair)
         contentPane.add(jToolBar1, "North")
         jPanel1.border = BorderFactory.createEtchedBorder()
@@ -113,12 +113,12 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
         setLocationRelativeTo(null)
     }
 
-    private fun jbtSairActionPerformed(evt: ActionEvent) {
+    private fun jbtSairActionPerformed() {
         isVisible = false
     }
 
-    private fun jbtPesquisarActionPerformed(evt: ActionEvent) {
-        val nomeGrupo = jtxtGrupo!!.text.trim { it <= ' ' }
+    private fun jbtPesquisarActionPerformed() {
+        val nomeGrupo = jtxtGrupo!!.text.trim()
         var index = -1
         if (ultimaConsulta.equals(nomeGrupo, ignoreCase = true)) {
             index = jlstGrupo!!.selectedIndex
@@ -138,14 +138,12 @@ class TelaPesquisarGrupo(parent: Frame?, modal: Boolean, vecDestinatario: Vector
         } else {
             jlstGrupo!!.selectedIndex = index
             val tamanhoJscrool = jScrollPane1!!.verticalScrollBar.maximum
-            var value = 0
-            value = index * tamanhoJscrool / vecDestinatarioGrupo.size
+            val value = index * tamanhoJscrool / vecDestinatarioGrupo.size
             jScrollPane1!!.verticalScrollBar.value = value
         }
     }
 
-    private fun jbtConfirmarActionPerformed(evt: ActionEvent) {
-        val geral: Geral? = null
+    private fun jbtConfirmarActionPerformed() {
         try {
             if (jlstGrupo!!.selectedIndex != -1) {
                 val modelGrupo: ListModel<GrupoBean> = jlstGrupo!!.getModel()

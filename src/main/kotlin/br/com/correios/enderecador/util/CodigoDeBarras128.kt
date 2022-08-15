@@ -221,7 +221,7 @@ class CodigoDeBarras128 {
             tabela = tabelaCode128C
         }
         for (i in tabela?.indices!!) {
-            if (tabela!![i] == caractere) {
+            if (tabela[i] == caractere) {
                 indice = i
                 break
             }

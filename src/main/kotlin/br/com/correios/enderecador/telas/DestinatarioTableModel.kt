@@ -17,9 +17,7 @@ class DestinatarioTableModel : DefaultTableModel() {
     }
 
     override fun getRowCount(): Int {
-        var retorno = 0
-        if (destinatarioBean != null) retorno = destinatarioBean!!.size
-        return retorno
+        return destinatarioBean?.size ?: 0
     }
 
     override fun getValueAt(linha: Int, coluna: Int): String {
@@ -47,7 +45,9 @@ class DestinatarioTableModel : DefaultTableModel() {
 
     fun getDestinatario(linha: Int): DestinatarioBean? {
         var destinatario: DestinatarioBean? = null
-        if (destinatarioBean!![linha] != null) destinatario = destinatarioBean!![linha]
+        if (destinatarioBean!![linha] != null) {
+            destinatario = destinatarioBean!![linha]
+        }
         return destinatario
     }
 

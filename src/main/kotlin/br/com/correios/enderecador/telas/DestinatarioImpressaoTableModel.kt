@@ -43,9 +43,7 @@ class DestinatarioImpressaoTableModel(tipo: String) : DefaultTableModel() {
     }
 
     override fun getRowCount(): Int {
-        var retorno = 0
-        if (destinatarioBean != null) retorno = destinatarioBean!!.size
-        return retorno
+        return destinatarioBean?.size ?: 0
     }
 
     fun getElementAt(row: Int): DestinatarioBean? {
@@ -87,7 +85,7 @@ class DestinatarioImpressaoTableModel(tipo: String) : DefaultTableModel() {
                 }
                 sb = StringBuilder()
                 sb.append("O texto não pode ter mais que ")
-                sb.append(40)
+                sb.append(TAMANHO_CAMPO_ENTREGA_VIZINHO)
                 sb.append(" caracteres")
                 JOptionPane.showMessageDialog(
                     null,

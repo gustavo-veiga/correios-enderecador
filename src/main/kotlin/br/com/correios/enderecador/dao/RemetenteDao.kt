@@ -24,7 +24,7 @@ class RemetenteDao {
 
     @Throws(DaoException::class)
     fun incluirRemetente(remetenteBean: RemetenteBean) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -62,10 +62,10 @@ class RemetenteDao {
     @get:Throws(DaoException::class)
     private val chave: String?
         get() {
-            var chave: String? = null
-            var stmt: PreparedStatement? = null
+            val chave: String?
+            val rs: ResultSet?
             val sql = StringBuilder()
-            var rs: ResultSet? = null
+            val stmt: PreparedStatement?
             sql.append(" CALL IDENTITY() ")
             try {
                 stmt = conexao!!.prepareStatement(sql.toString())
@@ -120,7 +120,7 @@ class RemetenteDao {
 
     @Throws(DaoException::class)
     fun excluirRemetente(remetente: String?) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -137,11 +137,11 @@ class RemetenteDao {
 
     @Throws(DaoException::class)
     fun recuperaRemetente(filtro: String): ArrayList<RemetenteBean> {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val dados = ArrayList<RemetenteBean>()
         val sql = StringBuilder()
-        var remetenteBean: RemetenteBean? = null
+        var remetenteBean: RemetenteBean?
         try {
             sql.append(" SELECT  REM_NU, REM_TX_APELIDO,REM_TX_TITULO,")
             sql.append("         REM_TX_NOME,REM_ED_CEP,REM_ED_ENDERECO,")

@@ -16,7 +16,6 @@ import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 import javax.swing.table.DefaultTableModel
 import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDao
@@ -125,7 +124,7 @@ class TelaEditarGrupo : JDialog {
         jbtConfirmar.horizontalTextPosition = 0
         jbtConfirmar.maximumSize = Dimension(90, 60)
         jbtConfirmar.verticalTextPosition = 3
-        jbtConfirmar.addActionListener { evt: ActionEvent -> jbtConfirmarActionPerformed(evt) }
+        jbtConfirmar.addActionListener { jbtConfirmarActionPerformed() }
         jToolBar1.add(jbtConfirmar)
         jbtVoltar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtVoltar.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
@@ -133,7 +132,7 @@ class TelaEditarGrupo : JDialog {
         jbtVoltar.horizontalTextPosition = 0
         jbtVoltar.maximumSize = Dimension(90, 60)
         jbtVoltar.verticalTextPosition = 3
-        jbtVoltar.addActionListener { evt: ActionEvent -> jbtVoltarActionPerformed(evt) }
+        jbtVoltar.addActionListener { jbtVoltarActionPerformed() }
         jToolBar1.add(jbtVoltar)
         jPanel1.border = BorderFactory.createEtchedBorder()
         jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
@@ -144,7 +143,7 @@ class TelaEditarGrupo : JDialog {
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<Any>
+            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
         )
         jTDestinatario!!.autoResizeMode = 0
         jScrollPane1.setViewportView(jTDestinatario)
@@ -154,18 +153,18 @@ class TelaEditarGrupo : JDialog {
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<Any>
+            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
         )
         jTDestinatarioGrupo!!.autoResizeMode = 0
         jScrollPane2.setViewportView(jTDestinatarioGrupo)
         jbtAdicionar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtAdicionar.icon = ImageIcon(javaClass.getResource("/imagens/add.gif"))
         jbtAdicionar.text = "Adicionar"
-        jbtAdicionar.addActionListener { evt: ActionEvent -> jbtAdicionarActionPerformed(evt) }
+        jbtAdicionar.addActionListener { jbtAdicionarActionPerformed() }
         jbtRemover.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtRemover.icon = ImageIcon(javaClass.getResource("/imagens/rem.gif"))
         jbtRemover.text = "Remover"
-        jbtRemover.addActionListener { evt: ActionEvent -> jbtRemoverActionPerformed(evt) }
+        jbtRemover.addActionListener { jbtRemoverActionPerformed() }
         val jPanel1Layout = GroupLayout(jPanel1)
         jPanel1.layout = jPanel1Layout
         jPanel1Layout.horizontalGroup = jPanel1Layout.createParallelGroup(1)
@@ -237,8 +236,8 @@ class TelaEditarGrupo : JDialog {
         pack()
     }
 
-    private fun jbtRemoverActionPerformed(evt: ActionEvent) {
-        var model: DestinatarioTableModel? = null
+    private fun jbtRemoverActionPerformed() {
+        var model: DestinatarioTableModel?
         val vecTemp = Vector<DestinatarioBean?>()
         var arraySort = ArrayList<DestinatarioBean?>()
         var destinatarioBean: DestinatarioBean? = DestinatarioBean()
@@ -265,7 +264,7 @@ class TelaEditarGrupo : JDialog {
                 }
                 arraySort.sortWith(destinatarioBean!!)
                 model = jTDestinatarioGrupo!!.model as DestinatarioTableModel
-                model!!.setDestinatario(arraySort)
+                model.setDestinatario(arraySort)
                 vecDestinatarioGrupo.removeAllElements()
                 i = 0
                 while (i < arraySort.size) {
@@ -293,8 +292,8 @@ class TelaEditarGrupo : JDialog {
         }
     }
 
-    private fun jbtAdicionarActionPerformed(evt: ActionEvent) {
-        var model: DestinatarioTableModel? = null
+    private fun jbtAdicionarActionPerformed() {
+        var model: DestinatarioTableModel?
         val vecTemp = Vector<DestinatarioBean?>()
         var arraySort = ArrayList<DestinatarioBean?>()
         var destinatarioBean: DestinatarioBean? = DestinatarioBean()
@@ -320,7 +319,7 @@ class TelaEditarGrupo : JDialog {
             }
             Collections.sort(arraySort, destinatarioBean)
             model = jTDestinatario!!.model as DestinatarioTableModel
-            model!!.setDestinatario(arraySort)
+            model.setDestinatario(arraySort)
             vecDestinatario.removeAllElements()
             i = 0
             while (i < arraySort.size) {
@@ -345,11 +344,11 @@ class TelaEditarGrupo : JDialog {
         }
     }
 
-    private fun jbtVoltarActionPerformed(evt: ActionEvent) {
+    private fun jbtVoltarActionPerformed() {
         isVisible = false
     }
 
-    private fun jbtConfirmarActionPerformed(evt: ActionEvent) {
+    private fun jbtConfirmarActionPerformed() {
         val grupoBean: GrupoBean?
         val grupoDestinatarioBean: GrupoDestinatarioBean?
         var destinatarioBean: DestinatarioBean?

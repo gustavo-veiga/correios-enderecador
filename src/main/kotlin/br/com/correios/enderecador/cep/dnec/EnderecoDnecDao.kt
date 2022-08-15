@@ -28,9 +28,9 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
 
     @Throws(DaoException::class)
     private fun buscaCepSemProxy(cepPesquisa: String): EnderecoBean {
-        var url: URL? = null
-        var con: HttpURLConnection? = null
-        var `in`: BufferedReader? = null
+        val url: URL?
+        val reader: BufferedReader?
+        val connection: HttpURLConnection?
         val linha = StringBuilder()
         val enderecoBean = EnderecoBean()
         val configuracaoBean = ConfiguracaoBean.instance
@@ -42,15 +42,15 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         System.setProperty("http.proxyHost", "")
         try {
             url = URL(configuracaoBean.urlBuscaCep + "?cep=" + cepPesquisa + "&chave=" + configuracaoBean.chave)
-            con = url.openConnection() as HttpURLConnection
-            `in` = BufferedReader(InputStreamReader(con!!.inputStream))
+            connection = url.openConnection() as HttpURLConnection
+            reader = BufferedReader(InputStreamReader(connection.inputStream))
             var inputLine: String
-            while (`in`.readLine().also { inputLine = it } != null) {
+            while (reader.readLine().also { inputLine = it } != null) {
                 inputLine = inputLine.trim { it <= ' ' }
                 linha.append(inputLine)
             }
-            `in`.close()
-            var codigoErro = -1
+            reader.close()
+            val codigoErro: Int
             var startTag = "<Versao>"
             var endTag = "</Versao>"
             var start = linha.indexOf(startTag) + startTag.length
@@ -114,8 +114,7 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         System.setProperty("http.proxyPort", configuracaoBean.porta)
         System.setProperty("http.proxyUser", usuarioBean!!.usuario)
         System.setProperty("http.proxyPassword", usuarioBean.pwd)
-        var url: URL? = null
-        url = try {
+        val url: URL? = try {
             URL(configuracaoBean.urlBuscaCep + "?cep=" + cepPesquisa + "&chave=" + configuracaoBean.chave)
         } catch (ex: MalformedURLException) {
             throw ConfiguracaoProxyException("Erro ao consultar o CEP.", ex)
@@ -131,8 +130,7 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         val encodedUserPwd = Base64.getEncoder()
             .encodeToString((configuracaoBean.dominio + "\\" + usuarioBean.usuario + ":" + usuarioBean.pwd).toByteArray())
         con!!.setRequestProperty("Proxy-Authorization", "Basic $encodedUserPwd")
-        var `in`: BufferedReader? = null
-        `in` = try {
+        val reader: BufferedReader? = try {
             BufferedReader(InputStreamReader(con.inputStream))
         } catch (ex2: IOException) {
             throw ConfiguracaoProxyException("Erro ao consultar o CEP.", ex2)
@@ -140,14 +138,14 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         val linha = StringBuffer()
         try {
             var inputLine: String
-            if (`in` != null) {
-                while (`in`.readLine().also { inputLine = it } != null) {
+            if (reader != null) {
+                while (reader.readLine().also { inputLine = it } != null) {
                     inputLine = inputLine.trim { it <= ' ' }
                     linha.append(inputLine)
                 }
             }
-            `in`?.close()
-            var codigoErro: Int
+            reader?.close()
+            val codigoErro: Int
             var startTag = "<Versao>"
             var endTag = "</Versao>"
             var start = linha.indexOf(startTag) + startTag.length

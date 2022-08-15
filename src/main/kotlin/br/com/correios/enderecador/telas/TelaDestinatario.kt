@@ -3,68 +3,72 @@ package br.com.correios.enderecador.telas
 import br.com.correios.enderecador.util.EnderecadorObservable
 import br.com.correios.enderecador.bean.DestinatarioBean
 import br.com.correios.enderecador.dao.DestinatarioDao
-import br.com.correios.enderecador.util.TextoCellRenderer
-import javax.swing.table.TableColumn
 import br.com.correios.enderecador.dao.DaoException
 import java.awt.BorderLayout
 import org.netbeans.lib.awtextra.AbsoluteLayout
 import org.netbeans.lib.awtextra.AbsoluteConstraints
 import javax.swing.table.DefaultTableModel
-import java.awt.event.ActionEvent
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import org.apache.log4j.Logger
+import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
-import java.awt.Frame
 import java.util.*
 import javax.swing.*
+import javax.swing.JLabel.CENTER
+import javax.swing.table.DefaultTableCellRenderer
 
-class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
+@Singleton
+class TelaDestinatario : JFrame(), Observer {
     private val destinatarioTableModel: DestinatarioTableModel = DestinatarioTableModel()
     private val observable: EnderecadorObservable? = EnderecadorObservable.instance
-    private val frmParent: Frame
-    private var ultimaConsulta: String
-    private var jScrollPane1: JScrollPane? = null
-    private var jtxtNomeDestinatario: JTextField? = null
-    private var tabDestinatario: JTable? = null
+    private val jScrollPane =  JScrollPane()
+    private val jtxtNomeDestinatario = JTextField()
+    private val tabDestinatario = JTable()
+    private var ultimaConsulta = ""
 
     init {
-        ultimaConsulta = ""
-        frmParent = parent
         initComponents()
         recuperarDadosTabelaDestinatario()
         observable?.addObserver(this)
+        setLocationRelativeTo(null)
     }
 
     private fun recuperarDadosTabelaDestinatario() {
         try {
             val arrayDestinatario = DestinatarioDao.instance!!.recuperaDestinatario("")
             destinatarioTableModel.setDestinatario(arrayDestinatario)
-            tabDestinatario!!.setSelectionMode(2)
-            val renderer = TextoCellRenderer(2)
-            var coluna: TableColumn? = null
-            coluna = tabDestinatario!!.columnModel.getColumn(0)
-            coluna.cellRenderer = renderer
-            coluna = tabDestinatario!!.columnModel.getColumn(1)
-            coluna.preferredWidth = 70
-            coluna.cellRenderer = renderer
-            coluna = tabDestinatario!!.columnModel.getColumn(2)
-            coluna.cellRenderer = renderer
-            coluna.preferredWidth = 70
-            coluna = tabDestinatario!!.columnModel.getColumn(3)
-            coluna.cellRenderer = renderer
-            coluna = tabDestinatario!!.columnModel.getColumn(4)
-            coluna.cellRenderer = renderer
-            coluna.preferredWidth = 5
-            coluna = tabDestinatario!!.columnModel.getColumn(5)
-            coluna.cellRenderer = renderer
-            coluna.preferredWidth = 1
-            coluna.width = 1
+            tabDestinatario.setSelectionMode(2)
+
+            val centerRenderer = DefaultTableCellRenderer().apply {
+                horizontalAlignment = CENTER
+            }
+            tabDestinatario.columnModel.getColumn(0).apply {
+                 preferredWidth = 50
+            }
+            tabDestinatario.columnModel.getColumn(1).apply {
+                preferredWidth = 70
+                cellRenderer = centerRenderer
+            }
+            tabDestinatario.columnModel.getColumn(2).apply {
+                preferredWidth = 70
+            }
+            tabDestinatario.columnModel.getColumn(3).apply {
+                preferredWidth = 20
+            }
+            tabDestinatario.columnModel.getColumn(4).apply {
+                preferredWidth = 5
+                cellRenderer = centerRenderer
+            }
+            tabDestinatario.columnModel.getColumn(5).apply {
+                width = 1
+                preferredWidth = 1
+                cellRenderer = centerRenderer
+            }
+
         } catch (e: DaoException) {
             logger.error(e.message, e)
-            JOptionPane.showMessageDialog(
-                this,
-                e.message,
+            JOptionPane.showMessageDialog(this, e.message,
                 "Não foi possivel carregar relação de destinatários",
                 JOptionPane.WARNING_MESSAGE
             )
@@ -72,33 +76,66 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
     }
 
     private fun initComponents() {
-        val jPanel1 = JPanel()
-        val jPanel2 = JPanel()
-        val jLabel1 = JLabel()
-        jtxtNomeDestinatario = JTextField()
-        val jLabel2 = JLabel()
-        jScrollPane1 = JScrollPane()
-        tabDestinatario = JTable()
-        val jToolBar1 = JToolBar()
-        val jbtNovo = JButton()
-        val jbtEditar = JButton()
-        val jbtPesquisar = JButton()
-        val jbtExcluir = JButton()
-        isResizable = true
         title = "Cadastro de destinatário"
+        isResizable = true
         preferredSize = Dimension(744, 434)
-        jPanel1.layout = BorderLayout()
-        jPanel1.border = BorderFactory.createEtchedBorder()
-        jPanel2.layout = AbsoluteLayout()
-        jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jLabel1.text = "Procurar por:"
-        jPanel2.add(jLabel1, AbsoluteConstraints(10, 10, -1, 20))
-        jPanel2.add(jtxtNomeDestinatario, AbsoluteConstraints(90, 10, 300, -1))
-        jLabel2.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jLabel2.text = "Destinatários:"
-        jPanel2.add(jLabel2, AbsoluteConstraints(10, 30, -1, 30))
-        jPanel1.add(jPanel2, "North")
-        tabDestinatario!!.model = DefaultTableModel(
+
+        contentPane.add(JToolBar().apply {
+            add(JButton().apply {
+                font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/usuario.gif"))
+                text = "Novo destinatário"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                minimumSize = Dimension(87, 47)
+                preferredSize = Dimension(53, 51)
+                verticalTextPosition = 3
+                addActionListener { jbtNovoActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/editar.gif"))
+                text = "Editar"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtEditarActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/binoculo.gif"))
+                text = "Pesquisar"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                minimumSize = Dimension(47, 55)
+                verticalTextPosition = 3
+                addActionListener { jbtPesquisarActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/TRASH.gif"))
+                text = "Excluir"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                minimumSize = Dimension(47, 55)
+                verticalTextPosition = 3
+                addActionListener { jbtExcluirActionPerformed() }
+            })
+        }, "North")
+
+        contentPane.add(JPanel().apply {
+            layout = BorderLayout()
+            border = BorderFactory.createEtchedBorder()
+            add(jScrollPane, "Center")
+            add(JPanel().apply {
+                layout = AbsoluteLayout()
+                add(jtxtNomeDestinatario, AbsoluteConstraints(90, 10, 300, -1))
+                add(JLabel("Procurar por:"), AbsoluteConstraints(10, 10, -1, 20))
+                add(JLabel("Destinatários:"), AbsoluteConstraints(10, 30, -1, 30))
+            }, "North")
+        }, "Center")
+
+        tabDestinatario.model = DefaultTableModel(
             arrayOf(
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null),
@@ -106,57 +143,19 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
                 arrayOf(null, null, null, null)
             ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
         )
-        tabDestinatario!!.model = destinatarioTableModel
-        jScrollPane1!!.setViewportView(tabDestinatario)
-        jPanel1.add(jScrollPane1, "Center")
-        contentPane.add(jPanel1, "Center")
-        jbtNovo.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtNovo.icon = ImageIcon(javaClass.getResource("/imagens/usuario.gif"))
-        jbtNovo.text = "Novo destinatário"
-        jbtNovo.horizontalTextPosition = 0
-        jbtNovo.maximumSize = Dimension(90, 60)
-        jbtNovo.minimumSize = Dimension(87, 47)
-        jbtNovo.preferredSize = Dimension(53, 51)
-        jbtNovo.verticalTextPosition = 3
-        jbtNovo.addActionListener { evt: ActionEvent -> jbtNovoActionPerformed(evt) }
-        jToolBar1.add(jbtNovo)
-        jbtEditar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtEditar.icon = ImageIcon(javaClass.getResource("/imagens/editar.gif"))
-        jbtEditar.text = "Editar"
-        jbtEditar.horizontalTextPosition = 0
-        jbtEditar.maximumSize = Dimension(90, 60)
-        jbtEditar.verticalTextPosition = 3
-        jbtEditar.addActionListener { evt: ActionEvent -> jbtEditarActionPerformed(evt) }
-        jToolBar1.add(jbtEditar)
-        jbtPesquisar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtPesquisar.icon = ImageIcon(javaClass.getResource("/imagens/binoculo.gif"))
-        jbtPesquisar.text = "Pesquisar"
-        jbtPesquisar.horizontalTextPosition = 0
-        jbtPesquisar.maximumSize = Dimension(90, 60)
-        jbtPesquisar.minimumSize = Dimension(47, 55)
-        jbtPesquisar.verticalTextPosition = 3
-        jbtPesquisar.addActionListener { evt: ActionEvent -> jbtPesquisarActionPerformed(evt) }
-        jToolBar1.add(jbtPesquisar)
-        jbtExcluir.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtExcluir.icon = ImageIcon(javaClass.getResource("/imagens/TRASH.gif"))
-        jbtExcluir.text = "Excluir"
-        jbtExcluir.horizontalTextPosition = 0
-        jbtExcluir.maximumSize = Dimension(90, 60)
-        jbtExcluir.minimumSize = Dimension(47, 55)
-        jbtExcluir.verticalTextPosition = 3
-        jbtExcluir.addActionListener { evt: ActionEvent -> jbtExcluirActionPerformed(evt) }
-        jToolBar1.add(jbtExcluir)
-        contentPane.add(jToolBar1, "North")
+        tabDestinatario.model = destinatarioTableModel
+        jScrollPane.setViewportView(tabDestinatario)
+
         pack()
     }
 
-    private fun jbtNovoActionPerformed(evt: ActionEvent) {
-        val telaEditarDestinatrio = TelaEditarDestinatario(frmParent, true)
+    private fun jbtNovoActionPerformed() {
+        val telaEditarDestinatrio = TelaEditarDestinatario(this, true)
         telaEditarDestinatrio.isVisible = true
     }
 
-    private fun jbtEditarActionPerformed(evt: ActionEvent) {
-        if (tabDestinatario!!.selectedRow < 0) {
+    private fun jbtEditarActionPerformed() {
+        if (tabDestinatario.selectedRow < 0) {
             JOptionPane.showMessageDialog(
                 this,
                 "Não existe nenhum remetente selecionado!",
@@ -165,26 +164,22 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
             )
             return
         }
-        val telaEditarDestinatrio = destinatarioTableModel.getDestinatario(tabDestinatario!!.selectedRow)?.let {
-            TelaEditarDestinatario(
-                frmParent, true, it
-            )
-        }
-        telaEditarDestinatrio!!.isVisible = true
+        val telaEditarDestinatrio = TelaEditarDestinatario(this, true, destinatarioTableModel.getDestinatario(tabDestinatario.selectedRow)!!)
+        telaEditarDestinatrio.isVisible = true
     }
 
-    private fun jbtPesquisarActionPerformed(evt: ActionEvent) {
-        val lsSelectionModelDestinatario = tabDestinatario!!.selectionModel
-        val nomeDestinatario = jtxtNomeDestinatario!!.text.trim { it <= ' ' }
-        val numeroRows = tabDestinatario!!.rowCount
+    private fun jbtPesquisarActionPerformed() {
+        val lsSelectionModelDestinatario = tabDestinatario.selectionModel
+        val nomeDestinatario = jtxtNomeDestinatario.text.trim()
+        val numeroRows = tabDestinatario.rowCount
         var index = -1
         if (ultimaConsulta.equals(nomeDestinatario, ignoreCase = true)) {
-            index = tabDestinatario!!.selectedRow
+            index = tabDestinatario.selectedRow
         } else {
             ultimaConsulta = nomeDestinatario
         }
         for (i in index + 1 until numeroRows) {
-            val nomeDestinatarioTabela = tabDestinatario!!.getValueAt(i, 0) as String
+            val nomeDestinatarioTabela = tabDestinatario.getValueAt(i, 0) as String
             if (nomeDestinatarioTabela.uppercase(Locale.getDefault())
                     .contains(nomeDestinatario.uppercase(Locale.getDefault()))
             ) {
@@ -194,26 +189,25 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
         }
         if (index == -1) {
             JOptionPane.showMessageDialog(
-                frmParent,
+                this,
                 "Destinatário não encontrado!",
                 "Endereçador",
                 JOptionPane.INFORMATION_MESSAGE
             )
         } else {
             lsSelectionModelDestinatario.setSelectionInterval(index, index)
-            val tamanhoJscrool = jScrollPane1!!.verticalScrollBar.maximum
-            var value = 0
-            value = index * tamanhoJscrool / numeroRows
-            jScrollPane1!!.verticalScrollBar.value = value
+            val tamanhoJscrool = jScrollPane.verticalScrollBar.maximum
+            val value = index * tamanhoJscrool / numeroRows
+            jScrollPane.verticalScrollBar.value = value
         }
     }
 
-    private fun jbtExcluirActionPerformed(evt: ActionEvent) {
-        var destinatarioBean: DestinatarioBean? = null
+    private fun jbtExcluirActionPerformed() {
+        var destinatarioBean: DestinatarioBean?
         val listaDestinatarios: MutableList<DestinatarioBean?> = ArrayList()
-        if (tabDestinatario!!.selectedRow == -1) {
+        if (tabDestinatario.selectedRow == -1) {
             JOptionPane.showMessageDialog(
-                frmParent,
+                this,
                 "Não existe nenhum destinatário selecionado!",
                 "Enderecador",
                 JOptionPane.WARNING_MESSAGE
@@ -221,7 +215,7 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
         } else {
             val options = arrayOf("Sim", "Não")
             val resp = JOptionPane.showOptionDialog(
-                frmParent,
+                this,
                 "Tem certeza que deseja excluir o(s) destinatário(s)?",
                 "Endereçador",
                 JOptionPane.YES_NO_OPTION,
@@ -231,7 +225,7 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
                 null
             )
             if (resp == 0) {
-                val linhasSelecionadas = tabDestinatario!!.selectedRows
+                val linhasSelecionadas = tabDestinatario.selectedRows
                 try {
                     for (linhasSelecionada in linhasSelecionadas) {
                         destinatarioBean = destinatarioTableModel.getDestinatario(linhasSelecionada)
@@ -240,9 +234,9 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
                         listaDestinatarios.add(destinatarioBean)
                     }
                     observable?.notifyObservers(listaDestinatarios)
-                    jtxtNomeDestinatario!!.text = ""
+                    jtxtNomeDestinatario.text = ""
                     JOptionPane.showMessageDialog(
-                        frmParent,
+                        this,
                         "Destinatário(s) excluído(s) com sucesso!",
                         "Endereçador",
                         JOptionPane.INFORMATION_MESSAGE
@@ -250,7 +244,7 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
                 } catch (ex: DaoException) {
                     logger.error(ex.message, ex as Throwable)
                     JOptionPane.showMessageDialog(
-                        frmParent,
+                        this,
                         "Não foi possivel carregar relação de destinatários!",
                         "Endereçador ECT",
                         JOptionPane.WARNING_MESSAGE
@@ -270,19 +264,13 @@ class TelaDestinatario private constructor(parent: Frame) : JFrame(), Observer {
                 destinatarioTableModel.addDestinatario(destinatario)
             }
         } else if (arg is List<*>) {
-            val listaDestinatarios = arg as List<DestinatarioBean>
-            for (listaDestinatario in listaDestinatarios) {
-                if (listaDestinatario != null) destinatarioTableModel.removeDestinatario(listaDestinatario)
-            }
+            arg
+                .filterNotNull()
+                .forEach { destinatarioTableModel.removeDestinatario(it as DestinatarioBean?) }
         }
     }
 
     companion object {
         private val logger = Logger.getLogger(TelaDestinatario::class.java)
-        private var instance: TelaDestinatario? = null
-        fun getInstance(parent: Frame): TelaDestinatario? {
-            if (instance == null) instance = TelaDestinatario(parent)
-            return instance
-        }
     }
 }

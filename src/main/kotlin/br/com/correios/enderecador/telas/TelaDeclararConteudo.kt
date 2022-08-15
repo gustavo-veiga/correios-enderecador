@@ -5,7 +5,6 @@ import br.com.correios.enderecador.bean.RemetenteBean
 import javax.swing.table.DefaultTableModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.awt.event.ActionEvent
 import java.awt.Color
 import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.excecao.EnderecadorExcecao
@@ -58,7 +57,7 @@ class TelaDeclararConteudo(
         isResizable = false
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(evt: WindowEvent) {
-                fecharJanela(evt)
+                fecharJanela()
             }
         })
         jToolBar1.isRollover = true
@@ -69,7 +68,7 @@ class TelaDeclararConteudo(
         jButton1.maximumSize = Dimension(90, 60)
         jButton1.minimumSize = Dimension(47, 55)
         jButton1.verticalTextPosition = 3
-        jButton1.addActionListener { evt -> jButton1ActionPerformed(evt) }
+        jButton1.addActionListener { jButton1ActionPerformed() }
         jToolBar1.add(jButton1)
         jButton2.font = Font(Font.SANS_SERIF, 0, 9)
         jButton2.icon = ImageIcon(javaClass.getResource("/imagens/remover.gif"))
@@ -78,7 +77,7 @@ class TelaDeclararConteudo(
         jButton2.maximumSize = Dimension(90, 60)
         jButton2.minimumSize = Dimension(47, 55)
         jButton2.verticalTextPosition = 3
-        jButton2.addActionListener { evt: ActionEvent -> jButton2ActionPerformed(evt) }
+        jButton2.addActionListener { jButton2ActionPerformed() }
         jToolBar1.add(jButton2)
         jScrollPane1.name = ""
         jTable1!!.model = model
@@ -136,7 +135,7 @@ class TelaDeclararConteudo(
         setLocationRelativeTo(null)
     }
 
-    private fun jButton1ActionPerformed(evt: ActionEvent) {
+    private fun jButton1ActionPerformed() {
         val impressao = Impressao()
         val itens = model.dataVector
         try {
@@ -153,7 +152,7 @@ class TelaDeclararConteudo(
         isVisible = false
     }
 
-    private fun jButton2ActionPerformed(evt: ActionEvent) {
+    private fun jButton2ActionPerformed() {
         if (jTable1!!.selectedRow != -1) {
             model.removeRow(jTable1!!.selectedRow)
             val novaLinha = arrayOf<Any?>(null, null, null)
@@ -161,7 +160,7 @@ class TelaDeclararConteudo(
         }
     }
 
-    private fun fecharJanela(evt: WindowEvent) {
+    private fun fecharJanela() {
         val resposta = JOptionPane.showConfirmDialog(
             null,
             "A declaração de conteúdo não é armazenada. Deseja sair?",

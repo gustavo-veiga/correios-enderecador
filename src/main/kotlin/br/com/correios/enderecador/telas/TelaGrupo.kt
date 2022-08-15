@@ -23,12 +23,13 @@ import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.DaoException
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
-import java.awt.Frame
 import java.util.*
 
-class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
+@Singleton
+class TelaGrupo : JFrame() {
     private val vecTelEndGrupo = Vector<GrupoBean>()
     private val vecTelEndDestinatarioGrupo = Vector<DestinatarioBean>()
     private var ultimaConsulta = ""
@@ -39,6 +40,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
 
     init {
         initComponents()
+        setLocationRelativeTo(null)
     }
 
     private fun initComponents() {
@@ -65,7 +67,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         jbtNovo.horizontalTextPosition = 0
         jbtNovo.maximumSize = Dimension(90, 60)
         jbtNovo.verticalTextPosition = 3
-        jbtNovo.addActionListener { evt: ActionEvent -> jbtNovoActionPerformed(evt) }
+        jbtNovo.addActionListener { jbtNovoActionPerformed() }
         jToolBar1.add(jbtNovo)
         jbtEditar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtEditar.icon = ImageIcon(javaClass.getResource("/imagens/editar.gif"))
@@ -73,7 +75,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         jbtEditar.horizontalTextPosition = 0
         jbtEditar.maximumSize = Dimension(90, 60)
         jbtEditar.verticalTextPosition = 3
-        jbtEditar.addActionListener { evt: ActionEvent -> jbtEditarActionPerformed(evt) }
+        jbtEditar.addActionListener { jbtEditarActionPerformed() }
         jToolBar1.add(jbtEditar)
         jbtPesquisar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtPesquisar.icon = ImageIcon(javaClass.getResource("/imagens/binoculo.gif"))
@@ -81,7 +83,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         jbtPesquisar.horizontalTextPosition = 0
         jbtPesquisar.maximumSize = Dimension(90, 60)
         jbtPesquisar.verticalTextPosition = 3
-        jbtPesquisar.addActionListener { evt: ActionEvent -> jbtPesquisarActionPerformed(evt) }
+        jbtPesquisar.addActionListener { jbtPesquisarActionPerformed() }
         jToolBar1.add(jbtPesquisar)
         jbtExcluir.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtExcluir.icon = ImageIcon(javaClass.getResource("/imagens/TRASH.gif"))
@@ -89,18 +91,14 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         jbtExcluir.horizontalTextPosition = 0
         jbtExcluir.maximumSize = Dimension(90, 60)
         jbtExcluir.verticalTextPosition = 3
-        jbtExcluir.addActionListener { evt: ActionEvent -> jbtExcluirActionPerformed(evt) }
+        jbtExcluir.addActionListener { jbtExcluirActionPerformed() }
         jToolBar1.add(jbtExcluir)
         jPanel1.border = BorderFactory.createEtchedBorder()
         jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
         jLabel1.text = "Procurar por:"
         jLabel2.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
         jLabel2.text = "Grupos:"
-        jlstTelEndGrupo!!.addListSelectionListener(ListSelectionListener { evt: ListSelectionEvent ->
-            jlstTelEndGrupoValueChanged(
-                evt
-            )
-        })
+        jlstTelEndGrupo!!.addListSelectionListener { jlstTelEndGrupoValueChanged() }
         jScrollPane1!!.setViewportView(jlstTelEndGrupo)
         jTDestinatario!!.model = DefaultTableModel(
             arrayOf(
@@ -108,7 +106,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null),
                 arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<Any>
+            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
         )
         jTDestinatario!!.model = DestinatarioTableModel()
         jScrollPane2.setViewportView(jTDestinatario)
@@ -169,21 +167,21 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         pack()
     }
 
-    private fun jbtExcluirActionPerformed(evt: ActionEvent) {
+    private fun jbtExcluirActionPerformed() {
         val linhaSelecionada = jlstTelEndGrupo!!.leadSelectionIndex
         if (jlstTelEndGrupo!!.isSelectionEmpty) {
             JOptionPane.showMessageDialog(
-                frmParent,
+                this,
                 "Não existe nenhum grupo selecionado!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
             )
         } else {
-            var grupoBean: GrupoBean? = null
+            val grupoBean: GrupoBean?
             jlstTelEndGrupo!!.clearSelection()
             val options = arrayOf("Sim", "Não")
             val resp = JOptionPane.showOptionDialog(
-                frmParent,
+                this,
                 "Tem certeza que deseja excluir este grupo juntamente com todos os seus destinatários?",
                 "Endereçador",
                 JOptionPane.YES_NO_OPTION,
@@ -200,7 +198,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
                     recuperarListaGrupo()
                     jtxtGrupo!!.text = ""
                     JOptionPane.showMessageDialog(
-                        frmParent,
+                        this,
                         "Grupo e destinatários excluídos com sucesso!",
                         "Endereçador",
                         JOptionPane.INFORMATION_MESSAGE
@@ -208,7 +206,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
                 } catch (ex: DaoException) {
                     logger.error(ex.message, ex)
                     JOptionPane.showMessageDialog(
-                        frmParent,
+                        this,
                         "Não foi possivel realizar exclusão!",
                         "Endereçador",
                         JOptionPane.WARNING_MESSAGE
@@ -218,15 +216,15 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         }
     }
 
-    private fun jbtEditarActionPerformed(evt: ActionEvent) {
+    private fun jbtEditarActionPerformed() {
         if (jlstTelEndGrupo!!.leadSelectionIndex != -1) {
             val grupoBean = vecTelEndGrupo[jlstTelEndGrupo!!.leadSelectionIndex]
-            val telaEditarGrupo = TelaEditarGrupo(frmParent, true, grupoBean)
+            val telaEditarGrupo = TelaEditarGrupo(this, true, grupoBean)
             telaEditarGrupo.isVisible = true
             recuperarListaGrupo()
         } else {
             JOptionPane.showMessageDialog(
-                frmParent,
+                this,
                 "Não existe nenhum grupo selecionado!",
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE
@@ -234,13 +232,13 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         }
     }
 
-    private fun jbtNovoActionPerformed(evt: ActionEvent) {
-        val telaEditarGrupo = TelaEditarGrupo(frmParent, true)
+    private fun jbtNovoActionPerformed() {
+        val telaEditarGrupo = TelaEditarGrupo(this, true)
         telaEditarGrupo.isVisible = true
         recuperarListaGrupo()
     }
 
-    private fun jlstTelEndGrupoValueChanged(evt: ListSelectionEvent) {
+    private fun jlstTelEndGrupoValueChanged() {
         vecTelEndDestinatarioGrupo.removeAllElements()
         if (jlstTelEndGrupo!!.leadSelectionIndex != -1) {
             val grupoBean = vecTelEndGrupo[jlstTelEndGrupo!!.leadSelectionIndex]
@@ -250,7 +248,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
 
     private fun recuperarDestinatariosDoGrupo(nuGrupo: String?) {
         val destinatarioSort = DestinatarioBean()
-        var model: DestinatarioTableModel? = null
+        val model: DestinatarioTableModel?
         try {
             vecTelEndDestinatarioGrupo.removeAllElements()
             val arrayGrupoDestinatario = GrupoDestinatarioDao.instance!!.recuperaGrupoDestinatario(nuGrupo)
@@ -261,7 +259,7 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         } catch (e: DaoException) {
             logger.error(e.message, e)
             JOptionPane.showMessageDialog(
-                frmParent,
+                this,
                 "Não foi possivel carregar relação de destinatários do grupo",
                 "Endereçador ECT",
                 JOptionPane.WARNING_MESSAGE
@@ -295,8 +293,8 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         }
     }
 
-    private fun jbtPesquisarActionPerformed(evt: ActionEvent) {
-        var grupoBean: GrupoBean? = null
+    private fun jbtPesquisarActionPerformed() {
+        var grupoBean: GrupoBean?
         val nomeGrupo = jtxtGrupo!!.text.trim { it <= ' ' }
         var index = -1
         if (ultimaConsulta.equals(nomeGrupo, ignoreCase = true)) {
@@ -317,19 +315,12 @@ class TelaGrupo private constructor(private val frmParent: Frame) : JFrame() {
         } else {
             jlstTelEndGrupo!!.selectedIndex = index
             val tamanhoJscrool = jScrollPane1!!.verticalScrollBar.maximum
-            var value = 0
-            value = index * tamanhoJscrool / vecTelEndGrupo.size
+            val value = index * tamanhoJscrool / vecTelEndGrupo.size
             jScrollPane1!!.verticalScrollBar.value = value
         }
     }
 
     companion object {
         private val logger = Logger.getLogger(TelaGrupo::class.java)
-        private var instance: TelaGrupo? = null
-        fun getInstance(parent: Frame): TelaGrupo? {
-            if (instance == null) instance = TelaGrupo(parent)
-            instance!!.recuperarListaGrupo()
-            return instance
-        }
     }
 }

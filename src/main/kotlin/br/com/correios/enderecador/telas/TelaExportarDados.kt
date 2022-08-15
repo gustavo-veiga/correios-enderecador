@@ -13,19 +13,19 @@ import javax.swing.JToolBar
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 import javax.swing.BorderFactory
 import br.com.correios.enderecador.util.Geral
 import javax.swing.JFileChooser
 import br.com.correios.enderecador.util.FiltroArquivo
 import br.com.correios.enderecador.excecao.EnderecadorExcecao
 import org.apache.log4j.Logger
+import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.util.*
 
-class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer {
+@Singleton
+class TelaExportarDados : JFrame(), Observer {
     private val vecDestinatario: Vector<DestinatarioBean?> = Vector()
-    private val frmParent: Frame
     private var jbntDestinatario: JButton? = null
     private var jbntGrupo: JButton? = null
     private var jchkExportarTodos: JCheckBox? = null
@@ -33,9 +33,9 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
 
     init {
         val observable = EnderecadorObservable.instance
-        frmParent = parent
         initComponents()
         observable?.addObserver(this)
+        setLocationRelativeTo(null)
     }
 
     fun carregaListaDestinatario() {
@@ -75,7 +75,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         jbtExportar.horizontalTextPosition = 0
         jbtExportar.maximumSize = Dimension(90, 60)
         jbtExportar.verticalTextPosition = 3
-        jbtExportar.addActionListener { evt: ActionEvent -> jbtExportarActionPerformed(evt) }
+        jbtExportar.addActionListener { jbtExportarActionPerformed() }
         jToolBar1.add(jbtExportar)
         jbntDestinatario!!.font = Font("MS Sans Serif", 0, 9)
         jbntDestinatario!!.icon = ImageIcon(javaClass.getResource("/imagens/addusuario.gif"))
@@ -83,7 +83,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         jbntDestinatario!!.horizontalTextPosition = 0
         jbntDestinatario!!.maximumSize = Dimension(107, 60)
         jbntDestinatario!!.verticalTextPosition = 3
-        jbntDestinatario!!.addActionListener { evt: ActionEvent -> jbntDestinatarioActionPerformed(evt) }
+        jbntDestinatario!!.addActionListener { jbntDestinatarioActionPerformed() }
         jToolBar1.add(jbntDestinatario)
         jbntGrupo!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbntGrupo!!.icon = ImageIcon(javaClass.getResource("/imagens/addusuarios.gif"))
@@ -92,7 +92,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         jbntGrupo!!.maximumSize = Dimension(90, 60)
         jbntGrupo!!.preferredSize = Dimension(90, 60)
         jbntGrupo!!.verticalTextPosition = 3
-        jbntGrupo!!.addActionListener { evt: ActionEvent -> jbntGrupoActionPerformed(evt) }
+        jbntGrupo!!.addActionListener { jbntGrupoActionPerformed() }
         jToolBar1.add(jbntGrupo)
         jbntExcluir.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbntExcluir.icon = ImageIcon(javaClass.getResource("/imagens/removerTodos.gif"))
@@ -100,7 +100,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         jbntExcluir.horizontalTextPosition = 0
         jbntExcluir.maximumSize = Dimension(90, 60)
         jbntExcluir.verticalTextPosition = 3
-        jbntExcluir.addActionListener { evt: ActionEvent -> jbntExcluirActionPerformed(evt) }
+        jbntExcluir.addActionListener { jbntExcluirActionPerformed() }
         jToolBar1.add(jbntExcluir)
         contentPane.add(jToolBar1, "North")
         jPanel1.layout = BorderLayout()
@@ -108,7 +108,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         jPanel2.border = BorderFactory.createEtchedBorder()
         jchkExportarTodos!!.font = Font("MS Sans Serif", 0, 10)
         jchkExportarTodos!!.text = "Exportar todos os destinatários"
-        jchkExportarTodos!!.addActionListener { evt: ActionEvent -> jchkExportarTodosActionPerformed(evt) }
+        jchkExportarTodos!!.addActionListener { jchkExportarTodosActionPerformed() }
         jPanel2.add(jchkExportarTodos)
         jPanel1.add(jPanel2, "North")
         jScrollPane1.setViewportView(jlstDestinatarios)
@@ -117,7 +117,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         pack()
     }
 
-    private fun jbntExcluirActionPerformed(evt: ActionEvent) {
+    private fun jbntExcluirActionPerformed() {
         vecDestinatario.removeAllElements()
         jlstDestinatarios!!.setListData(vecDestinatario)
         jchkExportarTodos!!.isSelected = false
@@ -125,23 +125,23 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         jbntGrupo!!.isEnabled = true
     }
 
-    private fun jbntGrupoActionPerformed(evt: ActionEvent) {
+    private fun jbntGrupoActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val telaPesquisarGrupo = TelaPesquisarGrupo(frmParent, true, vecDestinatario)
+        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatario)
         telaPesquisarGrupo.isVisible = true
         jlstDestinatarios!!.setListData(vecDestinatario)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
-    private fun jbntDestinatarioActionPerformed(evt: ActionEvent) {
+    private fun jbntDestinatarioActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario(frmParent, true, vecDestinatario)
+        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatario)
         telaPesquisaDestinatario.isVisible = true
         jlstDestinatarios!!.setListData(vecDestinatario)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
-    private fun jchkExportarTodosActionPerformed(evt: ActionEvent) {
+    private fun jchkExportarTodosActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
         jbntDestinatario!!.isEnabled = !jbntDestinatario!!.isEnabled
         jbntGrupo!!.isEnabled = !jbntGrupo!!.isEnabled
@@ -151,7 +151,7 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
-    private fun jbtExportarActionPerformed(evt: ActionEvent) {
+    private fun jbtExportarActionPerformed() {
         val geral = Geral()
         var vNomeArquivo: String
         if (vecDestinatario.size <= 0) {
@@ -210,20 +210,14 @@ class TelaExportarDados private constructor(parent: Frame) : JFrame(), Observer 
                 jlstDestinatarios!!.setListData(vecDestinatario)
             }
         } else if (arg is List<*>) {
-            val listaDestinatarios = arg as List<DestinatarioBean>
-            for (listaDestinatario in listaDestinatarios) {
-                if (listaDestinatario != null) vecDestinatario.remove(listaDestinatario)
-            }
+            arg
+                .filterNotNull()
+                .forEach { vecDestinatario.remove(it as DestinatarioBean) }
             jlstDestinatarios!!.setListData(vecDestinatario)
         }
     }
 
     companion object {
         private val logger = Logger.getLogger(TelaExportarDados::class.java)
-        private var instance: TelaExportarDados? = null
-        fun getInstance(parent: Frame): TelaExportarDados? {
-            if (instance == null) instance = TelaExportarDados(parent)
-            return instance
-        }
     }
 }

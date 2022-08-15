@@ -12,7 +12,6 @@ import javax.help.CSH.DisplayHelpFromSource
 import javax.swing.JPanel
 import javax.swing.JLabel
 import javax.swing.BorderFactory
-import java.awt.event.ActionEvent
 import br.com.correios.enderecador.util.DocumentoPersonalizado
 import org.netbeans.lib.awtextra.AbsoluteLayout
 import javax.swing.ImageIcon
@@ -21,10 +20,12 @@ import br.com.correios.enderecador.dao.ConfiguracaoDao
 import br.com.correios.enderecador.dao.DaoException
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.lang.Exception
 
-class TelaConfiguracao(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
+@Singleton
+class TelaConfiguracao : JDialog() {
     private var configuracaoBean: ConfiguracaoBean? = null
     private var jbntAjuda: JButton? = null
     private var jchkProxy: JCheckBox? = null
@@ -111,7 +112,7 @@ class TelaConfiguracao(parent: Frame?, modal: Boolean) : JDialog(parent, modal) 
         jchkProxy!!.text = "Usar um servidor Proxy"
         jchkProxy!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jchkProxy!!.margin = Insets(0, 0, 0, 0)
-        jchkProxy!!.addActionListener { evt: ActionEvent -> jchkProxyActionPerformed(evt) }
+        jchkProxy!!.addActionListener { jchkProxyActionPerformed() }
         jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
         jLabel1.text = "Endereço:"
         jtxtPorta!!.document = DocumentoPersonalizado(10, 1)
@@ -124,7 +125,7 @@ class TelaConfiguracao(parent: Frame?, modal: Boolean) : JDialog(parent, modal) 
         jbntOk.icon = ImageIcon(javaClass.getResource("/imagens/OK.gif"))
         jbntOk.maximumSize = Dimension(63, 39)
         jbntOk.minimumSize = Dimension(63, 39)
-        jbntOk.addActionListener { evt: ActionEvent -> jbntOkActionPerformed(evt) }
+        jbntOk.addActionListener { jbntOkActionPerformed() }
         jPanel1.add(jbntOk, AbsoluteConstraints(290, 10, 60, 30))
         jbntAjuda!!.icon = ImageIcon(javaClass.getResource("/imagens/ajuda.gif"))
         jPanel1.add(jbntAjuda, AbsoluteConstraints(10, 10, 30, -1))
@@ -191,7 +192,7 @@ class TelaConfiguracao(parent: Frame?, modal: Boolean) : JDialog(parent, modal) 
         setBounds((screenSize.width - 375) / 2, (screenSize.height - 228) / 2, 375, 228)
     }
 
-    private fun jchkProxyActionPerformed(evt: ActionEvent) {
+    private fun jchkProxyActionPerformed() {
         if (jchkProxy!!.isSelected) {
             jtxtEndereco!!.background = Color.white
             jtxtEndereco!!.isEnabled = true
@@ -212,9 +213,9 @@ class TelaConfiguracao(parent: Frame?, modal: Boolean) : JDialog(parent, modal) 
         }
     }
 
-    private fun jbntOkActionPerformed(evt: ActionEvent) {
+    private fun jbntOkActionPerformed() {
         if (jchkProxy!!.isSelected) {
-            if (jtxtEndereco!!.text.trim { it <= ' ' } == "") {
+            if (jtxtEndereco!!.text.isBlank()) {
                 JOptionPane.showMessageDialog(
                     this,
                     "O campo Endereço do proxy deve ser preenchido!",

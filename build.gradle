@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id "com.google.devtools.ksp" version "1.7.10-1.0.6"
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
 }
 
@@ -26,12 +27,27 @@ repositories {
 }
 
 dependencies {
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
+    // Dependency injection
+    ksp group: 'io.insert-koin', name: 'koin-ksp-compiler', version: '1.0.1'
+    implementation group: 'io.insert-koin', name: 'koin-core', version: '3.2.0'
+    implementation group: 'io.insert-koin', name: 'koin-annotations', version: '1.0.1'
+    testImplementation group: 'io.insert-koin', name: 'koin-test', version: '3.2.0'
+
+    // Database
+    implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+    implementation group: 'org.ktorm', name: 'ktorm-core', version: '3.5.0'
+
+    // UI
     implementation group: 'com.formdev', name: 'flatlaf', version: '2.4'
     implementation group: 'com.formdev', name: 'flatlaf-extras', version: '2.4'
     implementation group: 'com.formdev', name: 'flatlaf-intellij-themes', version: '2.4'
     implementation group: 'com.badoo.reaktive', name: 'reaktive', version: '1.2.1'
+
+    // Format for Export
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
 
     // Old
     implementation group: 'hsqldb', name: 'hsqldb', version: '1.8.0.1'
@@ -54,6 +70,13 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+kotlin {
+    sourceSets {
+        main.kotlin.srcDirs += 'build/generated/ksp/main/kotlin'
+        test.kotlin.srcDirs += 'build/generated/ksp/test/kotlin'
+    }
 }
 
 tasks.withType(JavaCompile) {

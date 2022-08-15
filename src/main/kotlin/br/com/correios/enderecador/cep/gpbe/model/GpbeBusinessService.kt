@@ -79,8 +79,8 @@ class GpbeBusinessService private constructor() {
 
     @Throws(GpbeException::class)
     private fun recuperaCepLogradouro(cep: String?): CepBean? {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         var cepBean: CepBean? = null
         try {
             stmt = conn!!.prepareStatement("""
@@ -110,8 +110,8 @@ class GpbeBusinessService private constructor() {
 
     @Throws(GpbeException::class)
     private fun recuperaCepEspecial(cep: String?): CepBean? {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         var cepBean: CepBean? = null
         try {
@@ -142,8 +142,8 @@ class GpbeBusinessService private constructor() {
 
     @Throws(GpbeException::class)
     private fun recuperaUnidadeOperacional(cep: String?): CepBean? {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         var cepBean: CepBean? = null
         try {
@@ -174,8 +174,8 @@ class GpbeBusinessService private constructor() {
 
     @Throws(GpbeException::class)
     private fun recuperaCaixaComunitaria(cep: String?): CepBean? {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         var cepBean: CepBean? = null
         try {

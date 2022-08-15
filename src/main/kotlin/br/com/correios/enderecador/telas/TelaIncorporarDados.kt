@@ -12,7 +12,6 @@ import javax.swing.JPanel
 import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 import javax.swing.BorderFactory
 import javax.swing.table.DefaultTableModel
 import javax.swing.JFileChooser
@@ -34,11 +33,13 @@ import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
 import java.util.*
 
-class TelaIncorporarDados private constructor() : JFrame() {
+@Singleton
+class TelaIncorporarDados : JFrame() {
     private val observable = EnderecadorObservable.instance
     private var vecDestinatario: Vector<DestinatarioBean?>? = null
     private var destinatarioBean: DestinatarioBean? = null
@@ -48,6 +49,7 @@ class TelaIncorporarDados private constructor() : JFrame() {
 
     init {
         initComponents()
+        setLocationRelativeTo(null)
     }
 
     private fun initComponents() {
@@ -71,7 +73,7 @@ class TelaIncorporarDados private constructor() : JFrame() {
         jbtnConfirmar.horizontalTextPosition = 0
         jbtnConfirmar.maximumSize = Dimension(90, 60)
         jbtnConfirmar.verticalTextPosition = 3
-        jbtnConfirmar.addActionListener { evt: ActionEvent -> jbtnConfirmarActionPerformed(evt) }
+        jbtnConfirmar.addActionListener { jbtnConfirmarActionPerformed() }
         jToolBar1.add(jbtnConfirmar)
         jbtnAbrir.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtnAbrir.icon = ImageIcon(javaClass.getResource("/imagens/arquivo.gif"))
@@ -79,7 +81,7 @@ class TelaIncorporarDados private constructor() : JFrame() {
         jbtnAbrir.horizontalTextPosition = 0
         jbtnAbrir.maximumSize = Dimension(90, 60)
         jbtnAbrir.verticalTextPosition = 3
-        jbtnAbrir.addActionListener { evt: ActionEvent -> jbtnAbrirActionPerformed(evt) }
+        jbtnAbrir.addActionListener { jbtnAbrirActionPerformed() }
         jToolBar1.add(jbtnAbrir)
         jbtnLimpar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtnLimpar.icon = ImageIcon(javaClass.getResource("/imagens/cancelar.gif"))
@@ -87,7 +89,7 @@ class TelaIncorporarDados private constructor() : JFrame() {
         jbtnLimpar.horizontalTextPosition = 0
         jbtnLimpar.maximumSize = Dimension(90, 60)
         jbtnLimpar.verticalTextPosition = 3
-        jbtnLimpar.addActionListener { evt: ActionEvent -> jbtnLimparActionPerformed(evt) }
+        jbtnLimpar.addActionListener { jbtnLimparActionPerformed() }
         jToolBar1.add(jbtnLimpar)
         jPanel1.border = BorderFactory.createEtchedBorder()
         jLabel1.text = "Grupo de destinatários:"
@@ -168,15 +170,15 @@ class TelaIncorporarDados private constructor() : JFrame() {
         pack()
     }
 
-    private fun jbtnLimparActionPerformed(evt: ActionEvent) {
+    private fun jbtnLimparActionPerformed() {
         limpaTela()
     }
 
-    private fun jbtnConfirmarActionPerformed(evt: ActionEvent) {
+    private fun jbtnConfirmarActionPerformed() {
         gravarDados()
     }
 
-    private fun jbtnAbrirActionPerformed(evt: ActionEvent) {
+    private fun jbtnAbrirActionPerformed() {
         val fileChooser = JFileChooser()
         fileChooser.approveButtonText = "Abrir"
         fileChooser.dialogTitle = "Abrir arquivo"
@@ -302,16 +304,15 @@ class TelaIncorporarDados private constructor() : JFrame() {
     }
 
     fun carregaTabela() {
-        var model: IncorporaDestinatarioTableModel? = null
+        val model: IncorporaDestinatarioTableModel?
         if (vecDestinatario!!.size != 0) {
-            val geral: Geral? = null
             Geral.ordenarVetor(vecDestinatario!!, destinatarioBean)
             val arrayDestinatario = ArrayList(vecDestinatario)
             model = tabDestinatario!!.model as IncorporaDestinatarioTableModel
             model.setDestinatario(arrayDestinatario)
             tabDestinatario!!.setSelectionMode(2)
             val renderer = TextoCellRenderer(2)
-            var coluna: TableColumn? = null
+            var coluna: TableColumn?
             coluna = tabDestinatario!!.columnModel.getColumn(0)
             coluna.cellRenderer = renderer
             coluna = tabDestinatario!!.columnModel.getColumn(1)
@@ -407,11 +408,5 @@ class TelaIncorporarDados private constructor() : JFrame() {
 
     companion object {
         private val logger = Logger.getLogger(TelaIncorporarDados::class.java)
-        var instance: TelaIncorporarDados? = null
-            get() {
-                if (field == null) field = TelaIncorporarDados()
-                return field
-            }
-            private set
     }
 }

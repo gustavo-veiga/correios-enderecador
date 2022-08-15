@@ -20,7 +20,6 @@ import javax.swing.JLabel
 import br.com.correios.enderecador.util.DocumentoPersonalizado
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 import org.netbeans.lib.awtextra.AbsoluteLayout
 import org.netbeans.lib.awtextra.AbsoluteConstraints
 import br.com.correios.enderecador.bean.UsuarioBean
@@ -30,9 +29,11 @@ import java.util.Locale
 import br.com.correios.enderecador.bean.GlobalBean
 import br.com.correios.enderecador.dao.CepInvalidoException
 import org.apache.log4j.Logger
+import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.text.ParseException
 
+@Singleton
 class TelaEditarRemetente : JDialog {
     private val observable = EnderecadorObservable.instance
     private val arrayUF = arrayOf(
@@ -315,7 +316,7 @@ class TelaEditarRemetente : JDialog {
         jbtnConfirmar.horizontalTextPosition = 0
         jbtnConfirmar.maximumSize = Dimension(90, 60)
         jbtnConfirmar.verticalTextPosition = 3
-        jbtnConfirmar.addActionListener { evt: ActionEvent -> jbtnConfirmarActionPerformed(evt) }
+        jbtnConfirmar.addActionListener { jbtnConfirmarActionPerformed() }
         jToolBar1.add(jbtnConfirmar)
         jbtnLimpar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtnLimpar.icon = ImageIcon(javaClass.getResource("/imagens/cancelar.gif"))
@@ -323,7 +324,7 @@ class TelaEditarRemetente : JDialog {
         jbtnLimpar.horizontalTextPosition = 0
         jbtnLimpar.maximumSize = Dimension(90, 60)
         jbtnLimpar.verticalTextPosition = 3
-        jbtnLimpar.addActionListener { evt: ActionEvent -> jbtnLimparActionPerformed(evt) }
+        jbtnLimpar.addActionListener { jbtnLimparActionPerformed() }
         jToolBar1.add(jbtnLimpar)
         jbtnVoltar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtnVoltar.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
@@ -331,7 +332,7 @@ class TelaEditarRemetente : JDialog {
         jbtnVoltar.horizontalTextPosition = 0
         jbtnVoltar.maximumSize = Dimension(90, 60)
         jbtnVoltar.verticalTextPosition = 3
-        jbtnVoltar.addActionListener { evt: ActionEvent -> jbtnVoltarActionPerformed(evt) }
+        jbtnVoltar.addActionListener { jbtnVoltarActionPerformed() }
         jToolBar1.add(jbtnVoltar)
         contentPane.add(jToolBar1, "North")
         jPanel1.layout = AbsoluteLayout()
@@ -374,12 +375,12 @@ class TelaEditarRemetente : JDialog {
         jPanel1.add(jtxtApelidoRemetente, AbsoluteConstraints(170, 55, 370, -1))
         jbtnCapturaEndereco!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtnCapturaEndereco!!.text = "Captura Endereço"
-        jbtnCapturaEndereco!!.addActionListener { evt: ActionEvent -> jbtnCapturaEnderecoActionPerformed(evt) }
+        jbtnCapturaEndereco!!.addActionListener { jbtnCapturaEnderecoActionPerformed() }
         jPanel1.add(jbtnCapturaEndereco, AbsoluteConstraints(280, 80, -1, -1))
         jbtnNaoSeiCep!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtnNaoSeiCep!!.foreground = Color(0, 0, 153)
         jbtnNaoSeiCep!!.text = "Não sei o CEP"
-        jbtnNaoSeiCep!!.addActionListener { evt: ActionEvent -> jbtnNaoSeiCepActionPerformed(evt) }
+        jbtnNaoSeiCep!!.addActionListener { jbtnNaoSeiCepActionPerformed() }
         jPanel1.add(jbtnNaoSeiCep, AbsoluteConstraints(440, 80, -1, -1))
         jtxtEnderecoRemetente!!.background = SystemColor.info
         jPanel1.add(jtxtEnderecoRemetente, AbsoluteConstraints(170, 105, 370, -1))
@@ -393,7 +394,7 @@ class TelaEditarRemetente : JDialog {
         jLabel13.text = "* UF:"
         jPanel1.add(jLabel13, AbsoluteConstraints(470, 210, -1, -1))
         jcmbUfRemetente!!.background = SystemColor.info
-        jcmbUfRemetente!!.addActionListener { evt: ActionEvent -> jcmbUfRemetenteActionPerformed(evt) }
+        jcmbUfRemetente!!.addActionListener { jcmbUfRemetenteActionPerformed() }
         jPanel1.add(jcmbUfRemetente, AbsoluteConstraints(495, 205, -1, -1))
         jPanel1.add(jtxtEmailRemetente, AbsoluteConstraints(170, 230, 290, -1))
         jPanel1.add(jtxtTelefoneRemetente, AbsoluteConstraints(170, 255, 180, -1))
@@ -416,11 +417,11 @@ class TelaEditarRemetente : JDialog {
         setBounds((screenSize.width - 599) / 2, (screenSize.height - 434) / 2, 599, 434)
     }
 
-    private fun jbtnConfirmarActionPerformed(evt: ActionEvent) {
+    private fun jbtnConfirmarActionPerformed() {
         gravaRemetente()
     }
 
-    private fun jbtnCapturaEnderecoActionPerformed(evt: ActionEvent) {
+    private fun jbtnCapturaEnderecoActionPerformed() {
         var blnProxy = false
         val configuracaoBean = ConfiguracaoBean.instance
         if (jtxtCepRemetente!!.text.trim { it <= ' ' } == "") {
@@ -497,7 +498,7 @@ class TelaEditarRemetente : JDialog {
         }
     }
 
-    private fun jbtnNaoSeiCepActionPerformed(evt: ActionEvent) {
+    private fun jbtnNaoSeiCepActionPerformed() {
         try {
             Geral.displayURL(ConfiguracaoBean.instance!!.paginaPesquisaCep)
         } catch (ex: EnderecadorExcecao) {
@@ -510,15 +511,15 @@ class TelaEditarRemetente : JDialog {
         }
     }
 
-    private fun jbtnVoltarActionPerformed(evt: ActionEvent) {
+    private fun jbtnVoltarActionPerformed() {
         isVisible = false
     }
 
-    private fun jbtnLimparActionPerformed(evt: ActionEvent) {
+    private fun jbtnLimparActionPerformed() {
         limparCampos()
     }
 
-    private fun jcmbUfRemetenteActionPerformed(evt: ActionEvent) {}
+    private fun jcmbUfRemetenteActionPerformed() {}
 
     companion object {
         private val logger = Logger.getLogger(TelaEditarRemetente::class.java)

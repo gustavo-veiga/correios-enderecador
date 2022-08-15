@@ -25,7 +25,7 @@ class GrupoDestinatarioDao {
 
     @Throws(DaoException::class)
     fun incluirGrupoDestinatario(grupoDestinatarioBean: GrupoDestinatarioBean) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -44,7 +44,7 @@ class GrupoDestinatarioDao {
 
     @Throws(DaoException::class)
     fun excluirGrupoDestinatario(filtro: String) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         try {
             conexao!!.autoCommit = true
             if (filtro == "") throw DaoException("Não foi possível excluir dados!")
@@ -57,7 +57,7 @@ class GrupoDestinatarioDao {
 
     @Throws(DaoException::class)
     fun excluirDestinatarioDoGrupo(filtro: String) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         try {
             conexao!!.autoCommit = true
             if (filtro == "") throw DaoException("Não foi possível excluir dados!")
@@ -70,8 +70,8 @@ class GrupoDestinatarioDao {
 
     @Throws(DaoException::class)
     fun recuperaGrupoDestinatario(filtro: String?): ArrayList<DestinatarioBean> {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val dados = ArrayList<DestinatarioBean>()
         val sql = StringBuilder()
         try {

@@ -27,7 +27,7 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
     private fun buscaCepSemProxy(cepPesquisa: String?): EnderecoBean {
         val url: URL?
         val con: HttpURLConnection?
-        val `in`: BufferedReader?
+        val reader: BufferedReader?
         val linha = StringBuilder()
         val enderecoBean = EnderecoBean()
         val configuracaoBean = ConfiguracaoBean.instance
@@ -40,14 +40,14 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         try {
             url = URL(configuracaoBean.urlBuscaCep + "?cep=" + cepPesquisa + "&chave=" + configuracaoBean.chave)
             con = url.openConnection() as HttpURLConnection
-            `in` = BufferedReader(InputStreamReader(con!!.inputStream))
+            reader = BufferedReader(InputStreamReader(con.inputStream))
             var inputLine: String
-            while (`in`.readLine().also { inputLine = it } != null) {
+            while (reader.readLine().also { inputLine = it } != null) {
                 inputLine = StringEscapeUtils.unescapeHtml(inputLine.trim { it <= ' ' })
                 linha.append(inputLine)
             }
-            `in`.close()
-            var codigoErro = -1
+            reader.close()
+            val codigoErro: Int
             var startTag = "<Versao>"
             var endTag = "</Versao>"
             var start = linha.indexOf(startTag) + startTag.length
@@ -126,8 +126,7 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         val encodedUserPwd = Base64.getEncoder()
             .encodeToString((configuracaoBean.dominio + "\\" + usuarioBean.usuario + ":" + usuarioBean.pwd).toByteArray())
         con!!.setRequestProperty("Proxy-Authorization", "Basic $encodedUserPwd")
-        var `in`: BufferedReader? = null
-        `in` = try {
+        val reader: BufferedReader? = try {
             BufferedReader(InputStreamReader(con.inputStream))
         } catch (ex2: IOException) {
             throw ConfiguracaoProxyException("Erro ao consultar o CEP.", ex2)
@@ -135,12 +134,12 @@ class EnderecoDnecDao : InterfaceEnderecoDao {
         val linha = StringBuilder()
         try {
             var inputLine: String
-            while (`in`!!.readLine().also { inputLine = it } != null) {
+            while (reader!!.readLine().also { inputLine = it } != null) {
                 inputLine = StringEscapeUtils.unescapeHtml(inputLine.trim { it <= ' ' })
                 linha.append(inputLine)
             }
-            `in`.close()
-            var codigoErro = -1
+            reader.close()
+            val codigoErro: Int
             var startTag = "<Versao>"
             var endTag = "</Versao>"
             var start = linha.indexOf(startTag) + startTag.length

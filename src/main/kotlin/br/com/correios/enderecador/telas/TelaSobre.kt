@@ -12,21 +12,23 @@ import javax.swing.JButton
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import java.awt.event.MouseAdapter
-import java.awt.event.ActionEvent
 import br.com.correios.enderecador.util.Geral
 import br.com.correios.enderecador.excecao.EnderecadorExcecao
 import br.com.correios.enderecador.dao.ConfiguracaoDao
 import br.com.correios.enderecador.dao.DaoException
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.annotation.Singleton
 import java.awt.Cursor
 import java.awt.Font
-import java.awt.Frame
+import java.awt.Font.BOLD
+import java.awt.Font.PLAIN
 import java.awt.Toolkit
 import java.awt.event.MouseEvent
 import java.lang.Exception
 
-class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
+@Singleton
+class TelaSobre : JDialog() {
     private var configuracaoBean: ConfiguracaoBean? = null
     private var jTabbedPane1: JTabbedPane? = null
     private var jlDirInstalacao: JLabel? = null
@@ -109,31 +111,31 @@ class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
         jLabel1.horizontalAlignment = 0
         jLabel1.icon = ImageIcon(javaClass.getResource("/imagens/logo_enderecador.gif"))
         jLabel1.horizontalTextPosition = 0
-        jLabel2.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel2.font = Font(Font.SANS_SERIF, PLAIN, 10)
         jLabel2.text = "Todos os direitos reservados, 2007"
-        jLabel3.font = Font(Font.SANS_SERIF, Font.PLAIN, 13)
+        jLabel3.font = Font(Font.SANS_SERIF, PLAIN, 13)
         jLabel3.text = "Endereçador Escritório"
-        jLabel4.font = Font(Font.SANS_SERIF, Font.BOLD, 13)
+        jLabel4.font = Font(Font.SANS_SERIF, BOLD, 13)
         jLabel4.text = "Empresa Brasileira de Correios e Telégrafos"
         jlVersao!!.font = Font("MS Sans Serif", 1, 14)
         jlVersao!!.text = "Versão"
-        jLabel9.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel9.font = Font("Tahoma", BOLD, 11)
         jLabel9.text = "Sugestões e aperfeiçoamentos: "
-        jLabel11.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel11.font = Font("Tahoma", BOLD, 11)
         jLabel11.text =
             "<html><head></head><body><a href=http://www.correios.com.br/servicos/falecomoscorreios/default.cfm>Fale com os Correios</a></body></html>"
         jLabel11.toolTipText = ""
         jLabel11.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(evt: MouseEvent) {
-                jLabel11MouseClicked(evt)
+                jLabel11MouseClicked()
             }
 
             override fun mouseEntered(evt: MouseEvent) {
-                jLabel11MouseEntered(evt)
+                jLabel11MouseEntered()
             }
 
             override fun mouseExited(evt: MouseEvent) {
-                jLabel11MouseExited(evt)
+                jLabel11MouseExited()
             }
         })
         val jPanel1Layout = GroupLayout(jPanel1)
@@ -186,13 +188,13 @@ class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
             )
         jTabbedPane1!!.addTab("Sobre", jPanel1)
         jPanel2.border = BorderFactory.createEtchedBorder()
-        jLabel5.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel5.font = Font("Tahoma", BOLD, 11)
         jLabel5.text = "A Chave de Registro possibilita o uso de todas as"
-        jLabel6.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel6.font = Font("Tahoma", BOLD, 11)
         jLabel6.text = "funcionalidades do  Endereçador, mas não impede"
-        jLabel7.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel7.font = Font("Tahoma", BOLD, 11)
         jLabel7.text = "a utilização do sistema."
-        jLabel8.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel8.font = Font("Tahoma", BOLD, 11)
         jLabel8.text = "Chave de registro:"
         val jPanel2Layout = GroupLayout(jPanel2)
         jPanel2.layout = jPanel2Layout
@@ -223,25 +225,25 @@ class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
                     .addContainerGap(93, 32767)
             )
         jTabbedPane1!!.addTab("Chave de registro", jPanel2)
-        jlJava!!.font = Font("Tahoma", Font.PLAIN, 10)
+        jlJava!!.font = Font("Tahoma", PLAIN, 10)
         jlJava!!.text = "jlJVM"
-        jlJavaHome!!.font = Font("Tahoma", Font.PLAIN, 10)
+        jlJavaHome!!.font = Font("Tahoma", PLAIN, 10)
         jlJavaHome!!.text = "jlJavaHome"
-        jlSistemaOperacional!!.font = Font("Tahoma", Font.PLAIN, 10)
+        jlSistemaOperacional!!.font = Font("Tahoma", PLAIN, 10)
         jlSistemaOperacional!!.text = "jlSistemaOperacional"
-        jLabel16.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel16.font = Font("Tahoma", BOLD, 11)
         jLabel16.text = "Java:"
-        jLabel17.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel17.font = Font("Tahoma", BOLD, 11)
         jLabel17.text = "Java Home:"
-        jLabel12.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel12.font = Font("Tahoma", BOLD, 11)
         jLabel12.text = "Sistema Operacional:"
-        jLabel13.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel13.font = Font("Tahoma", BOLD, 11)
         jLabel13.text = "Diretório instalação:"
-        jlDirInstalacao!!.font = Font("Tahoma", Font.PLAIN, 10)
+        jlDirInstalacao!!.font = Font("Tahoma", PLAIN, 10)
         jlDirInstalacao!!.text = "jlDirInstalacao"
-        jLabel14.font = Font("Tahoma", Font.BOLD, 11)
+        jLabel14.font = Font("Tahoma", BOLD, 11)
         jLabel14.text = "VM:"
-        jlVM!!.font = Font("Tahoma", Font.PLAIN, 10)
+        jlVM!!.font = Font("Tahoma", PLAIN, 10)
         jlVM!!.text = "jlVM"
         val jPanel3Layout = GroupLayout(jPanel3)
         jPanel3.layout = jPanel3Layout
@@ -313,7 +315,7 @@ class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
             )
         jTabbedPane1!!.addTab("Info. Sistema", jPanel3)
         jbtnOk.text = "Ok"
-        jbtnOk.addActionListener { evt: ActionEvent -> jbtnOkActionPerformed(evt) }
+        jbtnOk.addActionListener {jbtnOkActionPerformed() }
         val layout = GroupLayout(contentPane)
         contentPane.layout = layout
         layout.horizontalGroup = layout.createParallelGroup(1)
@@ -336,7 +338,7 @@ class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
         setBounds((screenSize.width - 407) / 2, (screenSize.height - 420) / 2, 407, 420)
     }
 
-    private fun jLabel11MouseClicked(evt: MouseEvent) {
+    private fun jLabel11MouseClicked() {
         try {
             Geral.displayURL(ConfiguracaoBean.instance!!.paginaFaleConosco)
         } catch (ex: EnderecadorExcecao) {
@@ -350,15 +352,15 @@ class TelaSobre(parent: Frame?, modal: Boolean) : JDialog(parent, modal) {
         }
     }
 
-    private fun jLabel11MouseExited(evt: MouseEvent) {
+    private fun jLabel11MouseExited() {
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
-    private fun jLabel11MouseEntered(evt: MouseEvent) {
+    private fun jLabel11MouseEntered() {
         cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
     }
 
-    private fun jbtnOkActionPerformed(evt: ActionEvent) {
+    private fun jbtnOkActionPerformed() {
         configuracaoBean!!.chave = jtxtChave!!.text
         try {
             ConfiguracaoDao.instance!!.alterarConfiguracao(configuracaoBean!!)

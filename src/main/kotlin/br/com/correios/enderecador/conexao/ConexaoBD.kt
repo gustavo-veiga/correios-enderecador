@@ -14,6 +14,7 @@ import kotlin.jvm.JvmStatic
 
 class ConexaoBD {
     private var conexao: Connection? = null
+
     @Throws(ConnectException::class)
     fun recuperaConexao(): Connection? {
         try {
@@ -60,22 +61,12 @@ class ConexaoBD {
         @JvmStatic
         var instance: ConexaoBD? = null
             get() {
-                if (field == null) field = ConexaoBD()
+                if (field == null) {
+                    field = ConexaoBD()
+                }
                 return field
             }
             private set
         var logger = Logger.getLogger(ConexaoBD::class.java)
-        @Throws(ConnectException::class)
-        @JvmStatic
-        fun main(args: Array<String>) {
-            var con: Connection? = null
-            val conexaoBD = instance
-            try {
-                con = conexaoBD!!.recuperaConexao()
-            } catch (ex: ConnectException) {
-                ex.printStackTrace()
-            }
-            if (con != null) conexaoBD!!.liberarConexao()
-        }
     }
 }

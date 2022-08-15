@@ -24,7 +24,7 @@ class GrupoDao {
 
     @Throws(DaoException::class)
     fun incluirGrupo(grupoBean: GrupoBean) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -42,7 +42,7 @@ class GrupoDao {
 
     @Throws(DaoException::class)
     fun alterarGrupo(grupoBean: GrupoBean) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -61,7 +61,7 @@ class GrupoDao {
 
     @Throws(DaoException::class)
     fun excluirGrupo(grupo: String?) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -78,8 +78,8 @@ class GrupoDao {
 
     @Throws(DaoException::class)
     fun recuperaGrupo(filtro: String): ArrayList<GrupoBean> {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val dados = ArrayList<GrupoBean>()
         val sql = StringBuilder()
         try {
@@ -103,8 +103,8 @@ class GrupoDao {
 
     @Throws(DaoException::class)
     fun recuperaUltimoGrupo(): String {
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
+        val rs: ResultSet?
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         var ultimoNumero = ""
         try {

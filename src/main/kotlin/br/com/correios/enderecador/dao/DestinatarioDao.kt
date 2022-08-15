@@ -64,9 +64,9 @@ class DestinatarioDao {
     private val chave: String
         get() {
             val chave: String
-            var stmt: PreparedStatement? = null
+            val stmt: PreparedStatement?
             val sql = StringBuilder()
-            var rs: ResultSet? = null
+            val rs: ResultSet?
             sql.append(" CALL IDENTITY() ")
             try {
                 stmt = conexao!!.prepareStatement(sql.toString())
@@ -84,7 +84,7 @@ class DestinatarioDao {
 
     @Throws(DaoException::class)
     fun alterarDestinatario(destinatarioBean: DestinatarioBean) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true
@@ -121,7 +121,7 @@ class DestinatarioDao {
 
     @Throws(DaoException::class)
     fun excluirDestinatario(destinatario: String?) {
-        var stmt: PreparedStatement? = null
+        val stmt: PreparedStatement?
         val sql = StringBuilder()
         try {
             conexao!!.autoCommit = true

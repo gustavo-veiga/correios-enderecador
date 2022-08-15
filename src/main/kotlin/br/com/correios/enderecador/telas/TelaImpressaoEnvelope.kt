@@ -21,7 +21,6 @@ import javax.swing.JToolBar
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 import javax.swing.BorderFactory
 import javax.swing.DefaultComboBoxModel
 import br.com.correios.enderecador.util.DocumentoPersonalizado
@@ -30,10 +29,14 @@ import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.excecao.EnderecadorExcecao
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
+import org.koin.core.annotation.Singleton
 import java.awt.*
+import java.awt.Font.PLAIN
+import java.awt.Font.SANS_SERIF
 import java.util.*
 
-class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : JFrame(), Observer {
+@Singleton
+class TelaImpressaoEnvelope : JFrame(), Observer {
     private val model = DestinatarioImpressaoTableModel("C")
     private var vecDestinatarioImpressao = Vector<DestinatarioBean?>()
     private var relatorio = "A4Envelope14.jasper"
@@ -66,6 +69,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         carregaRemetente()
         val observable = EnderecadorObservable.instance
         observable?.addObserver(this)
+        setLocationRelativeTo(null)
     }
 
     private fun configuracoesAdicionais() {
@@ -100,7 +104,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         } catch (e: DaoException) {
             logger.error(e.message, e)
             JOptionPane.showMessageDialog(
-                frmParent,
+                this,
                 "Não foi possivel carregar relação de remetentes",
                 "Endereçador ECT",
                 2
@@ -109,6 +113,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
     }
 
     private fun initComponents() {
+        setLocationRelativeTo(null)
         val jbtgTipoEtiqueta = ButtonGroup()
         val jbtgTipoImpressao = ButtonGroup()
         val jToolBar1 = JToolBar()
@@ -147,23 +152,23 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         jrbtRemetenteDestinatario = JRadioButton()
         isResizable = true
         title = "Etiquetas para cartas"
-        jbtSelecionarDestinatario!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtSelecionarDestinatario!!.font = Font(SANS_SERIF, PLAIN, 9)
         jbtSelecionarDestinatario!!.icon = ImageIcon(javaClass.getResource("/imagens/addusuario.gif"))
         jbtSelecionarDestinatario!!.text = "Selecionar destinatário"
         jbtSelecionarDestinatario!!.isEnabled = false
         jbtSelecionarDestinatario!!.horizontalTextPosition = 0
         jbtSelecionarDestinatario!!.maximumSize = Dimension(110, 60)
         jbtSelecionarDestinatario!!.verticalTextPosition = 3
-        jbtSelecionarDestinatario!!.addActionListener { evt: ActionEvent -> jbtSelecionarDestinatarioActionPerformed(evt) }
+        jbtSelecionarDestinatario!!.addActionListener { jbtSelecionarDestinatarioActionPerformed() }
         jToolBar1.add(jbtSelecionarDestinatario)
-        jbtSelecionarGrupo!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtSelecionarGrupo!!.font = Font(SANS_SERIF, PLAIN, 9)
         jbtSelecionarGrupo!!.icon = ImageIcon(javaClass.getResource("/imagens/addusuarios.gif"))
         jbtSelecionarGrupo!!.text = "Selecionar grupo"
         jbtSelecionarGrupo!!.isEnabled = false
         jbtSelecionarGrupo!!.horizontalTextPosition = 0
         jbtSelecionarGrupo!!.maximumSize = Dimension(90, 60)
         jbtSelecionarGrupo!!.verticalTextPosition = 3
-        jbtSelecionarGrupo!!.addActionListener { evt: ActionEvent -> jbtSelecionarGrupoActionPerformed(evt) }
+        jbtSelecionarGrupo!!.addActionListener { jbtSelecionarGrupoActionPerformed() }
         jToolBar1.add(jbtSelecionarGrupo)
         jbtRemoverDestinatario!!.font = Font("MS Sans Serif", 0, 9)
         jbtRemoverDestinatario!!.icon = ImageIcon(javaClass.getResource("/imagens/remover.gif"))
@@ -172,33 +177,33 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         jbtRemoverDestinatario!!.horizontalTextPosition = 0
         jbtRemoverDestinatario!!.maximumSize = Dimension(110, 60)
         jbtRemoverDestinatario!!.verticalTextPosition = 3
-        jbtRemoverDestinatario!!.addActionListener { evt: ActionEvent -> jbtRemoverDestinatarioActionPerformed(evt) }
+        jbtRemoverDestinatario!!.addActionListener { jbtRemoverDestinatarioActionPerformed() }
         jToolBar1.add(jbtRemoverDestinatario)
-        jbtRemoverTodos!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtRemoverTodos!!.font = Font(SANS_SERIF, PLAIN, 9)
         jbtRemoverTodos!!.icon = ImageIcon(javaClass.getResource("/imagens/removerTodos.gif"))
         jbtRemoverTodos!!.text = "Remover todos"
         jbtRemoverTodos!!.isEnabled = false
         jbtRemoverTodos!!.horizontalTextPosition = 0
         jbtRemoverTodos!!.maximumSize = Dimension(90, 60)
         jbtRemoverTodos!!.verticalTextPosition = 3
-        jbtRemoverTodos!!.addActionListener { evt: ActionEvent -> jbtRemoverTodosActionPerformed(evt) }
+        jbtRemoverTodos!!.addActionListener { jbtRemoverTodosActionPerformed() }
         jToolBar1.add(jbtRemoverTodos)
-        jbtnVisializarAR!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtnVisializarAR!!.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnVisializarAR!!.icon = ImageIcon(javaClass.getResource("/imagens/print.gif"))
         jbtnVisializarAR!!.text = "Visualizar AR"
         jbtnVisializarAR!!.isEnabled = false
         jbtnVisializarAR!!.horizontalTextPosition = 0
         jbtnVisializarAR!!.maximumSize = Dimension(90, 60)
         jbtnVisializarAR!!.verticalTextPosition = 3
-        jbtnVisializarAR!!.addActionListener { evt: ActionEvent -> jbtnVisializarARActionPerformed(evt) }
+        jbtnVisializarAR!!.addActionListener { jbtnVisializarARActionPerformed() }
         jToolBar1.add(jbtnVisializarAR)
-        jbtVisualizar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtVisualizar.font = Font(SANS_SERIF, PLAIN, 9)
         jbtVisualizar.icon = ImageIcon(javaClass.getResource("/imagens/IMPRIMIR.gif"))
         jbtVisualizar.text = "Visualizar"
         jbtVisualizar.horizontalTextPosition = 0
         jbtVisualizar.maximumSize = Dimension(90, 60)
         jbtVisualizar.verticalTextPosition = 3
-        jbtVisualizar.addActionListener { evt: ActionEvent -> jbtVisualizarActionPerformed(evt) }
+        jbtVisualizar.addActionListener { jbtVisualizarActionPerformed() }
         jToolBar1.add(jbtVisualizar)
         jPanel1.border = BorderFactory.createEtchedBorder()
         jPanel2.border = BorderFactory.createTitledBorder(
@@ -210,28 +215,28 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         )
         jlblImpressao!!.icon = ImageIcon(javaClass.getResource("/imagens/tipo_14etq.gif"))
         jbtgTipoEtiqueta.add(jrbt14Rotulos)
-        jrbt14Rotulos!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jrbt14Rotulos!!.font = Font(SANS_SERIF, PLAIN, 10)
         jrbt14Rotulos!!.isSelected = true
         jrbt14Rotulos!!.text = "14 rótulos por vez, distribuidos numa folha"
         jrbt14Rotulos!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jrbt14Rotulos!!.margin = Insets(0, 0, 0, 0)
-        jrbt14Rotulos!!.addActionListener { evt: ActionEvent -> jrbt14RotulosActionPerformed(evt) }
+        jrbt14Rotulos!!.addActionListener { jrbt14RotulosActionPerformed() }
         jbtgTipoEtiqueta.add(jrbt10Rotulos)
-        jrbt10Rotulos!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jrbt10Rotulos!!.font = Font(SANS_SERIF, PLAIN, 10)
         jrbt10Rotulos!!.text = "10 rótulos por vez, distribuídos numa folha "
         jrbt10Rotulos!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jrbt10Rotulos!!.margin = Insets(0, 0, 0, 0)
-        jrbt10Rotulos!!.addActionListener { evt: ActionEvent -> jrbt10RotulosActionPerformed(evt) }
-        jLabel2.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jrbt10Rotulos!!.addActionListener { jrbt10RotulosActionPerformed() }
+        jLabel2.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel2.text = "(com impressão do tratamento)"
-        jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel1.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel1.text = "Folhas do tamanho:"
         jcmbFolha!!.model = DefaultComboBoxModel(arrayOf("A4", "Carta"))
-        jcmbFolha!!.addActionListener { evt: ActionEvent -> jcmbFolhaActionPerformed(evt) }
-        jLabelTamanhoFonte.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jcmbFolha!!.addActionListener { jcmbFolhaActionPerformed() }
+        jLabelTamanhoFonte.font = Font(SANS_SERIF, PLAIN, 10)
         jLabelTamanhoFonte.text = "Tamanho da Fonte:"
         jcmbTamanhoFonte!!.model = DefaultComboBoxModel(arrayOf("Pequeno", "Médio", "Grande"))
-        jcmbTamanhoFonte!!.addActionListener { evt: ActionEvent -> jcmbTamanhoFonteActionPerformed(evt) }
+        jcmbTamanhoFonte!!.addActionListener { jcmbTamanhoFonteActionPerformed() }
         val jPanel2Layout = GroupLayout(jPanel2)
         jPanel2.layout = jPanel2Layout
         jPanel2Layout.horizontalGroup = jPanel2Layout.createParallelGroup(1)
@@ -311,24 +316,24 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
                     .addContainerGap(-1, 32767)
             )
         jPanel3.border = BorderFactory.createTitledBorder(" ")
-        jlSelecioneRemetente!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jlSelecioneRemetente!!.font = Font(SANS_SERIF, PLAIN, 10)
         jlSelecioneRemetente!!.text = "Selecione o remetente:"
-        jlNumeroVezes!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jlNumeroVezes!!.font = Font(SANS_SERIF, PLAIN, 10)
         jlNumeroVezes!!.text = "Quantas vezes deseja imprimir o remetente:"
-        jLabel5.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel5.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel5.text = "Incluir telefone na etiqueta:"
-        jchkTelRemetente!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jchkTelRemetente!!.font = Font(SANS_SERIF, PLAIN, 10)
         jchkTelRemetente!!.text = "do remetente"
         jchkTelRemetente!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jchkTelRemetente!!.margin = Insets(0, 0, 0, 0)
-        jchkTelDestinatario!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jchkTelDestinatario!!.font = Font(SANS_SERIF, PLAIN, 10)
         jchkTelDestinatario!!.text = "do destinatário"
         jchkTelDestinatario!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jchkTelDestinatario!!.isEnabled = false
         jchkTelDestinatario!!.margin = Insets(0, 0, 0, 0)
         carregaRemetente()
         jtxtNumeroVezes!!.document = DocumentoPersonalizado(4, 1)
-        jLabel6.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel6.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel6.text = "Quero imprimir a partir da etiqueta nº:"
         jtxtNumeroEtiqueta!!.document = DocumentoPersonalizado(3, 1)
         val jPanel3Layout = GroupLayout(jPanel3)
@@ -419,27 +424,27 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         jtblDestinatarioImpressao!!.model = model
         jScrollPane1.setViewportView(jtblDestinatarioImpressao)
         jPanel4.border = BorderFactory.createEtchedBorder()
-        jLabel7.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel7.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel7.text = "Quero imprimir etiquetas de:"
         jbtgTipoImpressao.add(jrbtRemetente)
-        jrbtRemetente!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jrbtRemetente!!.font = Font(SANS_SERIF, PLAIN, 10)
         jrbtRemetente!!.isSelected = true
         jrbtRemetente!!.text = "Remetente"
         jrbtRemetente!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jrbtRemetente!!.margin = Insets(0, 0, 0, 0)
-        jrbtRemetente!!.addActionListener { evt: ActionEvent -> jrbtRemetenteActionPerformed(evt) }
+        jrbtRemetente!!.addActionListener { jrbtRemetenteActionPerformed() }
         jbtgTipoImpressao.add(jrbtDestinatario)
-        jrbtDestinatario!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jrbtDestinatario!!.font = Font(SANS_SERIF, PLAIN, 10)
         jrbtDestinatario!!.text = "Destinatário"
         jrbtDestinatario!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jrbtDestinatario!!.margin = Insets(0, 0, 0, 0)
-        jrbtDestinatario!!.addActionListener { evt: ActionEvent -> jrbtDestinatarioActionPerformed(evt) }
+        jrbtDestinatario!!.addActionListener { jrbtDestinatarioActionPerformed() }
         jbtgTipoImpressao.add(jrbtRemetenteDestinatario)
-        jrbtRemetenteDestinatario!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jrbtRemetenteDestinatario!!.font = Font(SANS_SERIF, PLAIN, 10)
         jrbtRemetenteDestinatario!!.text = "Remetente e destinatário"
         jrbtRemetenteDestinatario!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
         jrbtRemetenteDestinatario!!.margin = Insets(0, 0, 0, 0)
-        jrbtRemetenteDestinatario!!.addActionListener { evt: ActionEvent -> jrbtRemetenteDestinatarioActionPerformed(evt) }
+        jrbtRemetenteDestinatario!!.addActionListener { jrbtRemetenteDestinatarioActionPerformed() }
         val jPanel4Layout = GroupLayout(jPanel4)
         jPanel4.layout = jPanel4Layout
         jPanel4Layout.horizontalGroup = jPanel4Layout.createParallelGroup(1)
@@ -488,7 +493,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         pack()
     }
 
-    private fun jbtnVisializarARActionPerformed(evt: ActionEvent) {
+    private fun jbtnVisializarARActionPerformed() {
         val impressao = Impressao()
         if (vecDestinatarioImpressao.size < 1) {
             JOptionPane.showMessageDialog(
@@ -529,7 +534,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         return tamanhoFonte.substring(0, 1)
     }
 
-    private fun jbtVisualizarActionPerformed(evt: ActionEvent) {
+    private fun jbtVisualizarActionPerformed() {
         val impressao = Impressao()
         if ((jrbtDestinatario!!.isSelected || jrbtRemetenteDestinatario!!.isSelected) && vecDestinatarioImpressao.size < 1) {
             JOptionPane.showMessageDialog(
@@ -628,7 +633,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         }
     }
 
-    private fun jcmbFolhaActionPerformed(evt: ActionEvent) {
+    private fun jcmbFolhaActionPerformed() {
         if (jcmbFolha!!.selectedItem == "A4") {
             if (jrbt14Rotulos!!.isSelected) {
                 relatorio = "A4Envelope14.jasper"
@@ -642,7 +647,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         }
     }
 
-    private fun jrbtRemetenteDestinatarioActionPerformed(evt: ActionEvent) {
+    private fun jrbtRemetenteDestinatarioActionPerformed() {
         jbtSelecionarDestinatario!!.isEnabled = true
         jbtRemoverDestinatario!!.isEnabled = true
         jbtSelecionarGrupo!!.isEnabled = true
@@ -658,7 +663,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         jbtnVisializarAR!!.isEnabled = true
     }
 
-    private fun jrbtDestinatarioActionPerformed(evt: ActionEvent) {
+    private fun jrbtDestinatarioActionPerformed() {
         jbtSelecionarDestinatario!!.isEnabled = true
         jbtRemoverDestinatario!!.isEnabled = true
         jbtSelecionarGrupo!!.isEnabled = true
@@ -674,7 +679,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         jbtnVisializarAR!!.isEnabled = false
     }
 
-    private fun jrbtRemetenteActionPerformed(evt: ActionEvent) {
+    private fun jrbtRemetenteActionPerformed() {
         jbtSelecionarDestinatario!!.isEnabled = false
         jbtRemoverDestinatario!!.isEnabled = false
         jbtSelecionarGrupo!!.isEnabled = false
@@ -691,7 +696,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         jbtnVisializarAR!!.isEnabled = false
     }
 
-    private fun jrbt10RotulosActionPerformed(evt: ActionEvent) {
+    private fun jrbt10RotulosActionPerformed() {
         jlblImpressao!!.icon = ImageIcon(javaClass.getResource("/imagens/tipo_10etq.gif"))
         if (jcmbFolha!!.selectedItem == "A4") {
             relatorio = "A4Envelope10.jasper"
@@ -701,7 +706,7 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         imprimirTratamento = true
     }
 
-    private fun jrbt14RotulosActionPerformed(evt: ActionEvent) {
+    private fun jrbt14RotulosActionPerformed() {
         jlblImpressao!!.icon = ImageIcon(javaClass.getResource("/imagens/tipo_14etq.gif"))
         if (jcmbFolha!!.selectedItem == "A4") {
             relatorio = "A4Envelope14.jasper"
@@ -711,13 +716,13 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         imprimirTratamento = false
     }
 
-    private fun jbtRemoverTodosActionPerformed(evt: ActionEvent) {
+    private fun jbtRemoverTodosActionPerformed() {
         vecDestinatarioImpressao.removeAllElements()
         model.destinatario = vecDestinatarioImpressao
         jtblDestinatarioImpressao!!.model = model
     }
 
-    private fun jbtRemoverDestinatarioActionPerformed(evt: ActionEvent) {
+    private fun jbtRemoverDestinatarioActionPerformed() {
         if (jtblDestinatarioImpressao!!.selectedRow == -1) {
             JOptionPane.showMessageDialog(
                 this,
@@ -733,21 +738,21 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
         model.destinatario = vecDestinatarioImpressao
     }
 
-    private fun jbtSelecionarGrupoActionPerformed(evt: ActionEvent) {
-        val telaPesquisarGrupo = TelaPesquisarGrupo(frmParent, true, vecDestinatarioImpressao)
+    private fun jbtSelecionarGrupoActionPerformed() {
+        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatarioImpressao)
         telaPesquisarGrupo.isVisible = true
         model.destinatario = vecDestinatarioImpressao
         jtblDestinatarioImpressao!!.model = model
     }
 
-    private fun jbtSelecionarDestinatarioActionPerformed(evt: ActionEvent) {
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario(frmParent, true, vecDestinatarioImpressao)
+    private fun jbtSelecionarDestinatarioActionPerformed() {
+        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatarioImpressao)
         telaPesquisaDestinatario.isVisible = true
         model.destinatario = vecDestinatarioImpressao
         jtblDestinatarioImpressao!!.model = model
     }
 
-    private fun jcmbTamanhoFonteActionPerformed(evt: ActionEvent) {}
+    private fun jcmbTamanhoFonteActionPerformed() {}
     override fun update(o: Observable, arg: Any) {
         if (arg is RemetenteBean) {
             val remetente = arg
@@ -770,10 +775,5 @@ class TelaImpressaoEnvelope private constructor(private val frmParent: Frame) : 
 
     companion object {
         private val logger = Logger.getLogger(TelaImpressaoEnvelope::class.java)
-        private var instance: TelaImpressaoEnvelope? = null
-        fun getInstance(parent: Frame): TelaImpressaoEnvelope? {
-            if (instance == null) instance = TelaImpressaoEnvelope(parent)
-            return instance
-        }
     }
 }

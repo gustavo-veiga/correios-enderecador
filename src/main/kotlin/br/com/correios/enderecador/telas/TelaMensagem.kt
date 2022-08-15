@@ -64,14 +64,14 @@ class TelaMensagem : JDialog() {
         jButton1.icon = ImageIcon(javaClass.getResource("/imagens/OK.gif"))
         jButton1.toolTipText = "Ok"
         jButton1.preferredSize = Dimension(70, 40)
-        jButton1.addActionListener { evt: ActionEvent -> jButton1ActionPerformed(evt) }
+        jButton1.addActionListener { jButton1ActionPerformed() }
         jPanel2.add(jButton1, "East")
         contentPane.add(jPanel2, "South")
         size = Dimension(605, 246)
         setLocationRelativeTo(null)
     }
 
-    private fun jButton1ActionPerformed(evt: ActionEvent) {
+    private fun jButton1ActionPerformed() {
         if (jchkMensagem!!.isSelected) globalBean!!.mostraMensagem = "NAO"
         isVisible = false
     }

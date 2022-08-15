@@ -20,7 +20,6 @@ import javax.swing.JLabel
 import br.com.correios.enderecador.util.DocumentoPersonalizado
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import java.awt.event.ActionEvent
 import br.com.correios.enderecador.bean.UsuarioBean
 import br.com.correios.enderecador.excecao.ConfiguracaoProxyException
 import br.com.correios.enderecador.dao.ConnectionException
@@ -30,6 +29,8 @@ import br.com.correios.enderecador.dao.CepInvalidoException
 import org.apache.log4j.Logger
 import org.jdesktop.layout.GroupLayout
 import java.awt.*
+import java.awt.Font.PLAIN
+import java.awt.Font.SANS_SERIF
 import java.text.ParseException
 
 class TelaEditarDestinatario : JDialog {
@@ -320,70 +321,70 @@ class TelaEditarDestinatario : JDialog {
         title = "Selecionar destinatário"
         isResizable = false
         jToolBar1.border = BorderFactory.createEtchedBorder()
-        jbtnConfirmar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtnConfirmar.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnConfirmar.icon = ImageIcon(javaClass.getResource("/imagens/OK.gif"))
         jbtnConfirmar.text = "Confirmar"
         jbtnConfirmar.horizontalTextPosition = 0
         jbtnConfirmar.maximumSize = Dimension(90, 60)
         jbtnConfirmar.verticalTextPosition = 3
-        jbtnConfirmar.addActionListener { evt: ActionEvent -> jbtnConfirmarActionPerformed(evt) }
+        jbtnConfirmar.addActionListener { jbtnConfirmarActionPerformed() }
         jToolBar1.add(jbtnConfirmar)
-        jbtnLimpar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtnLimpar.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnLimpar.icon = ImageIcon(javaClass.getResource("/imagens/cancelar.gif"))
         jbtnLimpar.text = "Limpar tela"
         jbtnLimpar.horizontalTextPosition = 0
         jbtnLimpar.maximumSize = Dimension(90, 60)
         jbtnLimpar.verticalTextPosition = 3
-        jbtnLimpar.addActionListener { evt: ActionEvent -> jbtnLimparActionPerformed(evt) }
+        jbtnLimpar.addActionListener { jbtnLimparActionPerformed() }
         jToolBar1.add(jbtnLimpar)
-        jbtnVoltar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtnVoltar.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnVoltar.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
         jbtnVoltar.text = "Voltar"
         jbtnVoltar.horizontalTextPosition = 0
         jbtnVoltar.maximumSize = Dimension(90, 60)
         jbtnVoltar.verticalTextPosition = 3
-        jbtnVoltar.addActionListener { evt: ActionEvent -> jbtnVoltarActionPerformed(evt) }
+        jbtnVoltar.addActionListener { jbtnVoltarActionPerformed() }
         jToolBar1.add(jbtnVoltar)
         contentPane.add(jToolBar1, "North")
         jPanel1.border = BorderFactory.createEtchedBorder()
-        jLabel2.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel2.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel2.text = "* Empresa/Nome (Linha 1):"
-        jLabel3.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel3.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel3.text = "Empresa/Nome (Linha 2):"
-        jLabel4.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel4.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel4.text = "* CEP:"
-        jLabel5.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel5.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel5.text = "* Endereço:"
-        jLabel6.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel6.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel6.text = "* Número/Lote:"
-        jLabel7.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel7.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel7.text = "Complemento:"
-        jLabel8.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel8.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel8.text = "Bairro:"
-        jLabel9.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel9.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel9.text = "* Cidade:"
-        jLabel10.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel10.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel10.text = "E-mail:"
-        jLabel11.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel11.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel11.text = "Telefone:"
-        jLabel12.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel12.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel12.text = "CEP Caixa Postal:"
-        jbtnCapturaEndereco!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtnCapturaEndereco!!.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnCapturaEndereco!!.text = "Captura Endereço"
-        jbtnCapturaEndereco!!.addActionListener { evt -> jbtnCapturaEnderecoActionPerformed(evt) }
-        jbtnNaoSeiCep!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
+        jbtnCapturaEndereco!!.addActionListener { jbtnCapturaEnderecoActionPerformed() }
+        jbtnNaoSeiCep!!.font = Font(SANS_SERIF, PLAIN, 9)
         jbtnNaoSeiCep!!.foreground = Color(0, 0, 153)
         jbtnNaoSeiCep!!.text = "Não sei o CEP"
-        jbtnNaoSeiCep!!.addActionListener { evt: ActionEvent -> jbtnNaoSeiCepActionPerformed(evt) }
-        jtxtEnderecoDestinatario!!.addActionListener { evt: ActionEvent -> jtxtEnderecoDestinatarioActionPerformed(evt) }
-        jLabel13.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jbtnNaoSeiCep!!.addActionListener { jbtnNaoSeiCepActionPerformed() }
+        jtxtEnderecoDestinatario!!.addActionListener { jtxtEnderecoDestinatarioActionPerformed() }
+        jLabel13.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel13.text = "* UF:"
-        jcmbUfDestinatario!!.addActionListener { evt: ActionEvent -> jcmbUfDestinatarioActionPerformed(evt) }
-        jLabel14.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jcmbUfDestinatario!!.addActionListener { jcmbUfDestinatarioActionPerformed() }
+        jLabel14.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel14.text = "Fax:"
-        jLabel15.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel15.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel15.text = "Cx. Postal:"
-        jLabel16.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+        jLabel16.font = Font(SANS_SERIF, PLAIN, 10)
         jLabel16.text = "Tratamento (Sr., Sra.):"
         val jPanel1Layout = GroupLayout(jPanel1)
         jPanel1.layout = jPanel1Layout
@@ -605,11 +606,11 @@ class TelaEditarDestinatario : JDialog {
         setLocationRelativeTo(null)
     }
 
-    private fun jbtnConfirmarActionPerformed(evt: ActionEvent) {
+    private fun jbtnConfirmarActionPerformed() {
         gravaDestinatario()
     }
 
-    private fun jbtnCapturaEnderecoActionPerformed(evt: ActionEvent) {
+    private fun jbtnCapturaEnderecoActionPerformed() {
         var blnProxy = false
         val configuracaoBean = ConfiguracaoBean.instance
         if (jtxtCepDestinatario!!.text.trim { it <= ' ' } == "") {
@@ -681,8 +682,7 @@ class TelaEditarDestinatario : JDialog {
         }
     }
 
-    private fun jbtnNaoSeiCepActionPerformed(evt: ActionEvent) {
-        val geral: Geral? = null
+    private fun jbtnNaoSeiCepActionPerformed() {
         try {
             Geral.displayURL(ConfiguracaoBean.instance!!.paginaPesquisaCep)
         } catch (ex: EnderecadorExcecao) {
@@ -695,16 +695,16 @@ class TelaEditarDestinatario : JDialog {
         }
     }
 
-    private fun jbtnVoltarActionPerformed(evt: ActionEvent) {
+    private fun jbtnVoltarActionPerformed() {
         isVisible = false
     }
 
-    private fun jbtnLimparActionPerformed(evt: ActionEvent) {
+    private fun jbtnLimparActionPerformed() {
         limparCampos()
     }
 
-    private fun jcmbUfDestinatarioActionPerformed(evt: ActionEvent) {}
-    private fun jtxtEnderecoDestinatarioActionPerformed(evt: ActionEvent) {}
+    private fun jcmbUfDestinatarioActionPerformed() {}
+    private fun jtxtEnderecoDestinatarioActionPerformed() {}
 
     companion object {
         private val logger = Logger.getLogger(TelaEditarDestinatario::class.java)

@@ -82,7 +82,7 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
         jbtConfirmar.horizontalTextPosition = 0
         jbtConfirmar.maximumSize = Dimension(90, 60)
         jbtConfirmar.verticalTextPosition = 3
-        jbtConfirmar.addActionListener { evt: ActionEvent -> jbtConfirmarActionPerformed(evt) }
+        jbtConfirmar.addActionListener { jbtConfirmarActionPerformed() }
         jToolBar1.add(jbtConfirmar)
         jbtPesquisar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtPesquisar.icon = ImageIcon(javaClass.getResource("/imagens/binoculo.gif"))
@@ -90,7 +90,7 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
         jbtPesquisar.horizontalTextPosition = 0
         jbtPesquisar.maximumSize = Dimension(90, 60)
         jbtPesquisar.verticalTextPosition = 3
-        jbtPesquisar.addActionListener { evt: ActionEvent -> jbtPesquisarActionPerformed(evt) }
+        jbtPesquisar.addActionListener { jbtPesquisarActionPerformed() }
         jToolBar1.add(jbtPesquisar)
         jbtSair.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
         jbtSair.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
@@ -98,7 +98,7 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
         jbtSair.horizontalTextPosition = 0
         jbtSair.maximumSize = Dimension(90, 60)
         jbtSair.verticalTextPosition = 3
-        jbtSair.addActionListener { evt: ActionEvent -> jbtSairActionPerformed(evt) }
+        jbtSair.addActionListener { jbtSairActionPerformed() }
         jToolBar1.add(jbtSair)
         contentPane.add(jToolBar1, "North")
         jPanel1.layout = AbsoluteLayout()
@@ -114,11 +114,11 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
         setBounds((screenSize.width - 598) / 2, (screenSize.height - 349) / 2, 598, 349)
     }
 
-    private fun jbtSairActionPerformed(evt: ActionEvent) {
+    private fun jbtSairActionPerformed() {
         isVisible = false
     }
 
-    private fun jbtPesquisarActionPerformed(evt: ActionEvent) {
+    private fun jbtPesquisarActionPerformed() {
         try {
             val nomeDestinatario = jtxtDestinatario!!.text.trim { it <= ' ' }
             var index = -1
@@ -147,8 +147,7 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
             } else {
                 jlstDestinatario!!.selectedIndex = index
                 val tamanhoJscrool = jScrollPane1!!.verticalScrollBar.maximum
-                var value = 0
-                value = index * tamanhoJscrool / vecDestinatario.size
+                val value = index * tamanhoJscrool / vecDestinatario.size
                 jScrollPane1!!.verticalScrollBar.value = value
             }
         } catch (ex: Exception) {
@@ -156,7 +155,7 @@ class TelaPesquisarDestinatario(parent: Frame?, modal: Boolean, vecDestinatario:
         }
     }
 
-    private fun jbtConfirmarActionPerformed(evt: ActionEvent) {
+    private fun jbtConfirmarActionPerformed() {
         if (jlstDestinatario!!.isSelectionEmpty) {
             JOptionPane.showMessageDialog(this, "Não existe nenhum destinatário selecionado", "Endereçador ECT", 1)
             return
