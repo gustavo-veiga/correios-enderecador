@@ -23,7 +23,7 @@ import javax.swing.BorderFactory
 import br.com.correios.enderecador.util.DocumentoPersonalizado
 import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
-import br.com.correios.enderecador.tablemodel.DestinatarioImpressaoTableModel
+import br.com.correios.enderecador.tablemodel.RecipientPrintTableModel
 import br.com.correios.enderecador.util.Report
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
@@ -36,7 +36,7 @@ import java.awt.Font.SANS_SERIF
 class PrintOrderView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
-    private val recipientPrintTableModel = DestinatarioImpressaoTableModel(true)
+    private val recipientPrintTableModel = RecipientPrintTableModel(true)
     private val recipientPrintTable = JTable()
 
     private val senderOptions = JComboBox<RemetenteBean>()

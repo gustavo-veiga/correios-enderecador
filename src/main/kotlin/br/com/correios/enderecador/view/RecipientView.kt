@@ -3,7 +3,7 @@ package br.com.correios.enderecador.view
 import br.com.correios.enderecador.dao.DestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
-import br.com.correios.enderecador.tablemodel.DestinatarioTableModel
+import br.com.correios.enderecador.tablemodel.RecipientTableModel
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
@@ -21,7 +21,7 @@ class RecipientView(
     private val recipientDao: DestinatarioDao,
     private val recipientGroupDao: GrupoDestinatarioDao,
 ) : JFrame() {
-    private val recipientTableModel = DestinatarioTableModel()
+    private val recipientTableModel = RecipientTableModel()
     private val recipientSearch = JTextField()
     private val recipientTable = JTable()
 

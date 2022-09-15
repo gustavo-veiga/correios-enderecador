@@ -4,7 +4,7 @@ import br.com.correios.enderecador.bean.DestinatarioBean
 import br.com.correios.enderecador.util.isNumeric
 import javax.swing.JOptionPane
 
-class DestinatarioImpressaoTableModel(withDeliveryToNeighbor: Boolean = false) : GenericTableModel<DestinatarioBean>() {
+class RecipientPrintTableModel(withDeliveryToNeighbor: Boolean = false) : GenericTableModel<DestinatarioBean>() {
     private val TAMANHO_CAMPO_ENTREGA_VIZINHO = 40
 
     init {

@@ -2,7 +2,7 @@ package br.com.correios.enderecador.tablemodel
 
 import br.com.correios.enderecador.bean.ConteudoDeclaradoBean
 
-class DeclaracaoConteudoTableModel : GenericTableModel<ConteudoDeclaradoBean>() {
+class ContentDeclarationTableModel : GenericTableModel<ConteudoDeclaradoBean>() {
     init {
         columns = arrayOf("Conteúdo", "Quantidade", "Valor")
         dataTable = mutableListOf(

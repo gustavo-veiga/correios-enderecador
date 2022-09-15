@@ -21,7 +21,7 @@ import javax.swing.ImageIcon
 import javax.swing.BorderFactory
 import javax.swing.DefaultComboBoxModel
 import br.com.correios.enderecador.exception.EnderecadorExcecao
-import br.com.correios.enderecador.tablemodel.DestinatarioImpressaoTableModel
+import br.com.correios.enderecador.tablemodel.RecipientPrintTableModel
 import br.com.correios.enderecador.util.*
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
@@ -35,7 +35,7 @@ import java.util.*
 class PrintEnvelopeView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
-    private val recipientPrintTableModel = DestinatarioImpressaoTableModel()
+    private val recipientPrintTableModel = RecipientPrintTableModel()
     private val recipientPrintTable = JTable()
 
     private val removeAllRecipient = JButton()

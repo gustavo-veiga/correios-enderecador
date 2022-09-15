@@ -6,7 +6,7 @@ import br.com.correios.enderecador.dao.RemetenteDao
 import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
-import br.com.correios.enderecador.tablemodel.DestinatarioImpressaoTableModel
+import br.com.correios.enderecador.tablemodel.RecipientPrintTableModel
 import br.com.correios.enderecador.util.FontSize
 import br.com.correios.enderecador.util.Report
 import net.miginfocom.swing.MigLayout
@@ -20,7 +20,7 @@ import javax.swing.*
 class PrintEnvelopeDirectView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
-    private val recipientPrintTableModel = DestinatarioImpressaoTableModel()
+    private val recipientPrintTableModel = RecipientPrintTableModel()
     private val recipientPrintTable = JTable()
 
     private val withPrintSender = JCheckBox()

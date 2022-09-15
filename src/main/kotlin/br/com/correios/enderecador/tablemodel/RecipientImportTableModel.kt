@@ -2,7 +2,7 @@ package br.com.correios.enderecador.tablemodel
 
 import br.com.correios.enderecador.bean.DestinatarioBean
 
-class IncorporaDestinatarioTableModel : GenericTableModel<DestinatarioBean>() {
+class RecipientImportTableModel : GenericTableModel<DestinatarioBean>() {
     init {
         columns = arrayOf(
             "Tratamento",

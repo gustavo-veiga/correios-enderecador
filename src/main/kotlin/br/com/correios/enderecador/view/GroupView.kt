@@ -4,7 +4,7 @@ import br.com.correios.enderecador.bean.GrupoBean
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
-import br.com.correios.enderecador.tablemodel.DestinatarioTableModel
+import br.com.correios.enderecador.tablemodel.RecipientTableModel
 import br.com.correios.enderecador.util.getAllItems
 import br.com.correios.enderecador.util.setSelectedItem
 import net.miginfocom.swing.MigLayout
@@ -23,7 +23,7 @@ class GroupView(
     private val groupDao: GrupoDao,
     private val recipientGroupDao: GrupoDestinatarioDao
 ) : JFrame() {
-    private val recipientTableModel = DestinatarioTableModel()
+    private val recipientTableModel = RecipientTableModel()
     private val recipientTable = JTable()
     private val groupSearch = JTextField()
     private val groupList = JList<GrupoBean>()

@@ -8,7 +8,7 @@ import java.awt.event.WindowEvent
 import java.awt.Color
 import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
-import br.com.correios.enderecador.tablemodel.DeclaracaoConteudoTableModel
+import br.com.correios.enderecador.tablemodel.ContentDeclarationTableModel
 import br.com.correios.enderecador.util.Report
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
@@ -26,7 +26,7 @@ class ContentDeclarationView(
 ) : KoinComponent, JDialog() {
     private val print: Impressao = get()
 
-    private val contentDeclarationTableModel = DeclaracaoConteudoTableModel()
+    private val contentDeclarationTableModel = ContentDeclarationTableModel()
     private val contentDeclarationTable = JTable()
     private val totalWeight = JTextField()
 
@@ -53,20 +53,20 @@ class ContentDeclarationView(
                 font = Font(SANS_SERIF, PLAIN, 9)
                 icon = ImageIcon(this@ContentDeclarationView.javaClass.getResource("/imagens/print.gif"))
                 text = "Imprimir"
-                horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(47, 55)
                 verticalTextPosition = 3
+                horizontalTextPosition = 0
                 addActionListener { jButton1ActionPerformed() }
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, 0, 9)
                 icon = ImageIcon(this@ContentDeclarationView.javaClass.getResource("/imagens/remover.gif"))
                 text = "Excluir item"
-                horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(47, 55)
                 verticalTextPosition = 3
+                horizontalTextPosition = 0
                 addActionListener { jButton2ActionPerformed() }
             })
         }, "North")

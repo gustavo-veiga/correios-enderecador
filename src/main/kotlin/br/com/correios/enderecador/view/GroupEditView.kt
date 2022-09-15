@@ -16,7 +16,7 @@ import javax.swing.ImageIcon
 import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
-import br.com.correios.enderecador.tablemodel.DestinatarioTableModel
+import br.com.correios.enderecador.tablemodel.RecipientTableModel
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
@@ -33,8 +33,8 @@ class GroupEditView : KoinComponent, JDialog {
     private val recipientDao: DestinatarioDao = get()
     private val groupDao: GrupoDao = get()
 
-    private val recipientGroupModel = DestinatarioTableModel()
-    private val recipientModel = DestinatarioTableModel()
+    private val recipientGroupModel = RecipientTableModel()
+    private val recipientModel = RecipientTableModel()
 
     private val recipientGroupTable = JTable()
     private val recipientTable = JTable()
@@ -145,7 +145,7 @@ class GroupEditView : KoinComponent, JDialog {
         pack()
     }
 
-    private fun insertAndRemoveItems(table: JTable, modelToInsert: DestinatarioTableModel, modelToRemove: DestinatarioTableModel) {
+    private fun insertAndRemoveItems(table: JTable, modelToInsert: RecipientTableModel, modelToRemove: RecipientTableModel) {
         table.selectedRows.reversed().forEach { row ->
             modelToRemove.moveTo(modelToInsert, row)
         }
