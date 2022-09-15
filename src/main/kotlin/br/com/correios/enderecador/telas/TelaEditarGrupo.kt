@@ -1,389 +1,210 @@
 package br.com.correios.enderecador.telas
 
 import javax.swing.JDialog
-import br.com.correios.enderecador.bean.DestinatarioBean
 import javax.swing.JTable
 import javax.swing.JTextField
 import br.com.correios.enderecador.bean.GrupoBean
 import br.com.correios.enderecador.dao.DestinatarioDao
-import br.com.correios.enderecador.dao.DaoException
+import br.com.correios.enderecador.exception.DaoException
 import javax.swing.JOptionPane
 import javax.swing.JToolBar
 import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.JLabel
 import javax.swing.JScrollPane
-import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import javax.swing.table.DefaultTableModel
 import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
+import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
-import org.jdesktop.layout.GroupLayout
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.awt.Dimension
 import java.awt.Font
+import java.awt.Font.PLAIN
+import java.awt.Font.SANS_SERIF
 import java.awt.Frame
-import java.awt.Toolkit
-import java.lang.Exception
-import java.util.*
+import javax.swing.JTable.AUTO_RESIZE_OFF
 
 class TelaEditarGrupo : KoinComponent, JDialog {
-    private val grupoDao: GrupoDao = get()
-    private val destinatarioDao: DestinatarioDao = get()
-    private val grupoDestinatarioDao: GrupoDestinatarioDao = get()
+    private val recipientGroupDao: GrupoDestinatarioDao = get()
+    private val recipientDao: DestinatarioDao = get()
+    private val groupDao: GrupoDao = get()
 
-    private var blnIncluir: Boolean
-    private var nuGrupo: String = ""
-    private var vecDestinatario: Vector<DestinatarioBean?> = Vector()
-    private var vecDestinatarioGrupo: Vector<DestinatarioBean?> = Vector()
-    private val jTDestinatario = JTable()
-    private val jTDestinatarioGrupo =  JTable()
-    private val jtxtGrupo = JTextField()
+    private val recipientGroupModel = DestinatarioTableModel()
+    private val recipientModel = DestinatarioTableModel()
 
-    constructor(parent: Frame?, modal: Boolean) : super(parent, modal) {
+    private val recipientGroupTable = JTable()
+    private val recipientTable = JTable()
+    private val groupName = JTextField()
+
+    private var groupNumber = ""
+    private var isInclude = true
+
+    constructor(parent: Frame? = null, modal: Boolean = true) : super(parent, modal) {
         initComponents()
-        blnIncluir = true
-        configuracoesAdicionais()
+        setLocationRelativeTo(null)
         carregaListaDestinatario("")
     }
 
-    constructor(parent: Frame?, modal: Boolean, grupo: GrupoBean) : super(parent, modal) {
+    constructor(group: GrupoBean, parent: Frame? = null, modal: Boolean = true) : super(parent, modal) {
         initComponents()
-        blnIncluir = false
-        configuracoesAdicionais()
-        carregaListaDestinatario(grupo.numeroGrupo)
-        jtxtGrupo.text = grupo.descricaoGrupo
-        nuGrupo = grupo.numeroGrupo
+        isInclude = false
+        setLocationRelativeTo(null)
+        carregaListaDestinatario(group.numeroGrupo)
+        groupName.text = group.descricaoGrupo
+        groupNumber = group.numeroGrupo
     }
 
-    private fun configuracoesAdicionais() {
-        val screenSize = Toolkit.getDefaultToolkit().screenSize
-        val dialogSize = size
-        if (dialogSize.height > screenSize.height) dialogSize.height = screenSize.height
-        if (dialogSize.width > screenSize.width) dialogSize.width = screenSize.width
-        setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2)
-        jTDestinatario.model = DestinatarioTableModel()
-        jTDestinatarioGrupo.model = DestinatarioTableModel()
-    }
-
-    private fun carregaListaDestinatario(grupo: String?) {
-        var model: DestinatarioTableModel?
+    private fun carregaListaDestinatario(grupo: String) {
         try {
-            val arrayDestinatarioGrupo: ArrayList<DestinatarioBean>
-            val arrayDestinatario: ArrayList<DestinatarioBean>
-            if (grupo == "") {
-                arrayDestinatario = destinatarioDao.recuperaDestinatario("")
-                arrayDestinatarioGrupo = ArrayList()
+            if (grupo.isEmpty()) {
+                recipientModel.setAll(recipientDao.recuperaDestinatario())
+                recipientGroupModel.setAll(listOf())
             } else {
-                arrayDestinatario = destinatarioDao.recuperarDestinatarioForaDoGrupo(grupo!!)
-                arrayDestinatarioGrupo = destinatarioDao.recuperaDestinatarioPorGrupo(grupo)
+                recipientModel.setAll(recipientDao.recuperarDestinatarioForaDoGrupo(grupo))
+                recipientGroupModel.setAll(recipientDao.recuperaDestinatarioPorGrupo(grupo))
             }
-            var i = 0
-            while (i < arrayDestinatario.size) {
-                vecDestinatario.add(arrayDestinatario[i])
-                i++
-            }
-            model = jTDestinatario.model as DestinatarioTableModel
-            model.setDestinatario(arrayDestinatario)
-            i = 0
-            while (i < arrayDestinatarioGrupo.size) {
-                vecDestinatarioGrupo.add(arrayDestinatarioGrupo[i])
-                i++
-            }
-            model = jTDestinatarioGrupo.model as DestinatarioTableModel
-            model.setDestinatario(arrayDestinatarioGrupo)
         } catch (e: DaoException) {
             logger.error(e.message, e as Throwable)
-            JOptionPane.showMessageDialog(this, "Não foi possivel carregar relação de destinatários", "Endereçador ", 2)
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possivel carregar relação de destinatários",
+                "Endereçador ",
+                JOptionPane.WARNING_MESSAGE)
         }
     }
 
     private fun initComponents() {
-        val jToolBar1 = JToolBar()
-        val jbtConfirmar = JButton()
-        val jbtVoltar = JButton()
-        val jPanel1 = JPanel()
-        val jLabel1 = JLabel()
-        val jScrollPane1 = JScrollPane()
-        val jScrollPane2 = JScrollPane()
-        val jbtAdicionar = JButton()
-        val jbtRemover = JButton()
-        defaultCloseOperation = 2
         title = "Cadastrar Grupo"
-        jToolBar1.border = BorderFactory.createEtchedBorder()
-        jbtConfirmar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtConfirmar.icon = ImageIcon(javaClass.getResource("/imagens/OK.gif"))
-        jbtConfirmar.text = "Confirmar"
-        jbtConfirmar.horizontalTextPosition = 0
-        jbtConfirmar.maximumSize = Dimension(90, 60)
-        jbtConfirmar.verticalTextPosition = 3
-        jbtConfirmar.addActionListener { jbtConfirmarActionPerformed() }
-        jToolBar1.add(jbtConfirmar)
-        jbtVoltar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtVoltar.icon = ImageIcon(javaClass.getResource("/imagens/sair.gif"))
-        jbtVoltar.text = "Voltar"
-        jbtVoltar.horizontalTextPosition = 0
-        jbtVoltar.maximumSize = Dimension(90, 60)
-        jbtVoltar.verticalTextPosition = 3
-        jbtVoltar.addActionListener { jbtVoltarActionPerformed() }
-        jToolBar1.add(jbtVoltar)
-        jPanel1.border = BorderFactory.createEtchedBorder()
-        jLabel1.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jLabel1.text = "Grupo:"
-        jTDestinatario.model = DefaultTableModel(
-            arrayOf(
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
-        )
-        jTDestinatario.autoResizeMode = 0
-        jScrollPane1.setViewportView(jTDestinatario)
-        jTDestinatarioGrupo.model = DefaultTableModel(
-            arrayOf(
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4") as Array<*>
-        )
-        jTDestinatarioGrupo.autoResizeMode = 0
-        jScrollPane2.setViewportView(jTDestinatarioGrupo)
-        jbtAdicionar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtAdicionar.icon = ImageIcon(javaClass.getResource("/imagens/add.gif"))
-        jbtAdicionar.text = "Adicionar"
-        jbtAdicionar.addActionListener { jbtAdicionarActionPerformed() }
-        jbtRemover.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtRemover.icon = ImageIcon(javaClass.getResource("/imagens/rem.gif"))
-        jbtRemover.text = "Remover"
-        jbtRemover.addActionListener { jbtRemoverActionPerformed() }
-        val jPanel1Layout = GroupLayout(jPanel1)
-        jPanel1.layout = jPanel1Layout
-        jPanel1Layout.horizontalGroup = jPanel1Layout.createParallelGroup(1)
-            .add(
-                jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(
-                        jPanel1Layout.createParallelGroup(1)
-                            .add(
-                                jPanel1Layout.createSequentialGroup()
-                                    .add(jScrollPane1, -1, 279, 32767)
-                                    .addPreferredGap(0)
-                                    .add(
-                                        jPanel1Layout.createParallelGroup(1)
-                                            .add(jbtRemover).add(jbtAdicionar)
-                                    )
-                                    .addPreferredGap(0)
-                                    .add(jScrollPane2, -1, 275, 32767)
-                            )
-                            .add(
-                                jPanel1Layout.createSequentialGroup()
-                                    .add(jLabel1)
-                                    .addPreferredGap(0)
-                                    .add(jtxtGrupo, -2, 251, -2)
-                            )
-                    )
-                    .addContainerGap()
-            )
-        jPanel1Layout.verticalGroup = jPanel1Layout.createParallelGroup(1)
-            .add(
-                jPanel1Layout.createSequentialGroup()
-                    .addContainerGap().add(
-                        jPanel1Layout.createParallelGroup(3)
-                            .add(jLabel1)
-                            .add(jtxtGrupo, -2, -1, -2)
-                    )
-                    .add(
-                        jPanel1Layout.createParallelGroup(1)
-                            .add(
-                                jPanel1Layout.createSequentialGroup()
-                                    .add(15, 15, 15)
-                                    .add(
-                                        jPanel1Layout.createParallelGroup(1)
-                                            .add(jScrollPane1, -1, 222, 32767)
-                                            .add(jScrollPane2, -1, 222, 32767)
-                                    )
-                            )
-                            .add(
-                                jPanel1Layout.createSequentialGroup()
-                                    .add(70, 70, 70).add(jbtAdicionar)
-                                    .add(48, 48, 48).add(jbtRemover, -2, 25, -2)
-                                    .addPreferredGap(0, 65, 32767) as GroupLayout.Group
-                            )
-                    )
-                    .addContainerGap()
-            )
-        val layout = GroupLayout(contentPane)
-        contentPane.layout = layout
-        layout.horizontalGroup = layout.createParallelGroup(1)
-            .add(jToolBar1, -1, 687, 32767)
-            .add(jPanel1, -1, -1, 32767)
-        layout.verticalGroup = layout.createParallelGroup(1)
-            .add(
-                layout.createSequentialGroup()
-                    .add(jToolBar1, -2, 55, -2)
-                    .addPreferredGap(0)
-                    .add(jPanel1, -1, -1, 32767)
-            )
+        defaultCloseOperation = DISPOSE_ON_CLOSE
+
+        contentPane.add(JToolBar().apply {
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/OK.gif"))
+                text = "Confirmar"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtConfirmarActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/sair.gif"))
+                text = "Voltar"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { dispose() }
+            })
+        }, "North")
+
+        contentPane.add(JPanel().apply {
+            layout = MigLayout()
+
+            add(JLabel("Grupo:"), "split 2")
+
+            add(groupName, "pushx, width 150, wrap")
+
+            add(JScrollPane().apply {
+                setViewportView(recipientTable.apply {
+                    model = recipientModel
+                    autoResizeMode = AUTO_RESIZE_OFF
+                })
+            })
+
+            add(JPanel().apply {
+                layout = MigLayout("wrap 1")
+
+                add(JButton().apply {
+                    text = "Adicionar"
+                    font = Font(SANS_SERIF, PLAIN, 9)
+                    icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/add.gif"))
+                    addActionListener { insertAndRemoveItems(recipientTable, recipientGroupModel, recipientModel) }
+                })
+
+                add(JButton().apply {
+                    text = "Remover"
+                    font = Font(SANS_SERIF, PLAIN, 9)
+                    icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/rem.gif"))
+                    addActionListener { insertAndRemoveItems(recipientGroupTable, recipientModel, recipientGroupModel) }
+                })
+            })
+
+            add(JScrollPane().apply {
+                setViewportView(recipientGroupTable.apply {
+                    model = recipientGroupModel
+                    autoResizeMode = AUTO_RESIZE_OFF
+                })
+            })
+        })
+
         pack()
     }
 
-    private fun jbtRemoverActionPerformed() {
-        var model: DestinatarioTableModel?
-        val vecTemp = Vector<DestinatarioBean?>()
-        var arraySort = ArrayList<DestinatarioBean?>()
-        var destinatarioBean: DestinatarioBean? = DestinatarioBean()
-        try {
-            if (jTDestinatarioGrupo.selectedRowCount > 0) {
-                model = jTDestinatarioGrupo.model as DestinatarioTableModel
-                var i: Int
-                i = 0
-                while (i < jTDestinatarioGrupo.rowCount) {
-                    destinatarioBean = model.getDestinatario(i)
-                    if (!jTDestinatarioGrupo.isRowSelected(i)) {
-                        vecTemp.add(destinatarioBean)
-                    } else {
-                        vecDestinatario.add(destinatarioBean)
-                    }
-                    i++
-                }
-                vecDestinatarioGrupo.removeAllElements()
-                vecDestinatarioGrupo = vecTemp
-                i = 0
-                while (i < vecDestinatarioGrupo.size) {
-                    arraySort.add(vecDestinatarioGrupo[i])
-                    i++
-                }
-                arraySort.sortWith(destinatarioBean!!)
-                model = jTDestinatarioGrupo.model as DestinatarioTableModel
-                model.setDestinatario(arraySort)
-                vecDestinatarioGrupo.removeAllElements()
-                i = 0
-                while (i < arraySort.size) {
-                    vecDestinatarioGrupo.add(arraySort[i])
-                    i++
-                }
-                arraySort = ArrayList()
-                i = 0
-                while (i < vecDestinatario.size) {
-                    arraySort.add(vecDestinatario[i])
-                    i++
-                }
-                arraySort.sortWith(destinatarioBean)
-                model = jTDestinatario.model as DestinatarioTableModel
-                model.setDestinatario(arraySort)
-                vecDestinatario.removeAllElements()
-                i = 0
-                while (i < arraySort.size) {
-                    vecDestinatario.add(arraySort[i])
-                    i++
-                }
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
+    private fun insertAndRemoveItems(table: JTable, modelToInsert: DestinatarioTableModel, modelToRemove: DestinatarioTableModel) {
+        table.selectedRows.reversed().forEach { row ->
+            modelToRemove.moveTo(modelToInsert, row)
         }
-    }
-
-    private fun jbtAdicionarActionPerformed() {
-        var model: DestinatarioTableModel?
-        val vecTemp = Vector<DestinatarioBean?>()
-        var arraySort = ArrayList<DestinatarioBean?>()
-        var destinatarioBean: DestinatarioBean? = DestinatarioBean()
-        if (jTDestinatario.selectedRowCount > 0) {
-            model = jTDestinatario.model as DestinatarioTableModel
-            var i: Int
-            i = 0
-            while (i < jTDestinatario.rowCount) {
-                destinatarioBean = model.getDestinatario(i)
-                if (!jTDestinatario.isRowSelected(i)) {
-                    vecTemp.add(destinatarioBean)
-                } else {
-                    vecDestinatarioGrupo.add(destinatarioBean)
-                }
-                i++
-            }
-            vecDestinatario.removeAllElements()
-            vecDestinatario = vecTemp
-            i = 0
-            while (i < vecDestinatario.size) {
-                arraySort.add(vecDestinatario[i])
-                i++
-            }
-            Collections.sort(arraySort, destinatarioBean)
-            model = jTDestinatario.model as DestinatarioTableModel
-            model.setDestinatario(arraySort)
-            vecDestinatario.removeAllElements()
-            i = 0
-            while (i < arraySort.size) {
-                vecDestinatario.add(arraySort[i])
-                i++
-            }
-            arraySort = ArrayList()
-            i = 0
-            while (i < vecDestinatarioGrupo.size) {
-                arraySort.add(vecDestinatarioGrupo[i])
-                i++
-            }
-            Collections.sort(arraySort, destinatarioBean)
-            model = jTDestinatarioGrupo.model as DestinatarioTableModel
-            model.setDestinatario(arraySort)
-            vecDestinatarioGrupo.removeAllElements()
-            i = 0
-            while (i < arraySort.size) {
-                vecDestinatarioGrupo.add(arraySort[i])
-                i++
-            }
-        }
-    }
-
-    private fun jbtVoltarActionPerformed() {
-        isVisible = false
+        modelToInsert.orderBy()
+        modelToRemove.orderBy()
     }
 
     private fun jbtConfirmarActionPerformed() {
-        var destinatarioBean: DestinatarioBean?
-        if (jtxtGrupo.text.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "O campo grupo deve ser preenchido!", "Endereçador", 2)
-            jtxtGrupo.requestFocus()
+        if (groupName.text.isBlank()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "O campo grupo deve ser preenchido!",
+                "Endereçador",
+                JOptionPane.WARNING_MESSAGE)
+            groupName.requestFocus()
         } else {
             try {
-                if (blnIncluir) {
-                    grupoDao.incluirGrupo(GrupoBean(
-                            numeroGrupo = nuGrupo,
-                            descricaoGrupo = jtxtGrupo.text
+                if (isInclude) {
+                    groupDao.incluirGrupo(GrupoBean(
+                        numeroGrupo = groupNumber,
+                        descricaoGrupo = groupName.text
                     ))
-                    nuGrupo = grupoDao.recuperaUltimoGrupo()
-                    for (bean in vecDestinatarioGrupo) {
-                        destinatarioBean = bean
-                        grupoDestinatarioDao.incluirGrupoDestinatario(GrupoDestinatarioBean(
-                            numeroGrupo = nuGrupo,
-                            numeroDestinatario = destinatarioBean!!.numeroDestinatario
+                    groupNumber = groupDao.recuperaUltimoGrupo()
+                    recipientGroupModel.forEach {
+                        recipientGroupDao.incluirGrupoDestinatario(GrupoDestinatarioBean(
+                            numeroGrupo = groupNumber,
+                            numeroDestinatario = it.numeroDestinatario!!
                         ))
                     }
-                    JOptionPane.showMessageDialog(null, "Dados gravados com sucesso!", "Endereçador", 1)
-                    blnIncluir = false
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Dados gravados com sucesso!",
+                        "Endereçador",
+                        JOptionPane.INFORMATION_MESSAGE)
+                    isInclude = false
                 } else {
-                    grupoDao.alterarGrupo(GrupoBean(
-                        numeroGrupo = nuGrupo,
-                        descricaoGrupo = jtxtGrupo.text
+                    groupDao.alterarGrupo(GrupoBean(
+                        numeroGrupo = groupNumber,
+                        descricaoGrupo = groupName.text
                     ))
-                    grupoDestinatarioDao.excluirGrupoDestinatario(nuGrupo)
-                    for (bean in vecDestinatarioGrupo) {
-                        destinatarioBean = bean
-                        grupoDestinatarioDao.incluirGrupoDestinatario(GrupoDestinatarioBean(
-                            numeroGrupo = nuGrupo,
-                            numeroDestinatario = destinatarioBean!!.numeroDestinatario
+                    recipientGroupDao.excluirGrupoDestinatario(groupNumber)
+                    recipientGroupModel.forEach {
+                        recipientGroupDao.incluirGrupoDestinatario(GrupoDestinatarioBean(
+                            numeroGrupo = groupNumber,
+                            numeroDestinatario = it.numeroDestinatario!!
                         ))
                     }
-                    JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso!", "Endereçador", 1)
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Dados atualizados com sucesso!",
+                        "Endereçador",
+                        JOptionPane.INFORMATION_MESSAGE)
                 }
             } catch (ge: DaoException) {
                 logger.error(ge.message, ge)
-                JOptionPane.showMessageDialog(null, "Não foi possivel gravar dados", "Endereçador", 2)
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Não foi possivel gravar dados",
+                    "Endereçador",
+                    JOptionPane.WARNING_MESSAGE)
             }
         }
     }

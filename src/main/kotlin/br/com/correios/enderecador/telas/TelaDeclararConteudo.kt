@@ -1,174 +1,133 @@
 package br.com.correios.enderecador.telas
 
+import br.com.correios.enderecador.bean.ConteudoDeclaradoBean
 import br.com.correios.enderecador.bean.DestinatarioBean
 import br.com.correios.enderecador.bean.RemetenteBean
-import javax.swing.table.DefaultTableModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.awt.Color
 import br.com.correios.enderecador.util.Impressao
-import br.com.correios.enderecador.excecao.EnderecadorExcecao
+import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.util.Report
+import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.awt.Dimension
 import java.awt.Font
-import java.awt.Frame
-import java.util.*
+import java.awt.Font.PLAIN
+import java.awt.Font.SANS_SERIF
 import javax.swing.*
 
 class TelaDeclararConteudo(
-    parent: Frame?,
-    modal: Boolean,
-    vecDestinatario: Vector<DestinatarioBean?>,
-    remetente: RemetenteBean
-) : JDialog(parent, modal) {
+    private val vecDestinatario: List<DestinatarioBean>,
     private val remetente: RemetenteBean
-    private val model: DefaultTableModel
-    private var vecDestinatario: Vector<DestinatarioBean?> = Vector()
-    private var jTable1: JTable? = null
-    private var txtPesoTotal: JTextField? = null
+) : KoinComponent, JDialog() {
+    private val print: Impressao = get()
+
+    private val contentDeclarationTableModel = DeclaracaoConteudoTableModel()
+    private val contentDeclarationTable = JTable()
+    private val totalWeight = JTextField()
 
     init {
-        val data = arrayOf(
-            arrayOf<String?>(null, null, null),
-            arrayOf<String?>(null, null, null),
-            arrayOf<String?>(null, null, null),
-            arrayOf<String?>(null, null, null),
-            arrayOf<String?>(null, null, null),
-            arrayOf<String?>(null, null, null)
-        )
-        val columnNames = arrayOf("Conteúdo", "Quantidade", "Valor")
-        model = DefaultTableModel(data, columnNames)
         initComponents()
-        this.remetente = remetente
-        this.vecDestinatario = vecDestinatario
     }
 
     private fun initComponents() {
-        val jToolBar1 = JToolBar()
-        val jButton1 = JButton()
-        val jButton2 = JButton()
-        val jScrollPane1 = JScrollPane()
-        jTable1 = JTable()
-        txtPesoTotal = JTextField()
-        val jLabel1 = JLabel()
-        val jLabel3 = JLabel()
-        defaultCloseOperation = 0
         title = "Declaração de Conteúdo"
+        size = Dimension(689, 328)
         isResizable = false
+        defaultCloseOperation = DO_NOTHING_ON_CLOSE
+        setLocationRelativeTo(null)
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(evt: WindowEvent) {
                 fecharJanela()
             }
         })
-        jToolBar1.isRollover = true
-        jButton1.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jButton1.icon = ImageIcon(javaClass.getResource("/imagens/print.gif"))
-        jButton1.text = "Imprimir"
-        jButton1.horizontalTextPosition = 0
-        jButton1.maximumSize = Dimension(90, 60)
-        jButton1.minimumSize = Dimension(47, 55)
-        jButton1.verticalTextPosition = 3
-        jButton1.addActionListener { jButton1ActionPerformed() }
-        jToolBar1.add(jButton1)
-        jButton2.font = Font(Font.SANS_SERIF, 0, 9)
-        jButton2.icon = ImageIcon(javaClass.getResource("/imagens/remover.gif"))
-        jButton2.text = "Excluir item"
-        jButton2.horizontalTextPosition = 0
-        jButton2.maximumSize = Dimension(90, 60)
-        jButton2.minimumSize = Dimension(47, 55)
-        jButton2.verticalTextPosition = 3
-        jButton2.addActionListener { jButton2ActionPerformed() }
-        jToolBar1.add(jButton2)
-        jScrollPane1.name = ""
-        jTable1!!.model = model
-        jTable1!!.setSelectionMode(0)
-        jScrollPane1.setViewportView(jTable1)
-        txtPesoTotal!!.horizontalAlignment = 4
-        txtPesoTotal!!.text = "0"
-        jLabel1.text = "Peso total (kg):"
-        jLabel3.foreground = Color(51, 51, 255)
-        jLabel3.text = "* Após o preenchimento de cada campo, pressionar a tecla <tab>"
-        val layout = GroupLayout(contentPane)
-        contentPane.layout = layout
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(
-                    layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(
-                            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(jToolBar1, GroupLayout.Alignment.TRAILING, -1, -1, 32767)
-                                .addGroup(
-                                    layout.createSequentialGroup()
-                                        .addComponent(jLabel1).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtPesoTotal, -2, 78, -2)
-                                )
-                                .addComponent(jScrollPane1, -2, 672, -2)
-                        )
-                )
-                .addGroup(
-                    GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(-1, 32767)
-                        .addComponent(jLabel3).addContainerGap()
-                )
-        )
-        layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(
-                    layout.createSequentialGroup()
-                        .addComponent(jToolBar1, -2, 57, -2)
-                        .addGap(1, 1, 1)
-                        .addComponent(jLabel3, -2, 14, -2)
-                        .addGap(3, 3, 3)
-                        .addComponent(jScrollPane1, -2, 159, -2)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(
-                            layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtPesoTotal, -2, -1, -2)
-                                .addComponent(jLabel1)
-                        ).addGap(30, 30, 30)
-                )
-        )
-        jScrollPane1.accessibleContext.accessibleName = ""
-        getAccessibleContext().accessibleDescription = ""
-        size = Dimension(689, 328)
-        setLocationRelativeTo(null)
+
+        contentPane.add(JToolBar().apply {
+            isRollover = true
+
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaDeclararConteudo.javaClass.getResource("/imagens/print.gif"))
+                text = "Imprimir"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                minimumSize = Dimension(47, 55)
+                verticalTextPosition = 3
+                addActionListener { jButton1ActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, 0, 9)
+                icon = ImageIcon(this@TelaDeclararConteudo.javaClass.getResource("/imagens/remover.gif"))
+                text = "Excluir item"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                minimumSize = Dimension(47, 55)
+                verticalTextPosition = 3
+                addActionListener { jButton2ActionPerformed() }
+            })
+        }, "North")
+
+        contentPane.add(JPanel().apply {
+            layout = MigLayout()
+
+            add(JLabel().apply {
+                foreground = Color(51, 51, 255)
+                text = "* Após o preenchimento de cada campo, pressionar a tecla <tab>"
+            }, "wrap")
+
+            add(JScrollPane().apply {
+                setViewportView(contentDeclarationTable.apply {
+                    model = contentDeclarationTableModel
+                    setSelectionMode(0)
+                })
+            }, "span, grow, push")
+
+            add(JLabel().apply {
+                text = "Peso total (kg):"
+            }, "split 2")
+
+            add(totalWeight.apply {
+                horizontalAlignment = 4
+                text = "0"
+            })
+        }, "Center")
     }
 
     private fun jButton1ActionPerformed() {
-        val impressao = Impressao()
-        val itens = model.dataVector
+        val items = contentDeclarationTableModel.getAll()
         try {
-            impressao.imprimirDeclaracao("declaracao", itens, remetente, vecDestinatario, txtPesoTotal!!.text)
+            print.imprimirDeclaracao(Report.DECLARATION.file, items, remetente, vecDestinatario, totalWeight.text)
         } catch (ex: EnderecadorExcecao) {
-            LOGGER.error(ex.message, ex as Throwable)
+            LOGGER.error(ex.message, ex)
             JOptionPane.showMessageDialog(
                 this,
                 "Não foi possível imprimir a declaração de conteúdo",
                 "Endereçador",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
         }
         isVisible = false
     }
 
     private fun jButton2ActionPerformed() {
-        if (jTable1!!.selectedRow != -1) {
-            model.removeRow(jTable1!!.selectedRow)
-            val novaLinha = arrayOf<Any?>(null, null, null)
-            model.addRow(novaLinha)
+        if (contentDeclarationTable.selectedRow != -1) {
+            contentDeclarationTableModel.removeRowAt(contentDeclarationTable.selectedRow)
+            contentDeclarationTableModel.insertRow(ConteudoDeclaradoBean())
         }
     }
 
     private fun fecharJanela() {
-        val resposta = JOptionPane.showConfirmDialog(
+        val result = JOptionPane.showConfirmDialog(
             null,
             "A declaração de conteúdo não é armazenada. Deseja sair?",
             "Fechar Declaração de Conteúdo",
             JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        )
-        if (resposta == 0) defaultCloseOperation = 2
+            JOptionPane.WARNING_MESSAGE)
+        if (result == JOptionPane.YES_NO_OPTION) {
+            defaultCloseOperation = DISPOSE_ON_CLOSE
+        }
     }
 
     companion object {

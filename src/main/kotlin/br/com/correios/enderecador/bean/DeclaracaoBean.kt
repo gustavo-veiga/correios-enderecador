@@ -2,7 +2,7 @@ package br.com.correios.enderecador.bean
 
 import java.io.Serializable
 
-class DeclaracaoBean(
+data class DeclaracaoBean(
     var nomeRemetente: String,
     var enderecoRemetente: String,
     var endereco2Remetente: String,

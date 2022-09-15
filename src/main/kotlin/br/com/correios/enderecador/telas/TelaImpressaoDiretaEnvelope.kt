@@ -1,516 +1,370 @@
 package br.com.correios.enderecador.telas
 
-import javax.swing.JFrame
-import br.com.correios.enderecador.bean.DestinatarioBean
-import javax.swing.JCheckBox
-import javax.swing.JComboBox
-import javax.swing.JLabel
-import javax.swing.JRadioButton
-import javax.swing.JTable
-import br.com.correios.enderecador.util.EnderecadorObservable
 import br.com.correios.enderecador.util.TextoCellRenderer
-import javax.swing.DefaultCellEditor
 import br.com.correios.enderecador.bean.RemetenteBean
 import br.com.correios.enderecador.dao.RemetenteDao
-import br.com.correios.enderecador.dao.DaoException
-import br.com.correios.enderecador.dao.DestinatarioDao
-import br.com.correios.enderecador.dao.GrupoDao
-import javax.swing.JOptionPane
+import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.util.Impressao
-import br.com.correios.enderecador.excecao.EnderecadorExcecao
-import javax.swing.ButtonGroup
-import javax.swing.JToolBar
-import javax.swing.JButton
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.ImageIcon
-import javax.swing.BorderFactory
-import javax.swing.DefaultComboBoxModel
-import javax.swing.table.DefaultTableModel
+import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.util.FontSize
+import br.com.correios.enderecador.util.Report
+import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
-import org.jdesktop.layout.GroupLayout
 import org.koin.core.annotation.Singleton
 import java.awt.*
-import java.util.*
+import java.awt.Font.*
+import javax.swing.*
 
 @Singleton
 class TelaImpressaoDiretaEnvelope(
-    private val grupoDao: GrupoDao,
-    private val remetenteDao: RemetenteDao,
-    private val destinatarioDao: DestinatarioDao
-) : JFrame(), Observer {
-    private val model = DestinatarioImpressaoTableModel("C")
-    private var vecDestinatarioImpressao = Vector<DestinatarioBean?>()
-    private var jchkImprimirRemetente: JCheckBox? = null
-    private var jchkTelDestinatario: JCheckBox? = null
-    private var jcmbRemetente: JComboBox<String?>? = null
-    private var jcmbTamanhoFonte: JComboBox<String>? = null
-    private var jlblEnvelope: JLabel? = null
-    private var jrbEnvelopeC5: JRadioButton? = null
-    private var jrbEnvelopeC6: JRadioButton? = null
-    private var jtblDestinatarioImpressao: JTable? = null
+    private val senderDao: RemetenteDao,
+) : JFrame() {
+    private val recipientPrintTableModel = DestinatarioImpressaoTableModel()
+    private val recipientPrintTable = JTable()
+
+    private val withPrintSender = JCheckBox()
+    private val withPhoneRecipient = JCheckBox()
+    private val senderOptions = JComboBox<RemetenteBean>()
+    private val fontSizeOptions = JComboBox<FontSize>()
+    private val envelopeFigure = JLabel()
+    private val envelopeC5 = JRadioButton()
+    private val envelopeC6 = JRadioButton()
+    private val envelopeC6C5 = JRadioButton()
 
     init {
         initComponents()
         configuracoesAdicionais()
         carregaRemetente()
-        val observable = EnderecadorObservable.instance
-        observable?.addObserver(this)
         setLocationRelativeTo(null)
     }
 
     private fun configuracoesAdicionais() {
         var renderer = TextoCellRenderer(2)
-        var coluna = jtblDestinatarioImpressao!!.columnModel.getColumn(0)
-        coluna.cellRenderer = renderer
-        coluna.preferredWidth = 300
-        coluna = jtblDestinatarioImpressao!!.columnModel.getColumn(1)
-        coluna.preferredWidth = 300
-        coluna.cellRenderer = renderer
-        coluna = jtblDestinatarioImpressao!!.columnModel.getColumn(2)
-        coluna.preferredWidth = 120
-        coluna.cellRenderer = renderer
-        coluna = jtblDestinatarioImpressao!!.columnModel.getColumn(3)
+        recipientPrintTable.columnModel.getColumn(0).apply {
+            cellRenderer = renderer
+            preferredWidth = 300
+        }
+        recipientPrintTable.columnModel.getColumn(1).apply {
+            preferredWidth = 300
+            cellRenderer = renderer
+        }
+        recipientPrintTable.columnModel.getColumn(2).apply {
+            preferredWidth = 120
+            cellRenderer = renderer
+        }
+
         renderer = TextoCellRenderer(0)
-        coluna.cellRenderer = renderer
-        coluna.preferredWidth = 60
-        coluna.width = 1
-        val comboBox = JComboBox<String>()
-        comboBox.addItem("Sim")
-        comboBox.addItem("Não")
-        coluna = jtblDestinatarioImpressao!!.columnModel.getColumn(4)
-        coluna.cellEditor = DefaultCellEditor(comboBox)
-        coluna.cellRenderer = renderer
+        recipientPrintTable.columnModel.getColumn(3).apply {
+            cellRenderer = renderer
+            preferredWidth = 60
+            width = 1
+        }
+        recipientPrintTable.columnModel.getColumn(4).apply {
+            cellEditor = DefaultCellEditor(JComboBox(arrayOf("Sim", "Não")))
+            cellRenderer = renderer
+        }
     }
 
     private fun carregaRemetente() {
         try {
-            jcmbRemetente!!.removeAllItems()
-            val arrayRemetente = remetenteDao.recuperaRemetente("")
-            for (remetenteBean in arrayRemetente) jcmbRemetente!!.addItem(remetenteBean.nome)
+            val arrayRemetente = senderDao.recuperaRemetente()
+            arrayRemetente.forEach { remetenteBean ->
+                senderOptions.addItem(remetenteBean)
+            }
         } catch (e: DaoException) {
             logger.error(e.message, e)
             JOptionPane.showMessageDialog(
                 this,
                 "Não foi possivel carregar relação de remetentes",
                 "Endereçador ECT",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
         }
     }
 
-    private fun imprimirEnvelope(nomeArquivo: String) {
+    private fun imprimirEnvelope(report: Report) {
         try {
             cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
             val impressao = Impressao()
-            if (jchkImprimirRemetente!!.isSelected) {
-                if (jcmbRemetente!!.itemCount == 0) {
+            if (withPrintSender.isSelected) {
+                if (senderOptions.itemCount == 0) {
                     JOptionPane.showMessageDialog(
                         this,
                         "Por favor cadastre um remetente antes de fazer a impressão.",
                         "Endereçador ECT",
-                        JOptionPane.WARNING_MESSAGE
-                    )
+                        JOptionPane.WARNING_MESSAGE)
                     return
                 }
                 impressao.imprimirEnvelope(
-                    nomeArquivo,
-                    jcmbRemetente!!.selectedItem as RemetenteBean,
-                    vecDestinatarioImpressao,
-                    jchkTelDestinatario!!.isSelected,
-                    (Objects.requireNonNull(
-                        jcmbTamanhoFonte!!.selectedItem
-                    ) as String).substring(0, 1)
-                )
+                    report.file,
+                    senderOptions.selectedItem as RemetenteBean,
+                    recipientPrintTableModel.getAll(),
+                    withPhoneRecipient.isSelected,
+                    fontSizeOptions.selectedItem as FontSize)
             } else {
                 impressao.imprimirEnvelope(
-                    nomeArquivo,
+                    report.file,
                     null,
-                    vecDestinatarioImpressao,
-                    jchkTelDestinatario!!.isSelected,
-                    (Objects.requireNonNull(
-                        jcmbTamanhoFonte!!.selectedItem
-                    ) as String).substring(0, 1)
-                )
+                    recipientPrintTableModel.getAll(),
+                    withPhoneRecipient.isSelected,
+                    fontSizeOptions.selectedItem as FontSize)
             }
         } catch (e: EnderecadorExcecao) {
             logger.error(e.message, e)
-            JOptionPane.showMessageDialog(this, "Não foi possivel imprimir.", "Endereçador ECT", 2)
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possivel imprimir.",
+                "Endereçador ECT",
+                JOptionPane.WARNING_MESSAGE)
         } finally {
             cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
         }
     }
 
     private fun initComponents() {
-        val buttonGroup1 = ButtonGroup()
-        val jToolBar1 = JToolBar()
-        val jbtSelecionarDestinatario = JButton()
-        val jbtSelecionarGrupo = JButton()
-        val jbtRemoverDestinatario = JButton()
-        val jbtRemoverTodos = JButton()
-        val jbtnVisializarAR = JButton()
-        val jbtVisualizar = JButton()
-        val jPanel1 = JPanel()
-        val jPanel2 = JPanel()
-        jchkTelDestinatario = JCheckBox()
-        val jrbEnvelopeC6C5 = JRadioButton()
-        jrbEnvelopeC5 = JRadioButton()
-        jrbEnvelopeC6 = JRadioButton()
-        jlblEnvelope = JLabel()
-        val jPanel3 = JPanel()
-        val jlblImprimirAR = JLabel()
-        jcmbRemetente = JComboBox()
-        jchkImprimirRemetente = JCheckBox()
-        val jLabelTamanhoFonte = JLabel()
-        jcmbTamanhoFonte = JComboBox()
-        val jScrollPane1 = JScrollPane()
-        jtblDestinatarioImpressao = JTable()
-        isResizable = true
         title = "Impressão direta no envelope"
-        jbtSelecionarDestinatario.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtSelecionarDestinatario.icon = ImageIcon(javaClass.getResource("/imagens/addusuario.gif"))
-        jbtSelecionarDestinatario.text = "Selecionar destinatário"
-        jbtSelecionarDestinatario.horizontalTextPosition = 0
-        jbtSelecionarDestinatario.maximumSize = Dimension(110, 60)
-        jbtSelecionarDestinatario.verticalTextPosition = 3
-        jbtSelecionarDestinatario.addActionListener { jbtSelecionarDestinatarioActionPerformed() }
-        jToolBar1.add(jbtSelecionarDestinatario)
-        jbtSelecionarGrupo.font = Font("MS Sans Serif", 0, 9)
-        jbtSelecionarGrupo.icon = ImageIcon(javaClass.getResource("/imagens/addusuarios.gif"))
-        jbtSelecionarGrupo.text = "Selecionar grupo"
-        jbtSelecionarGrupo.horizontalTextPosition = 0
-        jbtSelecionarGrupo.maximumSize = Dimension(90, 60)
-        jbtSelecionarGrupo.verticalTextPosition = 3
-        jbtSelecionarGrupo.addActionListener { jbtSelecionarGrupoActionPerformed() }
-        jToolBar1.add(jbtSelecionarGrupo)
-        jbtRemoverDestinatario.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtRemoverDestinatario.icon = ImageIcon(javaClass.getResource("/imagens/remover.gif"))
-        jbtRemoverDestinatario.text = "Remover destinatário"
-        jbtRemoverDestinatario.horizontalTextPosition = 0
-        jbtRemoverDestinatario.maximumSize = Dimension(110, 60)
-        jbtRemoverDestinatario.verticalTextPosition = 3
-        jbtRemoverDestinatario.addActionListener { jbtRemoverDestinatarioActionPerformed() }
-        jToolBar1.add(jbtRemoverDestinatario)
-        jbtRemoverTodos.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtRemoverTodos.icon = ImageIcon(javaClass.getResource("/imagens/removerTodos.gif"))
-        jbtRemoverTodos.text = "Remover todos"
-        jbtRemoverTodos.horizontalTextPosition = 0
-        jbtRemoverTodos.maximumSize = Dimension(90, 60)
-        jbtRemoverTodos.verticalTextPosition = 3
-        jbtRemoverTodos.addActionListener { jbtRemoverTodosActionPerformed() }
-        jToolBar1.add(jbtRemoverTodos)
-        jbtnVisializarAR.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtnVisializarAR.icon = ImageIcon(javaClass.getResource("/imagens/print.gif"))
-        jbtnVisializarAR.text = "Visualizar AR"
-        jbtnVisializarAR.horizontalTextPosition = 0
-        jbtnVisializarAR.maximumSize = Dimension(90, 60)
-        jbtnVisializarAR.verticalTextPosition = 3
-        jbtnVisializarAR.addActionListener { jbtnVisializarARActionPerformed() }
-        jToolBar1.add(jbtnVisializarAR)
-        jbtVisualizar.font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-        jbtVisualizar.icon = ImageIcon(javaClass.getResource("/imagens/IMPRIMIR.gif"))
-        jbtVisualizar.text = "Visualizar"
-        jbtVisualizar.horizontalTextPosition = 0
-        jbtVisualizar.maximumSize = Dimension(90, 60)
-        jbtVisualizar.verticalTextPosition = 3
-        jbtVisualizar.addActionListener { jbtVisualizarActionPerformed() }
-        jToolBar1.add(jbtVisualizar)
-        jPanel1.border = BorderFactory.createEtchedBorder()
-        jPanel2.border =
-            BorderFactory.createTitledBorder(null, "Escolha o tipo do envelope:", 0, 0, Font("Tahoma", 0, 10))
-        jchkTelDestinatario!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jchkTelDestinatario!!.text = "Incluir telefone"
-        jchkTelDestinatario!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        jchkTelDestinatario!!.margin = Insets(0, 0, 0, 0)
-        buttonGroup1.add(jrbEnvelopeC6C5)
-        jrbEnvelopeC6C5.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jrbEnvelopeC6C5.text = "Formato C6/C5 (114x229mm)"
-        jrbEnvelopeC6C5.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        jrbEnvelopeC6C5.margin = Insets(0, 0, 0, 0)
-        jrbEnvelopeC6C5.addActionListener { jrbEnvelopeC6C5ActionPerformed() }
-        buttonGroup1.add(jrbEnvelopeC5)
-        jrbEnvelopeC5!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jrbEnvelopeC5!!.isSelected = true
-        jrbEnvelopeC5!!.text = "Formato C5 (162x229mm)"
-        jrbEnvelopeC5!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        jrbEnvelopeC5!!.margin = Insets(0, 0, 0, 0)
-        jrbEnvelopeC5!!.addActionListener { jrbEnvelopeC5ActionPerformed() }
-        buttonGroup1.add(jrbEnvelopeC6)
-        jrbEnvelopeC6!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jrbEnvelopeC6!!.text = "Formato C6 (114x162mm)"
-        jrbEnvelopeC6!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        jrbEnvelopeC6!!.margin = Insets(0, 0, 0, 0)
-        jrbEnvelopeC6!!.addActionListener { jrbEnvelopeC6ActionPerformed() }
-        jlblEnvelope!!.horizontalAlignment = 0
-        jlblEnvelope!!.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC5.gif"))
-        val jPanel2Layout = GroupLayout(jPanel2)
-        jPanel2.layout = jPanel2Layout
-        jPanel2Layout.horizontalGroup = jPanel2Layout.createParallelGroup(1)
-            .add(
-                2, jPanel2Layout.createSequentialGroup()
-                    .add(jlblEnvelope, -2, 75, -2)
-                    .addPreferredGap(0, -1, 32767)
-                    .add(
-                        jPanel2Layout.createParallelGroup(1)
-                            .add(jrbEnvelopeC6, -2, 150, -2)
-                            .add(jrbEnvelopeC5)
-                    )
-                    .addPreferredGap(0)
-                    .add(
-                        jPanel2Layout.createParallelGroup(1)
-                            .add(jchkTelDestinatario)
-                            .add(jrbEnvelopeC6C5)
-                    )
-                    .add(171, 171, 171)
-            )
-        jPanel2Layout.verticalGroup = jPanel2Layout.createParallelGroup(1)
-            .add(
-                jPanel2Layout.createSequentialGroup()
-                    .add(
-                        jPanel2Layout.createParallelGroup(1)
-                            .add(
-                                jPanel2Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .add(
-                                        jPanel2Layout.createParallelGroup(3)
-                                            .add(jrbEnvelopeC5)
-                                            .add(jrbEnvelopeC6C5)
-                                    )
-                                    .addPreferredGap(0, -1, 32767)
-                                    .add(
-                                        jPanel2Layout.createParallelGroup(3)
-                                            .add(jchkTelDestinatario)
-                                            .add(jrbEnvelopeC6)
-                                    )
-                                    .add(8, 8, 8)
-                            )
-                            .add(jlblEnvelope, -1, -1, 32767)
-                    )
-                    .addContainerGap()
-            )
-        jPanel3.border = BorderFactory.createTitledBorder(" ")
-        jlblImprimirAR.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jlblImprimirAR.text = "Selecione o remetente:"
-        carregaRemetente()
-        jchkImprimirRemetente!!.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jchkImprimirRemetente!!.text = "Imprimir remetente"
-        jchkImprimirRemetente!!.border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        jchkImprimirRemetente!!.margin = Insets(0, 0, 0, 0)
-        jLabelTamanhoFonte.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
-        jLabelTamanhoFonte.text = "Tamanho da Fonte:"
-        jcmbTamanhoFonte!!.model = DefaultComboBoxModel(arrayOf("Pequeno", "Médio", "Grande"))
-        jcmbTamanhoFonte!!.addActionListener { jcmbTamanhoFonteActionPerformed() }
-        val jPanel3Layout = GroupLayout(jPanel3)
-        jPanel3.layout = jPanel3Layout
-        jPanel3Layout.horizontalGroup = jPanel3Layout.createParallelGroup(1)
-            .add(
-                jPanel3Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(
-                        jPanel3Layout.createParallelGroup(1)
-                            .add(jlblImprimirAR)
-                            .add(jLabelTamanhoFonte)
-                            .add(jchkImprimirRemetente)
-                    )
-                    .addPreferredGap(0)
-                    .add(
-                        jPanel3Layout.createParallelGroup(1)
-                            .add(
-                                jPanel3Layout.createSequentialGroup()
-                                    .add(jcmbTamanhoFonte, -2, 89, -2)
-                                    .add(0, 0, 32767)
-                            )
-                            .add(jcmbRemetente, 0, 182, 32767)
-                    )
-                    .addContainerGap()
-            )
-        jPanel3Layout.verticalGroup = jPanel3Layout.createParallelGroup(1)
-            .add(
-                2, jPanel3Layout.createSequentialGroup()
-                    .add(jchkImprimirRemetente)
-                    .addPreferredGap(0, -1, 32767)
-                    .add(
-                        jPanel3Layout.createParallelGroup(3)
-                            .add(jLabelTamanhoFonte)
-                            .add(jcmbTamanhoFonte, -2, -1, -2)
-                    )
-                    .addPreferredGap(0)
-                    .add(
-                        jPanel3Layout.createParallelGroup(3)
-                            .add(jlblImprimirAR)
-                            .add(jcmbRemetente, -2, -1, -2)
-                    )
-                    .add(5, 5, 5)
-            )
-        val jPanel1Layout = GroupLayout(jPanel1)
-        jPanel1.layout = jPanel1Layout
-        jPanel1Layout.horizontalGroup = jPanel1Layout.createParallelGroup(1)
-            .add(
-                jPanel1Layout.createSequentialGroup()
-                    .add(jPanel2, -2, 409, -2)
-                    .addPreferredGap(0).add(jPanel3, -1, -1, 32767)
-            )
-        jPanel1Layout.verticalGroup = jPanel1Layout.createParallelGroup(1)
-            .add(
-                2, jPanel1Layout.createSequentialGroup()
-                    .add(
-                        jPanel1Layout.createParallelGroup(2)
-                            .add(1, jPanel2, -1, -1, 32767)
-                            .add(jPanel3, -1, -1, 32767)
-                    )
-                    .addContainerGap()
-            )
-        jtblDestinatarioImpressao!!.model = DefaultTableModel(
-            arrayOf(
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
-        )
-        jtblDestinatarioImpressao!!.model = model
-        jScrollPane1.setViewportView(jtblDestinatarioImpressao)
-        val layout = GroupLayout(contentPane)
-        contentPane.layout = layout
-        layout.horizontalGroup = layout.createParallelGroup(1)
-            .add(jToolBar1, -1, -1, 32767)
-            .add(jPanel1, -1, -1, 32767)
-            .add(jScrollPane1)
-        layout.verticalGroup = layout.createParallelGroup(1)
-            .add(
-                layout.createSequentialGroup()
-                    .add(jToolBar1, -2, 59, -2)
-                    .addPreferredGap(0).add(jPanel1, -2, 103, -2)
-                    .addPreferredGap(0).add(jScrollPane1, -1, 329, 32767)
-                    .addContainerGap()
-            )
-        pack()
+        size = Dimension(710, 600)
+        isResizable = true
+
+        contentPane.add(JToolBar().apply {
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/addusuario.gif"))
+                text = "Selecionar destinatário"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(110, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtSelecionarDestinatarioActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/addusuarios.gif"))
+                text = "Selecionar grupo"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtSelecionarGrupoActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/remover.gif"))
+                text = "Remover destinatário"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(110, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtRemoverDestinatarioActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/removerTodos.gif"))
+                text = "Remover todos"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtRemoverTodosActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/print.gif"))
+                text = "Visualizar AR"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtnVisializarARActionPerformed() }
+            })
+            add(JButton().apply {
+                font = Font(SANS_SERIF, PLAIN, 9)
+                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/IMPRIMIR.gif"))
+                text = "Visualizar"
+                horizontalTextPosition = 0
+                maximumSize = Dimension(90, 60)
+                verticalTextPosition = 3
+                addActionListener { jbtVisualizarActionPerformed() }
+            })
+        }, "North")
+
+        contentPane.add(JPanel().apply {
+            layout = MigLayout()
+
+            add(JPanel().apply {
+                layout = MigLayout()
+                border = BorderFactory.createTitledBorder(
+                    null,
+                    "Escolha o tipo do envelope:",
+                    0,
+                    0,
+                    Font(SANS_SERIF, PLAIN, 10))
+
+                add(envelopeFigure.apply {
+                    icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/envelopeC5.gif"))
+                    minimumSize = Dimension(80, 65)
+                }, "span 1 2")
+
+                add(envelopeC5.apply {
+                    font = Font(SANS_SERIF, PLAIN, 10)
+                    text = "Formato C5 (162x229mm)"
+                    addActionListener { jrbEnvelopeC5ActionPerformed() }
+                })
+
+                add(envelopeC6C5.apply {
+                    font = Font(SANS_SERIF, PLAIN, 10)
+                    text = "Formato C6/C5 (114x229mm)"
+                    addActionListener { jrbEnvelopeC6C5ActionPerformed() }
+                }, "wrap")
+
+                add(envelopeC6.apply {
+                    font = Font(SANS_SERIF, PLAIN, 10)
+                    text = "Formato C6 (114x162mm)"
+                    addActionListener { jrbEnvelopeC6ActionPerformed() }
+                })
+
+                add(withPhoneRecipient.apply {
+                    font = Font(SANS_SERIF, PLAIN, 10)
+                    text = "Incluir telefone"
+                })
+
+                add(withPhoneRecipient)
+            }, "height 114")
+
+            add(JPanel().apply {
+                layout = MigLayout()
+                border = BorderFactory.createTitledBorder(" ")
+
+                add(withPrintSender.apply {
+                    withPrintSender.font = Font(SANS_SERIF, PLAIN, 10)
+                    withPrintSender.text = "Imprimir remetente"
+                }, "wrap")
+
+                add(JLabel().apply {
+                    font = Font(SANS_SERIF, PLAIN, 10)
+                    text = "Tamanho da Fonte:"
+                })
+
+                add(fontSizeOptions.apply {
+                    model = DefaultComboBoxModel(FontSize.values())
+                    addActionListener { jcmbTamanhoFonteActionPerformed() }
+                }, "wrap")
+
+                add(JLabel().apply {
+                    font = Font(SANS_SERIF, PLAIN, 10)
+                    text = "Selecione o remetente:"
+                })
+
+                add(senderOptions)
+            }, "wrap")
+
+            add(JPanel().apply {
+                layout = MigLayout()
+                border = BorderFactory.createEtchedBorder()
+
+                add(JScrollPane().apply {
+                    setViewportView(recipientPrintTable)
+                }, "span, grow, push")
+            }, "span, grow, push")
+        }, "Center")
+
+        recipientPrintTable.model = recipientPrintTableModel
+
+        ButtonGroup().apply {
+            add(envelopeC5)
+            add(envelopeC6C5)
+            add(envelopeC6)
+        }
     }
 
     private fun jbtnVisializarARActionPerformed() {
         val impressao = Impressao()
-        if (jcmbRemetente!!.itemCount == 0) {
+        if (senderOptions.itemCount == 0) {
             JOptionPane.showMessageDialog(
                 this,
                 "Por favor cadastre um remetente antes de fazer a impressão.",
                 "Endereçador",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
             return
         }
-        if (vecDestinatarioImpressao.size < 1) {
+        if (recipientPrintTableModel.rowCount < 1) {
             JOptionPane.showMessageDialog(
                 this,
                 "Não existe nenhum destinatário selecionado!",
                 "Endereçador",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
             return
         }
         try {
             impressao.imprimirAR(
-                "avisoRecebimento.jasper",
-                jcmbRemetente!!.selectedItem as RemetenteBean,
-                vecDestinatarioImpressao
-            )
+                Report.AR.file,
+                senderOptions.selectedItem as RemetenteBean,
+                recipientPrintTableModel.getAll())
         } catch (ex: EnderecadorExcecao) {
             logger.error(ex.message, ex)
             JOptionPane.showMessageDialog(
                 this,
                 "Não foi possível imprimir o AR",
                 "Endereçador",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
         }
     }
 
     private fun jbtVisualizarActionPerformed() {
-        if (vecDestinatarioImpressao.size <= 0) {
+        if (recipientPrintTableModel.rowCount <= 0) {
             JOptionPane.showMessageDialog(
                 this,
                 "Não existe nenhum destinatário selecionado!",
                 "Endereçador",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
             return
         }
-        if (jrbEnvelopeC5!!.isSelected) {
-            imprimirEnvelope("EnvelopeC5.jasper")
-        } else if (jrbEnvelopeC6!!.isSelected) {
-            imprimirEnvelope("EnvelopeC6.jasper")
+        if (envelopeC5.isSelected) {
+            imprimirEnvelope(Report.ENVELOPE_C5)
+        } else if (envelopeC6.isSelected) {
+            imprimirEnvelope(Report.ENVELOPE_C6)
         } else {
-            imprimirEnvelope("EnvelopeC6C5.jasper")
+            imprimirEnvelope(Report.ENVELOPE_C6_C5)
         }
     }
 
     private fun jrbEnvelopeC6C5ActionPerformed() {
-        jlblEnvelope!!.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC5C6.gif"))
+        envelopeFigure.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC5C6.gif"))
     }
 
     private fun jrbEnvelopeC5ActionPerformed() {
-        jlblEnvelope!!.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC5.gif"))
+        envelopeFigure.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC5.gif"))
     }
 
     private fun jrbEnvelopeC6ActionPerformed() {
-        jlblEnvelope!!.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC6.gif"))
+        envelopeFigure.icon = ImageIcon(javaClass.getResource("/imagens/envelopeC6.gif"))
     }
 
     private fun jbtRemoverTodosActionPerformed() {
-        vecDestinatarioImpressao.removeAllElements()
-        model.destinatario = vecDestinatarioImpressao
-        jtblDestinatarioImpressao!!.model = model
+        recipientPrintTableModel.setAll(arrayListOf())
     }
 
     private fun jbtRemoverDestinatarioActionPerformed() {
-        if (jtblDestinatarioImpressao!!.selectedRow == -1) {
+        if (recipientPrintTable.selectedRow == -1) {
             JOptionPane.showMessageDialog(
                 this,
                 "Não existe nenhum destinatário selecionado.",
                 "Endereçador ECT",
-                JOptionPane.INFORMATION_MESSAGE
-            )
+                JOptionPane.INFORMATION_MESSAGE)
             return
         }
-        val selectedRows = jtblDestinatarioImpressao!!.selectedRows
-        vecDestinatarioImpressao = Vector(model.destinatario)
-        for (selectedRow in selectedRows) vecDestinatarioImpressao.remove(model.getElementAt(selectedRow))
-        model.destinatario = vecDestinatarioImpressao
+        recipientPrintTable.selectedRows.forEach { row ->
+            recipientPrintTableModel.removeRowAt(row)
+        }
     }
 
     private fun jbtSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = TelaPesquisarGrupo(this, true, vecDestinatarioImpressao, grupoDao, destinatarioDao)
+        val telaPesquisarGrupo = TelaPesquisarGrupo()
         telaPesquisarGrupo.isVisible = true
-        model.destinatario = vecDestinatarioImpressao
-        jtblDestinatarioImpressao!!.model = model
+        //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
     }
 
     private fun jbtSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario(this, true, vecDestinatarioImpressao, destinatarioDao)
+        val telaPesquisaDestinatario = TelaPesquisarDestinatario()
         telaPesquisaDestinatario.isVisible = true
-        model.destinatario = vecDestinatarioImpressao
-        jtblDestinatarioImpressao!!.model = model
+        //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
     }
 
     private fun jcmbTamanhoFonteActionPerformed() {}
-    override fun update(o: Observable, arg: Any) {
-        if (arg is RemetenteBean) {
-            val remetente = arg
-            jcmbRemetente!!.removeItem(remetente)
-            jcmbRemetente!!.addItem(remetente.nome)
-        } else if (arg is DestinatarioBean) {
-            val destinatario = arg
-            val index = model.indexOf(destinatario)
-            if (index != -1) model.setDestinatario(index, destinatario)
-        } else if (arg is List<*>) {
-            for (listaUsuario in arg) {
-                if (listaUsuario is DestinatarioBean) {
-                    model.removeDestinatario(listaUsuario as DestinatarioBean?)
-                } else if (listaUsuario is RemetenteBean) {
-                    jcmbRemetente!!.removeItem(listaUsuario)
-                }
-            }
-        }
-    }
 
     companion object {
         var logger = Logger.getLogger(TelaEditarRemetente::class.java)

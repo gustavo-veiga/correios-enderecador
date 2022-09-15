@@ -1,69 +1,65 @@
 package br.com.correios.enderecador.telas
 
-import br.com.correios.enderecador.util.EnderecadorObservable
-import br.com.correios.enderecador.bean.DestinatarioBean
 import br.com.correios.enderecador.dao.DestinatarioDao
-import br.com.correios.enderecador.dao.DaoException
-import java.awt.BorderLayout
-import org.netbeans.lib.awtextra.AbsoluteLayout
-import org.netbeans.lib.awtextra.AbsoluteConstraints
-import javax.swing.table.DefaultTableModel
+import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
+import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
-import java.util.*
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.*
 import javax.swing.JLabel.CENTER
+import javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 import javax.swing.table.DefaultTableCellRenderer
 
 @Singleton
 class TelaDestinatario(
-    private val destinatarioDao: DestinatarioDao,
-    private val grupoDestinatarioDao: GrupoDestinatarioDao
-) : JFrame(), Observer {
-    private val destinatarioTableModel: DestinatarioTableModel = DestinatarioTableModel()
-    private val observable: EnderecadorObservable? = EnderecadorObservable.instance
-    private val jScrollPane =  JScrollPane()
-    private val jtxtNomeDestinatario = JTextField()
-    private val tabDestinatario = JTable()
-    private var ultimaConsulta = ""
+    private val recipientDao: DestinatarioDao,
+    private val recipientGroupDao: GrupoDestinatarioDao,
+) : JFrame() {
+    private val recipientTableModel = DestinatarioTableModel()
+    private val recipientSearch = JTextField()
+    private val recipientTable = JTable()
+
+    private var lastSearch = ""
 
     init {
         initComponents()
         recuperarDadosTabelaDestinatario()
-        observable?.addObserver(this)
         setLocationRelativeTo(null)
     }
 
     private fun recuperarDadosTabelaDestinatario() {
         try {
-            val arrayDestinatario = destinatarioDao.recuperaDestinatario("")
-            destinatarioTableModel.setDestinatario(arrayDestinatario)
-            tabDestinatario.setSelectionMode(2)
+            val recipients = recipientDao.recuperaDestinatario()
+            recipientTableModel.setAll(recipients)
+            recipientTable.setSelectionMode(MULTIPLE_INTERVAL_SELECTION)
 
             val centerRenderer = DefaultTableCellRenderer().apply {
                 horizontalAlignment = CENTER
             }
-            tabDestinatario.columnModel.getColumn(0).apply {
+
+            recipientTable.columnModel.getColumn(0).apply {
                  preferredWidth = 50
             }
-            tabDestinatario.columnModel.getColumn(1).apply {
+            recipientTable.columnModel.getColumn(1).apply {
                 preferredWidth = 70
                 cellRenderer = centerRenderer
             }
-            tabDestinatario.columnModel.getColumn(2).apply {
+            recipientTable.columnModel.getColumn(2).apply {
                 preferredWidth = 70
             }
-            tabDestinatario.columnModel.getColumn(3).apply {
+            recipientTable.columnModel.getColumn(3).apply {
                 preferredWidth = 20
             }
-            tabDestinatario.columnModel.getColumn(4).apply {
+            recipientTable.columnModel.getColumn(4).apply {
                 preferredWidth = 5
                 cellRenderer = centerRenderer
             }
-            tabDestinatario.columnModel.getColumn(5).apply {
+            recipientTable.columnModel.getColumn(5).apply {
                 width = 1
                 preferredWidth = 1
                 cellRenderer = centerRenderer
@@ -73,8 +69,7 @@ class TelaDestinatario(
             logger.error(e.message, e)
             JOptionPane.showMessageDialog(this, e.message,
                 "Não foi possivel carregar relação de destinatários",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
         }
     }
 
@@ -84,10 +79,9 @@ class TelaDestinatario(
         preferredSize = Dimension(744, 434)
 
         contentPane.add(JToolBar().apply {
-            add(JButton().apply {
+            add(JButton("Novo destinatário").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
                 icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/usuario.gif"))
-                text = "Novo destinatário"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(87, 47)
@@ -95,29 +89,26 @@ class TelaDestinatario(
                 verticalTextPosition = 3
                 addActionListener { jbtNovoActionPerformed() }
             })
-            add(JButton().apply {
+            add(JButton("Editar").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
                 icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/editar.gif"))
-                text = "Editar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 addActionListener { jbtEditarActionPerformed() }
             })
-            add(JButton().apply {
+            add(JButton("Pesquisar").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
                 icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/binoculo.gif"))
-                text = "Pesquisar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(47, 55)
                 verticalTextPosition = 3
                 addActionListener { jbtPesquisarActionPerformed() }
             })
-            add(JButton().apply {
+            add(JButton("Excluir").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
                 icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/TRASH.gif"))
-                text = "Excluir"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(47, 55)
@@ -127,150 +118,118 @@ class TelaDestinatario(
         }, "North")
 
         contentPane.add(JPanel().apply {
-            layout = BorderLayout()
-            border = BorderFactory.createEtchedBorder()
-            add(jScrollPane, "Center")
-            add(JPanel().apply {
-                layout = AbsoluteLayout()
-                add(jtxtNomeDestinatario, AbsoluteConstraints(90, 10, 300, -1))
-                add(JLabel("Procurar por:"), AbsoluteConstraints(10, 10, -1, 20))
-                add(JLabel("Destinatários:"), AbsoluteConstraints(10, 30, -1, 30))
-            }, "North")
-        }, "Center")
+            layout = MigLayout()
 
-        tabDestinatario.model = DefaultTableModel(
-            arrayOf(
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null),
-                arrayOf(null, null, null, null)
-            ), arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
-        )
-        tabDestinatario.model = destinatarioTableModel
-        jScrollPane.setViewportView(tabDestinatario)
+            add(JLabel("Procurar por:"))
+
+            add(recipientSearch.apply {
+                addActionListener { jbtPesquisarActionPerformed() }
+            }, "span, grow, pushx, width 9999")
+
+            add(JScrollPane().apply {
+                setViewportView(recipientTable.apply {
+                    model = recipientTableModel
+                    addMouseListener(object : MouseAdapter() {
+                        override fun mouseClicked(e: MouseEvent) {
+                            if (e.clickCount == 2) {
+                                jbtEditarActionPerformed()
+                            }
+                        }
+                    })
+                })
+            }, "span, grow, push")
+        }, "Center")
 
         pack()
     }
 
     private fun jbtNovoActionPerformed() {
-        val telaEditarDestinatrio = TelaEditarDestinatario(this, true)
-        telaEditarDestinatrio.isVisible = true
+        val editRecipientView = TelaEditarDestinatario(parent = this)
+        editRecipientView.isVisible = true
     }
 
     private fun jbtEditarActionPerformed() {
-        if (tabDestinatario.selectedRow < 0) {
+        if (recipientTable.selectedRow < 0) {
             JOptionPane.showMessageDialog(
                 this,
                 "Não existe nenhum remetente selecionado!",
                 "Endereçador ECT",
-                JOptionPane.INFORMATION_MESSAGE
-            )
+                JOptionPane.INFORMATION_MESSAGE)
             return
         }
-        val telaEditarDestinatrio = TelaEditarDestinatario(this, true,
-            destinatarioTableModel.getDestinatario(tabDestinatario.selectedRow)!!)
+        val telaEditarDestinatrio = TelaEditarDestinatario(
+            recipientTableModel.getAt(recipientTable.selectedRow),
+            parent = this)
         telaEditarDestinatrio.isVisible = true
     }
 
     private fun jbtPesquisarActionPerformed() {
-        val lsSelectionModelDestinatario = tabDestinatario.selectionModel
-        val nomeDestinatario = jtxtNomeDestinatario.text.trim()
-        val numeroRows = tabDestinatario.rowCount
-        var index = -1
-        if (ultimaConsulta.equals(nomeDestinatario, ignoreCase = true)) {
-            index = tabDestinatario.selectedRow
-        } else {
-            ultimaConsulta = nomeDestinatario
-        }
-        for (i in index + 1 until numeroRows) {
-            val nomeDestinatarioTabela = tabDestinatario.getValueAt(i, 0) as String
-            if (nomeDestinatarioTabela.uppercase(Locale.getDefault())
-                    .contains(nomeDestinatario.uppercase(Locale.getDefault()))
-            ) {
-                index = i
-                break
+        val search = recipientSearch.text.trim()
+
+        recipientTableModel
+            .filterIndexed { index, _ ->
+                if (lastSearch.equals(search, ignoreCase = true)) {
+                    index > recipientTable.selectedRow
+                } else {
+                    lastSearch = search
+                    true
+                }
             }
-        }
-        if (index == -1) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Destinatário não encontrado!",
-                "Endereçador",
-                JOptionPane.INFORMATION_MESSAGE
-            )
-        } else {
-            lsSelectionModelDestinatario.setSelectionInterval(index, index)
-            val tamanhoJscrool = jScrollPane.verticalScrollBar.maximum
-            val value = index * tamanhoJscrool / numeroRows
-            jScrollPane.verticalScrollBar.value = value
-        }
+            .find { it.nome.contains(search, ignoreCase = true).or(it.apelido.contains(search, ignoreCase = true)) }
+            ?.let {
+                val index = recipientTableModel.indexOf(it)
+                recipientTable.selectionModel.setSelectionInterval(index, index)
+                return
+            }
+
+        JOptionPane.showMessageDialog(
+            this,
+            "Destinatário não encontrado!",
+            "Endereçador",
+            JOptionPane.INFORMATION_MESSAGE)
     }
 
     private fun jbtExcluirActionPerformed() {
-        var destinatarioBean: DestinatarioBean?
-        val listaDestinatarios: MutableList<DestinatarioBean?> = ArrayList()
-        if (tabDestinatario.selectedRow == -1) {
+        if (recipientTable.selectedRow == -1) {
             JOptionPane.showMessageDialog(
                 this,
                 "Não existe nenhum destinatário selecionado!",
                 "Enderecador",
-                JOptionPane.WARNING_MESSAGE
-            )
+                JOptionPane.WARNING_MESSAGE)
         } else {
-            val options = arrayOf("Sim", "Não")
-            val resp = JOptionPane.showOptionDialog(
+            val response = JOptionPane.showOptionDialog(
                 this,
                 "Tem certeza que deseja excluir o(s) destinatário(s)?",
                 "Endereçador",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                options,
+                arrayOf("Sim", "Não"),
                 null
             )
-            if (resp == 0) {
-                val linhasSelecionadas = tabDestinatario.selectedRows
+            if (response == JOptionPane.YES_OPTION) {
                 try {
-                    for (linhasSelecionada in linhasSelecionadas) {
-                        destinatarioBean = destinatarioTableModel.getDestinatario(linhasSelecionada)
-                        grupoDestinatarioDao.excluirDestinatarioDoGrupo(destinatarioBean!!.numeroDestinatario)
-                        destinatarioDao.excluirDestinatario(destinatarioBean.numeroDestinatario)
-                        listaDestinatarios.add(destinatarioBean)
+                    recipientTable.selectedRows.forEach { row ->
+                        val recipient = recipientTableModel.getAt(row)
+                        recipientGroupDao.excluirDestinatarioDoGrupo(recipient.numeroDestinatario!!)
+                        recipientDao.excluirDestinatario(recipient.numeroDestinatario!!)
+                        recipientTableModel.removeRowAt(row)
                     }
-                    observable?.notifyObservers(listaDestinatarios)
-                    jtxtNomeDestinatario.text = ""
+                    recipientSearch.text = ""
                     JOptionPane.showMessageDialog(
                         this,
                         "Destinatário(s) excluído(s) com sucesso!",
                         "Endereçador",
-                        JOptionPane.INFORMATION_MESSAGE
-                    )
+                        JOptionPane.INFORMATION_MESSAGE)
                 } catch (ex: DaoException) {
                     logger.error(ex.message, ex as Throwable)
                     JOptionPane.showMessageDialog(
                         this,
                         "Não foi possivel carregar relação de destinatários!",
                         "Endereçador ECT",
-                        JOptionPane.WARNING_MESSAGE
-                    )
+                        JOptionPane.WARNING_MESSAGE)
                 }
             }
-        }
-    }
-
-    override fun update(o: Observable, arg: Any) {
-        if (arg is DestinatarioBean) {
-            val destinatario = arg
-            val index = destinatarioTableModel.indexOf(destinatario)
-            if (index != -1) {
-                destinatarioTableModel.setDestinatario(index, destinatario)
-            } else {
-                destinatarioTableModel.addDestinatario(destinatario)
-            }
-        } else if (arg is List<*>) {
-            arg
-                .filterNotNull()
-                .forEach { destinatarioTableModel.removeDestinatario(it as DestinatarioBean?) }
         }
     }
 

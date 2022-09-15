@@ -3,20 +3,15 @@ package br.com.correios.enderecador.dao
 import br.com.correios.enderecador.conexao.ConexaoBD
 import kotlin.Throws
 import br.com.correios.enderecador.bean.GrupoBean
-import br.com.correios.enderecador.conexao.ConnectException
+import br.com.correios.enderecador.exception.ConnectException
+import br.com.correios.enderecador.exception.DaoException
 import org.koin.core.annotation.Singleton
-import java.sql.PreparedStatement
-import java.lang.StringBuilder
 import java.sql.SQLException
-import java.sql.ResultSet
 import java.sql.Connection
-import java.util.ArrayList
 
 @Singleton
-class GrupoDao(
-    private val conexaoBD: ConexaoBD
-) {
-    private var conexao: Connection? = null
+class GrupoDao(conexaoBD: ConexaoBD) {
+    private val conexao: Connection
 
     init {
         try {
@@ -28,17 +23,15 @@ class GrupoDao(
 
     @Throws(DaoException::class)
     fun incluirGrupo(grupoBean: GrupoBean) {
-        val stmt: PreparedStatement?
-        val sql = StringBuilder()
         try {
-            conexao!!.autoCommit = true
-            sql.append("INSERT INTO TEC_GRUPO")
-            sql.append("(GRP_TX_DESCRICAO) ")
-            sql.append("VALUES (?) ")
-            stmt = conexao!!.prepareStatement(sql.toString())
+            val stmt = conexao.prepareStatement("""
+                INSERT INTO TEC_GRUPO (GRP_TX_DESCRICAO) VALUES (?)
+            """.trimIndent())
             stmt.setString(1, grupoBean.descricaoGrupo)
             val cont = stmt.executeUpdate()
-            if (cont == 0) throw DaoException("Não foi possível adicionar dados!")
+            if (cont == 0) {
+                throw DaoException("Não foi possível adicionar dados!")
+            }
         } catch (e: SQLException) {
             throw DaoException(e.message, e)
         }
@@ -46,14 +39,12 @@ class GrupoDao(
 
     @Throws(DaoException::class)
     fun alterarGrupo(grupoBean: GrupoBean) {
-        val stmt: PreparedStatement?
-        val sql = StringBuilder()
         try {
-            conexao!!.autoCommit = true
-            sql.append("UPDATE TEC_GRUPO SET ")
-            sql.append(" GRP_TX_DESCRICAO=? ")
-            sql.append(" WHERE GRP_NU= ?  ")
-            stmt = conexao!!.prepareStatement(sql.toString())
+            val stmt = conexao.prepareStatement("""
+                UPDATE TEC_GRUPO SET
+                    GRP_TX_DESCRICAO = ?
+                WHERE GRP_NU = ?
+            """.trimIndent())
             stmt.setString(1, grupoBean.descricaoGrupo)
             stmt.setString(2, grupoBean.numeroGrupo)
             val cont = stmt.executeUpdate()
@@ -64,14 +55,11 @@ class GrupoDao(
     }
 
     @Throws(DaoException::class)
-    fun excluirGrupo(grupo: String?) {
-        val stmt: PreparedStatement?
-        val sql = StringBuilder()
+    fun excluirGrupo(grupo: String) {
         try {
-            conexao!!.autoCommit = true
-            sql.append("DELETE FROM TEC_GRUPO WHERE ")
-            sql.append("GRP_NU = ? ")
-            stmt = conexao!!.prepareStatement(sql.toString())
+            val stmt = conexao.prepareStatement("""
+                DELETE FROM TEC_GRUPO WHERE GRP_NU = ?
+            """.trimIndent())
             stmt.setString(1, grupo)
             val cont = stmt.executeUpdate()
             if (cont == 0) throw DaoException("Não foi possível excluir dados!")
@@ -81,18 +69,15 @@ class GrupoDao(
     }
 
     @Throws(DaoException::class)
-    fun recuperaGrupo(filtro: String): ArrayList<GrupoBean> {
-        val rs: ResultSet?
-        val stmt: PreparedStatement?
-        val dados = ArrayList<GrupoBean>()
-        val sql = StringBuilder()
+    fun recuperaGrupo(filtro: String = ""): List<GrupoBean> {
+        val dados = mutableListOf<GrupoBean>()
         try {
-            conexao!!.autoCommit = true
-            sql.append("SELECT * FROM TEC_GRUPO ")
-            if ("" != filtro) sql.append(filtro)
-            sql.append("ORDER BY UPPER(GRP_TX_DESCRICAO) ASC ")
-            stmt = conexao!!.prepareStatement(sql.toString())
-            rs = stmt.executeQuery()
+            val stmt = conexao.prepareStatement("""
+                SELECT * FROM TEC_GRUPO
+                $filtro
+                ORDER BY UPPER(GRP_TX_DESCRICAO) ASC
+            """.trimIndent())
+            val rs = stmt.executeQuery()
             while (rs.next()) {
                 dados.add(GrupoBean(
                     numeroGrupo = rs.getString(1),
@@ -107,16 +92,15 @@ class GrupoDao(
 
     @Throws(DaoException::class)
     fun recuperaUltimoGrupo(): String {
-        val rs: ResultSet?
-        val stmt: PreparedStatement?
-        val sql = StringBuilder()
         var ultimoNumero = ""
         try {
-            conexao!!.autoCommit = true
-            sql.append("SELECT MAX(GRP_NU) AS ULTIMO FROM TEC_GRUPO ")
-            stmt = conexao!!.prepareStatement(sql.toString())
-            rs = stmt.executeQuery()
-            while (rs.next()) ultimoNumero = rs.getString(1)
+            val stmt = conexao.prepareStatement("""
+                SELECT MAX(GRP_NU) AS ULTIMO FROM TEC_GRUPO
+            """.trimIndent())
+            val rs = stmt.executeQuery()
+            while (rs.next()) {
+                ultimoNumero = rs.getString(1)
+            }
         } catch (e: SQLException) {
             throw DaoException(e.message)
         }

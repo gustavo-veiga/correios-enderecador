@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.dao
+package br.com.correios.enderecador.exception
 
 import java.lang.Exception
 

@@ -2,100 +2,96 @@ package br.com.correios.enderecador.util
 
 import java.awt.Toolkit
 import javax.swing.text.PlainDocument
-import kotlin.Throws
 import javax.swing.text.BadLocationException
-import java.util.Locale
-import java.lang.StringBuilder
 import javax.swing.text.AttributeSet
 
-class DocumentoPersonalizado(private val tamanhoMaximo: Int, private val tipoFormatacao: Int) : PlainDocument() {
+class DocumentoPersonalizado(private val maxLength: Int, private val tipoFormatacao: Int) : PlainDocument() {
     @Throws(BadLocationException::class)
-    override fun insertString(offs: Int, novoTexto: String, a: AttributeSet) {
-        var offs = offs
-        var novoTexto: String? = novoTexto
-        if (length == tamanhoMaximo) {
+    override fun insertString(offs: Int, str: String?, a: AttributeSet?) {
+        if (length == maxLength) {
             Toolkit.getDefaultToolkit().beep()
-        } else if (novoTexto != null) {
-            if (length + novoTexto.length > tamanhoMaximo) novoTexto = novoTexto.substring(0, tamanhoMaximo - length)
-            if (tipoFormatacao == 0) {
-                novoTexto = novoTexto.uppercase(Locale.getDefault())
-                super.insertString(offs, novoTexto, a)
-            } else if (tipoFormatacao == 1) {
-                val resultado = getDigitos(novoTexto)
-                super.insertString(offs, resultado, a)
-            } else if (tipoFormatacao == 5) {
-                super.insertString(offs, novoTexto, a)
-            } else if (tipoFormatacao == 2) {
-                var resultado: String
-                if (novoTexto.length == 10) {
-                    resultado = novoTexto
-                } else {
-                    resultado = getDigitos(novoTexto)
-                    if (length + resultado.length == 2) {
-                        resultado = "$resultado/"
-                    } else if (length + resultado.length == 5) {
-                        resultado = "$resultado/"
-                    }
+        } else if (str != null) {
+            val text = if (length + str.length > maxLength) {
+                str.substring(0, maxLength - length)
+            } else {
+                str
+            }
+
+            when (tipoFormatacao) {
+                0 -> {
+                    super.insertString(offs, text.uppercase(), a)
                 }
-                super.insertString(offs, resultado, a)
-            } else if (tipoFormatacao == 3) {
-                var resultado: String
-                if (novoTexto.length == 14 || novoTexto.length == 13) {
-                    resultado = novoTexto
-                } else {
-                    resultado = getDigitos(novoTexto)
-                    if (length + resultado.length == 1) {
-                        resultado = "($resultado"
-                    } else if (length + resultado.length == 3) {
-                        resultado = "$resultado) "
-                    } else if (length + resultado.length == 5) {
-                        resultado = " $resultado"
-                    } else if (length + resultado.length == 9) {
-                        resultado = "-$resultado"
-                    } else if (length + resultado.length == 14) {
-                        val tel = getText(0, length)
-                        val novoTel = StringBuilder()
-                        var c: Char
-                        for (i in 0 until tel.length) {
-                            c = tel[i]
-                            if (c != ' ' && c != '-') {
-                                novoTel.append(c)
-                                if (i == 9) novoTel.append("-")
-                            }
+                1 -> {
+                    super.insertString(offs, text.digits(), a)
+                }
+                2 -> {
+                    val result = if (text.length == 10) {
+                        text
+                    } else {
+                        val digits = text.digits()
+                        if (length + digits.length == 2) {
+                            "$digits/"
+                        } else if (length + digits.length == 5) {
+                            "$digits/"
+                        } else {
+                            digits
                         }
-                        resultado = novoTel.toString() + resultado
-                        offs = 0
-                        remove(0, length)
-                    } else if (length + resultado.length > 14) {
-                        remove(14, length)
-                        resultado = ""
                     }
+                    super.insertString(offs, result, a)
                 }
-                super.insertString(offs, resultado, a)
-            } else if (tipoFormatacao == 4) {
-                var resultado: String
-                if (novoTexto.length == 10) {
-                    resultado = novoTexto
-                } else {
-                    resultado = getDigitos(novoTexto)
-                    if (length + resultado.length == 2) {
-                        resultado = "$resultado."
-                    } else if (length + resultado.length == 7) {
-                        resultado = "-$resultado"
+                3 -> {
+                    var offset = offs
+                    val result = if (text.length == 14 || text.length == 13) {
+                        text
+                    } else {
+                        val digits = text.digits()
+                        if (length + digits.length == 1) {
+                           "($digits"
+                        } else if (length + digits.length == 3) {
+                            "$digits) "
+                        } else if (length + digits.length == 5) {
+                            digits
+                        } else if (length + digits.length == 9) {
+                           "-$digits"
+                        } else if (length + digits.length == 14) {
+                            offset = 0
+                            getText(0, length)
+                                .mapIndexed { index, digit ->
+                                if (digit != ' ' && digit != '-') {
+                                    digit
+                                    if (index == 9) {
+                                        "-"
+                                    }
+                                }
+                            }.joinToString() + digits.also { remove(0, length) }
+                        } else if (length + digits.length > 14) {
+                            remove(14, length)
+                            ""
+                        } else {
+                            digits
+                        }
                     }
+                    super.insertString(offset, result, a)
                 }
-                super.insertString(offs, resultado, a)
+                4 -> {
+                    val result = if (text.length == 10) {
+                        text
+                    } else {
+                        val digits = text.digits()
+                        if (length + digits.length == 2) {
+                            "$digits."
+                        } else if (length + digits.length == 7) {
+                            "-$digits"
+                        } else {
+                            digits
+                        }
+                    }
+                    super.insertString(offs, result, a)
+                }
+                5 -> {
+                    super.insertString(offs, str, a)
+                }
             }
         }
-    }
-
-    private fun getDigitos(texto: String): String {
-        var c: Char
-        val resultado = StringBuilder()
-        for (element in texto) {
-            c = element
-            if (Character.isDigit(c)) resultado.append(c)
-        }
-        return resultado.toString()
     }
 }

@@ -2,12 +2,12 @@ package br.com.correios.enderecador.telas
 
 import javax.help.HelpSet
 import br.com.correios.enderecador.bean.ConfiguracaoBean
-import br.com.correios.enderecador.excecao.EnderecadorExcecao
+import br.com.correios.enderecador.exception.EnderecadorExcecao
 import javax.help.CSH
 import javax.help.CSH.DisplayHelpFromSource
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import br.com.correios.enderecador.conexao.ConexaoBD
-import br.com.correios.enderecador.conexao.ConnectException
+import br.com.correios.enderecador.exception.ConnectException
 import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -24,24 +24,22 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
     private val conexaoBD: ConexaoBD by inject()
 
-    private val telaSobre: TelaSobre by inject()
-    private val telaGrupo: TelaGrupo by inject()
-    private val telaRemetente: TelaRemetente by inject()
-    private val telaConfiguracao: TelaConfiguracao by inject()
-    private val telaDestinatario: TelaDestinatario by inject()
-    private val telaExportarDados: TelaExportarDados by inject()
-    private val telaIncorporarDados: TelaIncorporarDados by inject()
-    private val telaImpressaoEnvelope: TelaImpressaoEnvelope by inject()
-    private val telaImpressaoEncomenda: TelaImpressaoEncomenda by inject()
     private val telaImpressaoDiretaEnvelope: TelaImpressaoDiretaEnvelope by inject()
+    private val telaImpressaoEncomenda: TelaImpressaoEncomenda by inject()
+    private val telaImpressaoEnvelope: TelaImpressaoEnvelope by inject()
+    private val telaIncorporarDados: TelaIncorporarDados by inject()
+    private val telaExportarDados: TelaExportarDados by inject()
+    private val telaDestinatario: TelaDestinatario by inject()
+    private val telaRemetente: TelaRemetente by inject()
+    private val telaGrupo: TelaGrupo by inject()
+    private val telaSobre: TelaSobre by inject()
 
     init {
         initComponents()
         configuracoesAdicionais()
     }
 
-    private fun configuracaoAjuda() {
-        val topics = JMenuItem()
+    private fun configuracaoAjuda(topics: JMenuItem) {
         topics.isVisible = true
         try {
             helpBroker.enableHelpKey(getRootPane(), "apresentacao", helpSet)
@@ -66,99 +64,79 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
 
         jMenuBar = JMenuBar().apply {
-            add(JMenu().apply {
+            add(JMenu("Cadastro").apply {
                 mnemonic = 'C'.code
-                text = "Cadastro"
-                add(JMenuItem().apply {
+                add(JMenuItem("Cadastrar remetentes").apply {
                     mnemonic = 'R'.code
-                    text = "Cadastrar remetentes"
                     addActionListener { cadastrarRemetenteView() }
                 })
-                add(JMenuItem().apply {
+                add(JMenuItem("Cadastrar destinatários").apply {
                     mnemonic = 'D'.code
-                    text = "Cadastrar destinatários"
                     addActionListener { cadastrarDestinatarioView() }
                 })
-                add(JMenuItem().apply {
+                add(JMenuItem("Cadastrar grupos").apply {
                     mnemonic = 'G'.code
-                    text = "Cadastrar grupos"
                     addActionListener {  jbtCadGrupoActionPerformed() }
                 })
                 add(JSeparator())
-                add(JMenuItem().apply {
+                add(JMenuItem("Sair").apply {
                     mnemonic = 'S'.code
-                    text = "Sair"
                     addActionListener { sairAplicacao() }
                 })
             })
-            add(JMenu().apply {
+            add(JMenu("Impressão").apply {
                 mnemonic = 'P'.code
-                text = "Impressão"
-                add(JMenu().apply {
+                add(JMenu("Etiquetas").apply {
                     mnemonic = 'Q'.code
-                    text = "Etiquetas"
-                    add(JMenuItem().apply {
+                    add(JMenuItem("Encomendas").apply {
                         mnemonic = 'C'.code
-                        text = "Encomendas"
                         addActionListener { jbtEtiquetasEncomendasActionPerformed() }
                     })
-                    add(JMenuItem().apply {
+                    add(JMenuItem("Cartas").apply {
                         mnemonic = 'C'.code
-                        text = "Cartas"
                         addActionListener { jbtEtiquetasCartasActionPerformed() }
                     })
                 })
-                add(JMenuItem().apply {
+                add(JMenuItem("Envelope").apply {
                     mnemonic = 'V'.code
-                    text = "Envelope"
                     addActionListener { jbtImpressaoEnvelopeActionPerformed() }
                 })
             })
-            add(JMenu().apply {
+            add(JMenu("Ferramentas").apply {
                 mnemonic = 'F'.code
-                text = "Ferramentas"
-                add(JMenuItem().apply {
+                add(JMenuItem("Importar dados").apply {
                     mnemonic = 'I'.code
-                    text = "Importar dados"
                     addActionListener { jbtIncorporarDadosActionPerformed() }
                 })
-                add(JMenuItem().apply {
+                add(JMenuItem("Exportar dados").apply {
                     mnemonic = 'E'.code
-                    text = "Exportar dados"
                     addActionListener { jbtExportarDadosActionPerformed() }
                 })
                 add(JSeparator())
-                add(JMenuItem().apply {
+                add(JMenuItem("Configurar proxy").apply {
                     mnemonic = 'P'.code
-                    text = "Configurar proxy"
                     addActionListener { mnProxyActionPerformed() }
                 })
             })
-            add(JMenu().apply {
+            add(JMenu("Ajuda").apply {
                 mnemonic = 'U'.code
-                text = "Ajuda"
-                add(JMenuItem().apply {
+                add(JMenuItem("Sobre").apply {
                     mnemonic = 'S'.code
-                    text = "Sobre"
                     addActionListener { sobreView() }
                 })
-                add(JMenuItem().apply {
+                add(JMenuItem("Tópicos da ajuda").apply {
                     mnemonic = 'T'.code
-                    text = "Tópicos da ajuda"
-                    addActionListener { configuracaoAjuda() }
+                    addActionListener { configuracaoAjuda(this) }
                 })
                 add(JSeparator())
-                add(JMenuItem().apply {
+                add(JMenuItem("Atualizar versão").apply {
                     mnemonic = 'A'.code
-                    text = "Atualizar versão"
                     addActionListener { atualizarVersaoView() }
                 })
             })
         }
 
         contentPane.add(JDesktopPane().apply {
-            background = background
-            border = BorderFactory.createEtchedBorder()
             add(JLabel().apply {
                 icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/logo_enderecador.gif"))
                 setBounds(180, 100, 225, 100)
@@ -286,7 +264,7 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
     private fun mnProxyActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaConfiguracao.isVisible = true
+        //telaConfiguracao.isVisible = true
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
@@ -307,10 +285,8 @@ class TelaPrincipal : JFrame(), KoinComponent {
     private fun configuracoesAdicionais() {
         val screenSize = Toolkit.getDefaultToolkit().screenSize
         setBounds(50, 50, screenSize.width - 100, screenSize.height - 100)
-        val configuracaoBean = ConfiguracaoBean.instance
         try {
-            configuracaoBean!!.carregaVariaveis()
-            title = "Endereçador Escritório v" + configuracaoBean.versao
+            title = "Endereçador Escritório v" + ConfiguracaoBean.versao
         } catch (ex: EnderecadorExcecao) {
             JOptionPane.showMessageDialog(
                 this,

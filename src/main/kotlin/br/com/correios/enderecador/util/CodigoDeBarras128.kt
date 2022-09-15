@@ -1,10 +1,7 @@
 package br.com.correios.enderecador.util
 
-import kotlin.Throws
-import br.com.correios.enderecador.excecao.EnderecadorExcecao
+import br.com.correios.enderecador.exception.EnderecadorExcecao
 import java.lang.StringBuilder
-import java.util.Objects
-import java.lang.NumberFormatException
 import kotlin.jvm.JvmStatic
 
 class CodigoDeBarras128 {
@@ -159,7 +156,9 @@ class CodigoDeBarras128 {
             indice = 103
         } else if (tipoCodigoDeBarras == TIPO_128_C) {
             indice = 105
-            if (!valorNumerico(informacao)) throw EnderecadorExcecao("O código de barras CODE_128C deve ser numérico!")
+            if (informacao.isNotNumeric()) {
+                throw EnderecadorExcecao("O código de barras CODE_128C deve ser numérico!")
+            }
         } else {
             throw EnderecadorExcecao("Tipo de código de barras inválido!")
         }
@@ -175,7 +174,7 @@ class CodigoDeBarras128 {
             }
             informacao = strTmp.toString()
         }
-        for (i in 0 until informacao.length) {
+        for (i in informacao.indices) {
             indice += largura * getIndiceTabela(tipoCodigoDeBarras, informacao.substring(i, i + 1))
             largura++
         }
@@ -186,57 +185,46 @@ class CodigoDeBarras128 {
         return codigoDeBarras.toString()
     }
 
-    fun gerarCodigoDeBarra128(tipoCodigoDeBarra: Int, CEP: String): String {
+    fun gerarCodigoDeBarra128(tipoCodigoDeBarra: Int, cep: String): String {
         val codCep = StringBuilder()
-        for (i in 0 until CEP.length - 1) codCep.append(
-            tabelaCode128[getIndiceTabela(
-                tipoCodigoDeBarra,
-                CEP.substring(i, i + 1)
-            )]
-        )
+        for (i in 0 until cep.length - 1) {
+            codCep.append(tabelaCode128[getIndiceTabela(
+                    tipoCodigoDeBarra,
+                    cep.substring(i, i + 1)
+                )]
+            )
+        }
         codCep.append(tabelaCode128[tabelaCode128.size - 1])
         return codCep.toString()
     }
 
-    private fun getCaractereTabela(tipoCodigoDeBarra: Int, indice: String): String? {
+    private fun getCaractereTabela(tipoCodigoDeBarra: Int, indice: String): String {
         return getCaractereTabela(tipoCodigoDeBarra, indice.toInt())
     }
 
-    private fun getCaractereTabela(tipoCodigoDeBarra: Int, indice: Int): String? {
-        var result: String? = null
-        if (tipoCodigoDeBarra == 1) {
-            result = tabelaCode128AB[indice]
-        } else if (tipoCodigoDeBarra == 2) {
-            result = tabelaCode128C[indice]
+    private fun getCaractereTabela(tipoCodigoDeBarra: Int, indice: Int): String {
+        return if (tipoCodigoDeBarra == 1) {
+            tabelaCode128AB[indice]
+        } else {
+            tabelaCode128C[indice]
         }
-        return result
     }
 
     private fun getIndiceTabela(tipoCodigoDeBarra: Int, caractere: String): Int {
         var indice = -1
-        var tabela: Array<String>? = null
-        if (tipoCodigoDeBarra == 1) {
-            tabela = tabelaCode128AB
-        } else if (tipoCodigoDeBarra == 2) {
-            tabela = tabelaCode128C
+        val tabela = if (tipoCodigoDeBarra == 1) {
+            tabelaCode128AB
+        } else {
+            tabelaCode128C
         }
-        for (i in tabela?.indices!!) {
+
+        for (i in tabela.indices) {
             if (tabela[i] == caractere) {
                 indice = i
                 break
             }
         }
         return indice
-    }
-
-    private fun valorNumerico(valor: String): Boolean {
-        var isNumero = false
-        try {
-            valor.toLong()
-            isNumero = true
-        } catch (ignored: NumberFormatException) {
-        }
-        return isNumero
     }
 
     companion object {
