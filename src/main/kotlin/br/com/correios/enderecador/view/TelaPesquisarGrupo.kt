@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.telas
+package br.com.correios.enderecador.view
 
 import javax.swing.JDialog
 import br.com.correios.enderecador.bean.GrupoBean

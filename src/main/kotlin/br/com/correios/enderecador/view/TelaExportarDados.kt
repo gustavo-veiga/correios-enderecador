@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.telas
+package br.com.correios.enderecador.view
 
 import javax.swing.JFrame
 import br.com.correios.enderecador.bean.DestinatarioBean

@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.telas
+package br.com.correios.enderecador.view
 
 import br.com.correios.enderecador.bean.DestinatarioBean
 import br.com.correios.enderecador.util.isNumeric

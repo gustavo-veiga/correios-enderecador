@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.telas
+package br.com.correios.enderecador.view
 
 import br.com.correios.enderecador.util.TextoCellRenderer
 import br.com.correios.enderecador.bean.RemetenteBean

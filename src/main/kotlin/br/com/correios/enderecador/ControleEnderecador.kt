@@ -1,6 +1,6 @@
 package br.com.correios.enderecador
 
-import br.com.correios.enderecador.telas.TelaPrincipal
+import br.com.correios.enderecador.view.TelaPrincipal
 import com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme
 import com.formdev.flatlaf.extras.FlatInspector
 import com.formdev.flatlaf.extras.FlatUIDefaultsInspector
