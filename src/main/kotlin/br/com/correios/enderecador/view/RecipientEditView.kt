@@ -28,7 +28,7 @@ import java.awt.*
 import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 
-class TelaEditarDestinatario : KoinComponent, JDialog {
+class RecipientEditView : KoinComponent, JDialog {
     private val addressService: AddressService = get()
     private val destinatarioDao: DestinatarioDao = get()
 
@@ -239,7 +239,7 @@ class TelaEditarDestinatario : KoinComponent, JDialog {
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarDestinatario.javaClass.getResource("/imagens/OK.gif"))
+                icon = ImageIcon(this@RecipientEditView.javaClass.getResource("/imagens/OK.gif"))
                 text = "Confirmar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -248,7 +248,7 @@ class TelaEditarDestinatario : KoinComponent, JDialog {
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarDestinatario.javaClass.getResource("/imagens/cancelar.gif"))
+                icon = ImageIcon(this@RecipientEditView.javaClass.getResource("/imagens/cancelar.gif"))
                 text = "Limpar tela"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -257,7 +257,7 @@ class TelaEditarDestinatario : KoinComponent, JDialog {
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarDestinatario.javaClass.getResource("/imagens/sair.gif"))
+                icon = ImageIcon(this@RecipientEditView.javaClass.getResource("/imagens/sair.gif"))
                 text = "Voltar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -477,6 +477,6 @@ class TelaEditarDestinatario : KoinComponent, JDialog {
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaEditarDestinatario::class.java)
+        private val logger = Logger.getLogger(RecipientEditView::class.java)
     }
 }

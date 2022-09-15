@@ -17,7 +17,7 @@ import java.awt.Font.*
 import javax.swing.*
 
 @Singleton
-class TelaImpressaoDiretaEnvelope(
+class PrintEnvelopeDirectView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
     private val recipientPrintTableModel = DestinatarioImpressaoTableModel()
@@ -129,7 +129,7 @@ class TelaImpressaoDiretaEnvelope(
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/addusuario.gif"))
+                icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/addusuario.gif"))
                 text = "Selecionar destinatário"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(110, 60)
@@ -138,7 +138,7 @@ class TelaImpressaoDiretaEnvelope(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/addusuarios.gif"))
+                icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/addusuarios.gif"))
                 text = "Selecionar grupo"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -147,7 +147,7 @@ class TelaImpressaoDiretaEnvelope(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/remover.gif"))
+                icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/remover.gif"))
                 text = "Remover destinatário"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(110, 60)
@@ -156,7 +156,7 @@ class TelaImpressaoDiretaEnvelope(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/removerTodos.gif"))
+                icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/removerTodos.gif"))
                 text = "Remover todos"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -165,7 +165,7 @@ class TelaImpressaoDiretaEnvelope(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/print.gif"))
+                icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/print.gif"))
                 text = "Visualizar AR"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -174,7 +174,7 @@ class TelaImpressaoDiretaEnvelope(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/IMPRIMIR.gif"))
+                icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/IMPRIMIR.gif"))
                 text = "Visualizar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -196,7 +196,7 @@ class TelaImpressaoDiretaEnvelope(
                     Font(SANS_SERIF, PLAIN, 10))
 
                 add(envelopeFigure.apply {
-                    icon = ImageIcon(this@TelaImpressaoDiretaEnvelope.javaClass.getResource("/imagens/envelopeC5.gif"))
+                    icon = ImageIcon(this@PrintEnvelopeDirectView.javaClass.getResource("/imagens/envelopeC5.gif"))
                     minimumSize = Dimension(80, 65)
                 }, "span 1 2")
 
@@ -354,13 +354,13 @@ class TelaImpressaoDiretaEnvelope(
     }
 
     private fun jbtSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = TelaPesquisarGrupo()
+        val telaPesquisarGrupo = GroupSearchView()
         telaPesquisarGrupo.isVisible = true
         //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
     }
 
     private fun jbtSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario()
+        val telaPesquisaDestinatario = RecipientSearchView()
         telaPesquisaDestinatario.isVisible = true
         //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
     }
@@ -368,6 +368,6 @@ class TelaImpressaoDiretaEnvelope(
     private fun jcmbTamanhoFonteActionPerformed() {}
 
     companion object {
-        var logger = Logger.getLogger(TelaEditarRemetente::class.java)
+        var logger = Logger.getLogger(SenderEditView::class.java)
     }
 }

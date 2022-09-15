@@ -18,7 +18,7 @@ import javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 import javax.swing.table.DefaultTableCellRenderer
 
 @Singleton
-class TelaRemetente(
+class SenderView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
     private val senderTableModel = RemetenteTableModel()
@@ -83,7 +83,7 @@ class TelaRemetente(
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 font = Font(Font.DIALOG, PLAIN, 9)
-                icon = ImageIcon(this@TelaRemetente.javaClass.getResource("/imagens/usuario.gif"))
+                icon = ImageIcon(this@SenderView.javaClass.getResource("/imagens/usuario.gif"))
                 text = "Novo remetente"
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(81, 47)
@@ -94,7 +94,7 @@ class TelaRemetente(
             })
             add(JButton().apply {
                 font = Font(Font.DIALOG, PLAIN, 9)
-                icon = ImageIcon(this@TelaRemetente.javaClass.getResource("/imagens/editar.gif"))
+                icon = ImageIcon(this@SenderView.javaClass.getResource("/imagens/editar.gif"))
                 text = "Editar"
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(81, 47)
@@ -163,14 +163,14 @@ class TelaRemetente(
                 JOptionPane.INFORMATION_MESSAGE)
             return
         }
-        val senderEditView = TelaEditarRemetente(
+        val senderEditView = SenderEditView(
             senderTableModel.getAt(senderTable.selectedRow),
             parent = this)
         senderEditView.isVisible = true
     }
 
     private fun jbtNovoActionPerformed() {
-        val senderEditView = TelaEditarRemetente(parent = this)
+        val senderEditView = SenderEditView(parent = this)
         senderEditView.isVisible = true
     }
 
@@ -243,6 +243,6 @@ class TelaRemetente(
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaRemetente::class.java)
+        private val logger = Logger.getLogger(SenderView::class.java)
     }
 }

@@ -18,21 +18,21 @@ import java.lang.Exception
 import javax.swing.*
 import kotlin.system.exitProcess
 
-class TelaPrincipal : JFrame(), KoinComponent {
+class MainView : JFrame(), KoinComponent {
     private val helpSet = helpSet()
     private val helpBroker = helpSet.createHelpBroker()
 
     private val conexaoBD: ConexaoBD by inject()
 
-    private val telaImpressaoDiretaEnvelope: TelaImpressaoDiretaEnvelope by inject()
-    private val telaImpressaoEncomenda: TelaImpressaoEncomenda by inject()
-    private val telaImpressaoEnvelope: TelaImpressaoEnvelope by inject()
-    private val telaIncorporarDados: TelaIncorporarDados by inject()
-    private val telaExportarDados: TelaExportarDados by inject()
-    private val telaDestinatario: TelaDestinatario by inject()
-    private val telaRemetente: TelaRemetente by inject()
-    private val telaGrupo: TelaGrupo by inject()
-    private val telaSobre: TelaSobre by inject()
+    private val printEnvelopeDirectView: PrintEnvelopeDirectView by inject()
+    private val printEnvelopeView: PrintEnvelopeView by inject()
+    private val printOrderView: PrintOrderView by inject()
+    private val dataImportView: DataImportView by inject()
+    private val dataExportView: DataExportView by inject()
+    private val recipientView: RecipientView by inject()
+    private val senderView: SenderView by inject()
+    private val groupView: GroupView by inject()
+    private val aboutView: AboutView by inject()
 
     init {
         initComponents()
@@ -138,14 +138,14 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
         contentPane.add(JDesktopPane().apply {
             add(JLabel().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/logo_enderecador.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/logo_enderecador.gif"))
                 setBounds(180, 100, 225, 100)
             })
         }, "North")
 
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/remetente.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/remetente.gif"))
                 toolTipText = "Cadastrar remetentes"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(60, 50)
@@ -153,14 +153,14 @@ class TelaPrincipal : JFrame(), KoinComponent {
                 addActionListener { cadastrarRemetenteView() }
             })
             add(JButton().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/usuario.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/usuario.gif"))
                 toolTipText = "Cadastrar destinatários"
                 maximumSize = Dimension(60, 50)
                 minimumSize = Dimension(31, 31)
                 addActionListener { cadastrarDestinatarioView() }
             })
             add(JButton().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/usuarios.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/usuarios.gif"))
                 toolTipText = "Cadastrar grupos"
                 maximumSize = Dimension(60, 50)
                 minimumSize = Dimension(45, 39)
@@ -174,19 +174,19 @@ class TelaPrincipal : JFrame(), KoinComponent {
                 addActionListener { jbtIncorporarDadosActionPerformed() }
             })
             add(JButton().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/exportararquivo.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/exportararquivo.gif"))
                 toolTipText = "Exportar dados"
                 maximumSize = Dimension(60, 50)
                 addActionListener { jbtExportarDadosActionPerformed() }
             })
             add(JButton().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/etiquetaencomenda.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/etiquetaencomenda.gif"))
                 toolTipText = "Etiquetas para encomendas"
                 maximumSize = Dimension(60, 50)
                 addActionListener { jbtEtiquetasEncomendasActionPerformed() }
             })
             add(JButton().apply {
-                icon = ImageIcon(this@TelaPrincipal.javaClass.getResource("/imagens/etiquetaenvelope.gif"))
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/etiquetaenvelope.gif"))
                 toolTipText = "Etiquetas para cartas"
                 maximumSize = Dimension(60, 50)
                 addActionListener { jbtEtiquetasCartasActionPerformed() }
@@ -211,7 +211,7 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
     private fun sobreView() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaSobre.isVisible = true
+        aboutView.isVisible = true
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
@@ -222,43 +222,43 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
     private fun jbtEtiquetasCartasActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaImpressaoEnvelope.isVisible = true
-        helpBroker.enableHelpKey(telaImpressaoEnvelope, "impressaoCarta", helpSet)
+        printEnvelopeView.isVisible = true
+        helpBroker.enableHelpKey(printEnvelopeView, "impressaoCarta", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbtImpressaoEnvelopeActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaImpressaoDiretaEnvelope.isVisible = true
-        helpBroker!!.enableHelpKey(telaImpressaoDiretaEnvelope, "impressaoEnvelopes", helpSet)
+        printEnvelopeDirectView.isVisible = true
+        helpBroker!!.enableHelpKey(printEnvelopeDirectView, "impressaoEnvelopes", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbtIncorporarDadosActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaIncorporarDados.isVisible = true
-        helpBroker.enableHelpKey(telaIncorporarDados, "importar", helpSet)
+        dataImportView.isVisible = true
+        helpBroker.enableHelpKey(dataImportView, "importar", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbtEtiquetasEncomendasActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaImpressaoEncomenda.isVisible = true
-        helpBroker.enableHelpKey(telaImpressaoEncomenda, "impressaoEncomenda", helpSet)
+        printOrderView.isVisible = true
+        helpBroker.enableHelpKey(printOrderView, "impressaoEncomenda", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbtExportarDadosActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaExportarDados.isVisible = true
-        helpBroker.enableHelpKey(telaExportarDados, "exportar", helpSet)
+        dataExportView.isVisible = true
+        helpBroker.enableHelpKey(dataExportView, "exportar", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbtCadGrupoActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaGrupo.isVisible = true
-        helpBroker.enableHelpKey(telaGrupo, "cadGrupos", helpSet)
+        groupView.isVisible = true
+        helpBroker.enableHelpKey(groupView, "cadGrupos", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
@@ -270,15 +270,15 @@ class TelaPrincipal : JFrame(), KoinComponent {
 
     private fun cadastrarDestinatarioView() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaDestinatario.isVisible = true
-        helpBroker.enableHelpKey(telaDestinatario, "cadDestinatarios", helpSet)
+        recipientView.isVisible = true
+        helpBroker.enableHelpKey(recipientView, "cadDestinatarios", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun cadastrarRemetenteView() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        telaRemetente.isVisible = true
-        helpBroker.enableHelpKey(telaRemetente, "cadRemetentes", helpSet)
+        senderView.isVisible = true
+        helpBroker.enableHelpKey(senderView, "cadRemetentes", helpSet)
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
@@ -308,6 +308,6 @@ class TelaPrincipal : JFrame(), KoinComponent {
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaPrincipal::class.java)
+        private val logger = Logger.getLogger(MainView::class.java)
     }
 }

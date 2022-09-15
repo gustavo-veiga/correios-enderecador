@@ -33,7 +33,7 @@ import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 
 @Singleton
-class TelaImpressaoEncomenda(
+class PrintOrderView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
     private val recipientPrintTableModel = DestinatarioImpressaoTableModel(true)
@@ -117,7 +117,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Selecionar destinatário"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/addusuario.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/addusuario.gif"))
                 maximumSize = Dimension(110, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -126,7 +126,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Selecionar grupo"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/addusuarios.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/addusuarios.gif"))
                 maximumSize = Dimension(100, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -135,7 +135,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Remover destinatário"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/remover.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/remover.gif"))
                 maximumSize = Dimension(110, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -144,7 +144,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Remover todos"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/removerTodos.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/removerTodos.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -153,7 +153,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Visualizar AR"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/print.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/print.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -163,7 +163,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Visualizar Etiqueta"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/IMPRIMIR.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/IMPRIMIR.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -172,7 +172,7 @@ class TelaImpressaoEncomenda(
             add(JButton().apply {
                 text = "Declaração de Conteúdo"
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/print.gif"))
+                icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/print.gif"))
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
                 addActionListener { jButton2ActionPerformed() }
@@ -192,7 +192,7 @@ class TelaImpressaoEncomenda(
                     Font(SANS_SERIF, PLAIN, 10))
 
                 add(printFigure.apply {
-                    icon = ImageIcon(this@TelaImpressaoEncomenda.javaClass.getResource("/imagens/tipo_2etq.gif"))
+                    icon = ImageIcon(this@PrintOrderView.javaClass.getResource("/imagens/tipo_2etq.gif"))
                     border = BorderFactory.createEmptyBorder(1, 1, 1, 1)
                 }, "span 1 2")
 
@@ -382,14 +382,14 @@ class TelaImpressaoEncomenda(
     }
 
     private fun jbtnSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = TelaPesquisarGrupo()
+        val telaPesquisarGrupo = GroupSearchView()
         telaPesquisarGrupo.isVisible = true
         //model.setAll(vecDestinatarioImpressao)
         //jtblDestinatarioImpressao.model = model
     }
 
     private fun jbtnSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario()
+        val telaPesquisaDestinatario = RecipientSearchView()
         telaPesquisaDestinatario.isVisible = true
         //recipientModel.setAll(telaPesquisaDestinatario.recipientsSelected)
         //jtblDestinatarioImpressao.model = model
@@ -412,14 +412,14 @@ class TelaImpressaoEncomenda(
                 JOptionPane.WARNING_MESSAGE)
             return
         }
-        val telaDeclararConteudo = TelaDeclararConteudo(
+        val contentDeclarationView = ContentDeclarationView(
             recipientPrintTableModel.getAll(),
             (senderOptions.selectedItem as RemetenteBean)
         )
-        telaDeclararConteudo.isVisible = true
+        contentDeclarationView.isVisible = true
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaImpressaoEncomenda::class.java)
+        private val logger = Logger.getLogger(PrintOrderView::class.java)
     }
 }

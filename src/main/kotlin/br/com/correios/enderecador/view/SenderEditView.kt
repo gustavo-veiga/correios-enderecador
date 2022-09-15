@@ -27,7 +27,7 @@ import java.awt.*
 import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 
-class TelaEditarRemetente : KoinComponent, JDialog {
+class SenderEditView : KoinComponent, JDialog {
     private val remetenteDao: RemetenteDao = get()
 
     private val arrayUF = BrazilState.abbreviations()
@@ -228,7 +228,7 @@ class TelaEditarRemetente : KoinComponent, JDialog {
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarRemetente.javaClass.getResource("/imagens/OK.gif"))
+                icon = ImageIcon(this@SenderEditView.javaClass.getResource("/imagens/OK.gif"))
                 text = "Confirmar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -237,7 +237,7 @@ class TelaEditarRemetente : KoinComponent, JDialog {
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarRemetente.javaClass.getResource("/imagens/cancelar.gif"))
+                icon = ImageIcon(this@SenderEditView.javaClass.getResource("/imagens/cancelar.gif"))
                 text = "Limpar tela"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -246,7 +246,7 @@ class TelaEditarRemetente : KoinComponent, JDialog {
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarRemetente.javaClass.getResource("/imagens/sair.gif"))
+                icon = ImageIcon(this@SenderEditView.javaClass.getResource("/imagens/sair.gif"))
                 text = "Voltar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -451,6 +451,6 @@ class TelaEditarRemetente : KoinComponent, JDialog {
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaEditarRemetente::class.java)
+        private val logger = Logger.getLogger(SenderEditView::class.java)
     }
 }

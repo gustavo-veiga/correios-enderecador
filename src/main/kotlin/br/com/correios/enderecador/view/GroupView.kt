@@ -19,7 +19,7 @@ import java.awt.event.MouseEvent
 import javax.swing.*
 
 @Singleton
-class TelaGrupo(
+class GroupView(
     private val groupDao: GrupoDao,
     private val recipientGroupDao: GrupoDestinatarioDao
 ) : JFrame() {
@@ -43,7 +43,7 @@ class TelaGrupo(
             preferredSize = Dimension(100, 59)
             add(JButton("Novo grupo").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaGrupo.javaClass.getResource("/imagens/usuarios.gif"))
+                icon = ImageIcon(this@GroupView.javaClass.getResource("/imagens/usuarios.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -51,7 +51,7 @@ class TelaGrupo(
             })
             add(JButton("Editar").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaGrupo.javaClass.getResource("/imagens/editar.gif"))
+                icon = ImageIcon(this@GroupView.javaClass.getResource("/imagens/editar.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -59,7 +59,7 @@ class TelaGrupo(
             })
             add(JButton("Pesquisar").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaGrupo.javaClass.getResource("/imagens/binoculo.gif"))
+                icon = ImageIcon(this@GroupView.javaClass.getResource("/imagens/binoculo.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -67,7 +67,7 @@ class TelaGrupo(
             })
             add(JButton("Excluir").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaGrupo.javaClass.getResource("/imagens/TRASH.gif"))
+                icon = ImageIcon(this@GroupView.javaClass.getResource("/imagens/TRASH.gif"))
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
                 horizontalTextPosition = 0
@@ -169,8 +169,8 @@ class TelaGrupo(
     private fun jbtEditarActionPerformed() {
         if (groupList.isSelectionEmpty.not()) {
             val group = groupList.selectedValue
-            val telaEditarGrupo = TelaEditarGrupo(group, parent = this)
-            telaEditarGrupo.isVisible = true
+            val groupEditView = GroupEditView(group, parent = this)
+            groupEditView.isVisible = true
             recuperarListaGrupo()
         } else {
             JOptionPane.showMessageDialog(
@@ -182,7 +182,7 @@ class TelaGrupo(
     }
 
     private fun jbtNovoActionPerformed() {
-        val editGroupView = TelaEditarGrupo(parent = this)
+        val editGroupView = GroupEditView(parent = this)
         editGroupView.isVisible = true
         recuperarListaGrupo()
     }
@@ -215,6 +215,6 @@ class TelaGrupo(
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaGrupo::class.java)
+        private val logger = Logger.getLogger(GroupView::class.java)
     }
 }

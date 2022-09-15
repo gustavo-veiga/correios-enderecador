@@ -17,7 +17,7 @@ import javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 import javax.swing.table.DefaultTableCellRenderer
 
 @Singleton
-class TelaDestinatario(
+class RecipientView(
     private val recipientDao: DestinatarioDao,
     private val recipientGroupDao: GrupoDestinatarioDao,
 ) : JFrame() {
@@ -82,7 +82,7 @@ class TelaDestinatario(
         contentPane.add(JToolBar().apply {
             add(JButton("Novo destinatário").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/usuario.gif"))
+                icon = ImageIcon(this@RecipientView.javaClass.getResource("/imagens/usuario.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(87, 47)
@@ -92,7 +92,7 @@ class TelaDestinatario(
             })
             add(JButton("Editar").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/editar.gif"))
+                icon = ImageIcon(this@RecipientView.javaClass.getResource("/imagens/editar.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -100,7 +100,7 @@ class TelaDestinatario(
             })
             add(JButton("Pesquisar").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/binoculo.gif"))
+                icon = ImageIcon(this@RecipientView.javaClass.getResource("/imagens/binoculo.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(47, 55)
@@ -109,7 +109,7 @@ class TelaDestinatario(
             })
             add(JButton("Excluir").apply {
                 font = Font(Font.SANS_SERIF, Font.PLAIN, 9)
-                icon = ImageIcon(this@TelaDestinatario.javaClass.getResource("/imagens/TRASH.gif"))
+                icon = ImageIcon(this@RecipientView.javaClass.getResource("/imagens/TRASH.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 minimumSize = Dimension(47, 55)
@@ -145,7 +145,7 @@ class TelaDestinatario(
     }
 
     private fun jbtNovoActionPerformed() {
-        val editRecipientView = TelaEditarDestinatario(parent = this)
+        val editRecipientView = RecipientEditView(parent = this)
         editRecipientView.isVisible = true
     }
 
@@ -158,7 +158,7 @@ class TelaDestinatario(
                 JOptionPane.INFORMATION_MESSAGE)
             return
         }
-        val telaEditarDestinatrio = TelaEditarDestinatario(
+        val telaEditarDestinatrio = RecipientEditView(
             recipientTableModel.getAt(recipientTable.selectedRow),
             parent = this)
         telaEditarDestinatrio.isVisible = true
@@ -235,6 +235,6 @@ class TelaDestinatario(
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaDestinatario::class.java)
+        private val logger = Logger.getLogger(RecipientView::class.java)
     }
 }

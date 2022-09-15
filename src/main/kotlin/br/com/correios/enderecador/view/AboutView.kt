@@ -19,7 +19,7 @@ import java.awt.Font.*
 import java.awt.event.MouseEvent
 
 @Singleton
-class TelaSobre: JDialog() {
+class AboutView: JDialog() {
     init {
         title = "Endereçador Escritório"
         size = Dimension(390, 400)
@@ -31,7 +31,7 @@ class TelaSobre: JDialog() {
                 layout = MigLayout()
 
                 add(JLabel().apply {
-                    icon = ImageIcon(this@TelaSobre.javaClass.getResource("/imagens/logo_enderecador.gif"))
+                    icon = ImageIcon(this@AboutView.javaClass.getResource("/imagens/logo_enderecador.gif"))
                     horizontalAlignment = 0
                     horizontalTextPosition = 0
                 }, "span, grow, push")
@@ -158,6 +158,6 @@ class TelaSobre: JDialog() {
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaSobre::class.java)
+        private val logger = Logger.getLogger(AboutView::class.java)
     }
 }

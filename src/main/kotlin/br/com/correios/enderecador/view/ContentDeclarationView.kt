@@ -20,7 +20,7 @@ import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 import javax.swing.*
 
-class TelaDeclararConteudo(
+class ContentDeclarationView(
     private val vecDestinatario: List<DestinatarioBean>,
     private val remetente: RemetenteBean
 ) : KoinComponent, JDialog() {
@@ -51,7 +51,7 @@ class TelaDeclararConteudo(
 
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaDeclararConteudo.javaClass.getResource("/imagens/print.gif"))
+                icon = ImageIcon(this@ContentDeclarationView.javaClass.getResource("/imagens/print.gif"))
                 text = "Imprimir"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -61,7 +61,7 @@ class TelaDeclararConteudo(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, 0, 9)
-                icon = ImageIcon(this@TelaDeclararConteudo.javaClass.getResource("/imagens/remover.gif"))
+                icon = ImageIcon(this@ContentDeclarationView.javaClass.getResource("/imagens/remover.gif"))
                 text = "Excluir item"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -132,6 +132,6 @@ class TelaDeclararConteudo(
     }
 
     companion object {
-        private val LOGGER = Logger.getLogger(TelaDeclararConteudo::class.java)
+        private val LOGGER = Logger.getLogger(ContentDeclarationView::class.java)
     }
 }

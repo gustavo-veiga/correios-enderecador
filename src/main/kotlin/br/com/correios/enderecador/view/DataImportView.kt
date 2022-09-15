@@ -38,7 +38,7 @@ import java.awt.Font.SANS_SERIF
 import java.util.*
 
 @Singleton
-class TelaIncorporarDados(
+class DataImportView(
     private val grupoDao: GrupoDao,
     private val csvService: CsvService,
     private val destinatarioDao: DestinatarioDao,
@@ -63,7 +63,7 @@ class TelaIncorporarDados(
         contentPane.add(JToolBar().apply {
             add(JButton("Confirmar").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaIncorporarDados.javaClass.getResource("/imagens/OK.gif"))
+                icon = ImageIcon(this@DataImportView.javaClass.getResource("/imagens/OK.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -71,7 +71,7 @@ class TelaIncorporarDados(
             })
             add(JButton("Abrir arquivo").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaIncorporarDados.javaClass.getResource("/imagens/arquivo.gif"))
+                icon = ImageIcon(this@DataImportView.javaClass.getResource("/imagens/arquivo.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -79,7 +79,7 @@ class TelaIncorporarDados(
             })
             add(JButton("Limpar tela").apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaIncorporarDados.javaClass.getResource("/imagens/cancelar.gif"))
+                icon = ImageIcon(this@DataImportView.javaClass.getResource("/imagens/cancelar.gif"))
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -203,6 +203,6 @@ class TelaIncorporarDados(
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaIncorporarDados::class.java)
+        private val logger = Logger.getLogger(DataImportView::class.java)
     }
 }

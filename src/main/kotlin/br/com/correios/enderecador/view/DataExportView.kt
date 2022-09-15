@@ -28,7 +28,7 @@ import java.awt.Font.SANS_SERIF
 import javax.swing.JFileChooser.CANCEL_OPTION
 
 @Singleton
-class TelaExportarDados(
+class DataExportView(
     private val csvService: CsvService,
     private val recipientDao: DestinatarioDao,
 ) : JFrame() {
@@ -65,7 +65,7 @@ class TelaExportarDados(
             preferredSize = Dimension(325, 59)
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaExportarDados.javaClass.getResource("/imagens/OK.gif"))
+                icon = ImageIcon(this@DataExportView.javaClass.getResource("/imagens/OK.gif"))
                 text = "Exportar"
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -74,7 +74,7 @@ class TelaExportarDados(
             })
             add(recipientSelectButton.apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaExportarDados.javaClass.getResource("/imagens/addusuario.gif"))
+                icon = ImageIcon(this@DataExportView.javaClass.getResource("/imagens/addusuario.gif"))
                 text = "Selecionar destinatário"
                 maximumSize = Dimension(107, 60)
                 verticalTextPosition = 3
@@ -83,7 +83,7 @@ class TelaExportarDados(
             })
             add(groupSelectButton.apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaExportarDados.javaClass.getResource("/imagens/addusuarios.gif"))
+                icon = ImageIcon(this@DataExportView.javaClass.getResource("/imagens/addusuarios.gif"))
                 text = "Selecionar grupo"
                 maximumSize = Dimension(90, 60)
                 preferredSize = Dimension(90, 60)
@@ -93,7 +93,7 @@ class TelaExportarDados(
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaExportarDados.javaClass.getResource("/imagens/removerTodos.gif"))
+                icon = ImageIcon(this@DataExportView.javaClass.getResource("/imagens/removerTodos.gif"))
                 text = "Remover todos"
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -130,14 +130,14 @@ class TelaExportarDados(
 
     private fun jbntGrupoActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val groupSearchView = TelaPesquisarGrupo()
+        val groupSearchView = GroupSearchView()
         groupSearchView.isVisible = true
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbntDestinatarioActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val telaPesquisaDestinatario = TelaPesquisarDestinatario()
+        val telaPesquisaDestinatario = RecipientSearchView()
         telaPesquisaDestinatario.isVisible = true
 
         //jlstDestinatarios.setListData(result.toTypedArray())
@@ -187,7 +187,7 @@ class TelaExportarDados(
         }.invokeOnCompletion { throwable ->
             if (throwable is CancellationException) {
                 JOptionPane.showMessageDialog(
-                    this@TelaExportarDados,
+                    this@DataExportView,
                     "",
                     "Endereçador",
                     JOptionPane.ERROR_MESSAGE)
@@ -202,6 +202,6 @@ class TelaExportarDados(
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaExportarDados::class.java)
+        private val logger = Logger.getLogger(DataExportView::class.java)
     }
 }

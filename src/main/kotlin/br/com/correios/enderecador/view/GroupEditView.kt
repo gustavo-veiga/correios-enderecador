@@ -28,7 +28,7 @@ import java.awt.Font.SANS_SERIF
 import java.awt.Frame
 import javax.swing.JTable.AUTO_RESIZE_OFF
 
-class TelaEditarGrupo : KoinComponent, JDialog {
+class GroupEditView : KoinComponent, JDialog {
     private val recipientGroupDao: GrupoDestinatarioDao = get()
     private val recipientDao: DestinatarioDao = get()
     private val groupDao: GrupoDao = get()
@@ -84,7 +84,7 @@ class TelaEditarGrupo : KoinComponent, JDialog {
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/OK.gif"))
+                icon = ImageIcon(this@GroupEditView.javaClass.getResource("/imagens/OK.gif"))
                 text = "Confirmar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -93,7 +93,7 @@ class TelaEditarGrupo : KoinComponent, JDialog {
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/sair.gif"))
+                icon = ImageIcon(this@GroupEditView.javaClass.getResource("/imagens/sair.gif"))
                 text = "Voltar"
                 horizontalTextPosition = 0
                 maximumSize = Dimension(90, 60)
@@ -122,14 +122,14 @@ class TelaEditarGrupo : KoinComponent, JDialog {
                 add(JButton().apply {
                     text = "Adicionar"
                     font = Font(SANS_SERIF, PLAIN, 9)
-                    icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/add.gif"))
+                    icon = ImageIcon(this@GroupEditView.javaClass.getResource("/imagens/add.gif"))
                     addActionListener { insertAndRemoveItems(recipientTable, recipientGroupModel, recipientModel) }
                 })
 
                 add(JButton().apply {
                     text = "Remover"
                     font = Font(SANS_SERIF, PLAIN, 9)
-                    icon = ImageIcon(this@TelaEditarGrupo.javaClass.getResource("/imagens/rem.gif"))
+                    icon = ImageIcon(this@GroupEditView.javaClass.getResource("/imagens/rem.gif"))
                     addActionListener { insertAndRemoveItems(recipientGroupTable, recipientModel, recipientGroupModel) }
                 })
             })
@@ -211,6 +211,6 @@ class TelaEditarGrupo : KoinComponent, JDialog {
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaEditarGrupo::class.java)
+        private val logger = Logger.getLogger(GroupEditView::class.java)
     }
 }

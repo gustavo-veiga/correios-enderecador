@@ -26,7 +26,7 @@ import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 import java.awt.Toolkit
 
-class TelaPesquisarDestinatario : KoinComponent, JDialog() {
+class RecipientSearchView : KoinComponent, JDialog() {
     private val recipientDao: DestinatarioDao = get()
 
     private val recipientList = JList<DestinatarioBean>()
@@ -61,7 +61,7 @@ class TelaPesquisarDestinatario : KoinComponent, JDialog() {
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaPesquisarDestinatario.javaClass.getResource("/imagens/OK.gif"))
+                icon = ImageIcon(this@RecipientSearchView.javaClass.getResource("/imagens/OK.gif"))
                 text = "Confirmar"
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -70,7 +70,7 @@ class TelaPesquisarDestinatario : KoinComponent, JDialog() {
             })
             add(JButton().apply {
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaPesquisarDestinatario.javaClass.getResource("/imagens/binoculo.gif"))
+                icon = ImageIcon(this@RecipientSearchView.javaClass.getResource("/imagens/binoculo.gif"))
                 text = "Pesquisar"
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -79,7 +79,7 @@ class TelaPesquisarDestinatario : KoinComponent, JDialog() {
             })
             add(JButton().apply {jbtPesquisarActionPerformed()
                 font = Font(SANS_SERIF, PLAIN, 9)
-                icon = ImageIcon(this@TelaPesquisarDestinatario.javaClass.getResource("/imagens/sair.gif"))
+                icon = ImageIcon(this@RecipientSearchView.javaClass.getResource("/imagens/sair.gif"))
                 text = "Sair"
                 maximumSize = Dimension(90, 60)
                 verticalTextPosition = 3
@@ -150,6 +150,6 @@ class TelaPesquisarDestinatario : KoinComponent, JDialog() {
     }
 
     companion object {
-        private val logger = Logger.getLogger(TelaPesquisarDestinatario::class.java)
+        private val logger = Logger.getLogger(RecipientSearchView::class.java)
     }
 }
