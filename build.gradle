@@ -8,7 +8,7 @@ plugins {
 
 group 'br.com.correios.enderecador'
 version '2.4.4'
-mainClassName = 'br.com.correios.enderecador.ControleEnderecador'
+mainClassName = 'br.com.correios.enderecador.ControleEnderecadorKt'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
