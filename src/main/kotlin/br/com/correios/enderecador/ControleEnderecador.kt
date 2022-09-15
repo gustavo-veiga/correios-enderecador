@@ -1,6 +1,6 @@
 package br.com.correios.enderecador
 
-import br.com.correios.enderecador.view.TelaPrincipal
+import br.com.correios.enderecador.view.MainView
 import com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme
 import com.formdev.flatlaf.extras.FlatInspector
 import com.formdev.flatlaf.extras.FlatUIDefaultsInspector
@@ -21,6 +21,6 @@ fun main() {
     FlatUIDefaultsInspector.install("ctrl shift alt Y")
 
     SwingUtilities.invokeLater {
-        TelaPrincipal()
+        MainView()
     }
 }
