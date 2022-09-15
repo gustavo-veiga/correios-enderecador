@@ -23,6 +23,7 @@ import javax.swing.BorderFactory
 import br.com.correios.enderecador.util.DocumentoPersonalizado
 import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.tablemodel.DestinatarioImpressaoTableModel
 import br.com.correios.enderecador.util.Report
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger

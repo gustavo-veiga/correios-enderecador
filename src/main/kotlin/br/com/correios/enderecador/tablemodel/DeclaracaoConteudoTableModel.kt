@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.view
+package br.com.correios.enderecador.tablemodel
 
 import br.com.correios.enderecador.bean.ConteudoDeclaradoBean
 

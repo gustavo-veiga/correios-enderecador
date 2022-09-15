@@ -21,6 +21,7 @@ import javax.swing.ImageIcon
 import javax.swing.BorderFactory
 import javax.swing.DefaultComboBoxModel
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.tablemodel.DestinatarioImpressaoTableModel
 import br.com.correios.enderecador.util.*
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger

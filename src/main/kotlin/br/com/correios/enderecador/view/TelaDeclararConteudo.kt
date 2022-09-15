@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent
 import java.awt.Color
 import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.tablemodel.DeclaracaoConteudoTableModel
 import br.com.correios.enderecador.util.Report
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger

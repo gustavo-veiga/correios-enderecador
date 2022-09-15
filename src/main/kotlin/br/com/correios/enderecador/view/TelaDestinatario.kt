@@ -3,6 +3,7 @@ package br.com.correios.enderecador.view
 import br.com.correios.enderecador.dao.DestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
+import br.com.correios.enderecador.tablemodel.DestinatarioTableModel
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton

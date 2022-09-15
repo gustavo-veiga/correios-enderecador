@@ -2,6 +2,7 @@ package br.com.correios.enderecador.view
 
 import br.com.correios.enderecador.dao.RemetenteDao
 import br.com.correios.enderecador.exception.DaoException
+import br.com.correios.enderecador.tablemodel.RemetenteTableModel
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger

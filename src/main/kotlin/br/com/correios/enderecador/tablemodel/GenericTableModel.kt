@@ -1,6 +1,5 @@
-package br.com.correios.enderecador.view
+package br.com.correios.enderecador.tablemodel
 
-import br.com.correios.enderecador.util.IterableTableModel
 import javax.swing.table.AbstractTableModel
 
 abstract class GenericTableModel<T>: AbstractTableModel(), IterableTableModel<T>, Iterable<T> {

@@ -4,6 +4,7 @@ import br.com.correios.enderecador.bean.GrupoBean
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
+import br.com.correios.enderecador.tablemodel.DestinatarioTableModel
 import br.com.correios.enderecador.util.getAllItems
 import br.com.correios.enderecador.util.setSelectedItem
 import net.miginfocom.swing.MigLayout

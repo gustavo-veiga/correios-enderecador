@@ -16,6 +16,7 @@ import javax.swing.ImageIcon
 import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
+import br.com.correios.enderecador.tablemodel.DestinatarioTableModel
 import net.miginfocom.swing.MigLayout
 import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent

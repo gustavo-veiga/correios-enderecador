@@ -1,4 +1,4 @@
-package br.com.correios.enderecador.util
+package br.com.correios.enderecador.tablemodel
 
 interface IterableTableModel<E> {
     fun insertRow(element: E)

@@ -20,6 +20,7 @@ import br.com.correios.enderecador.dao.DestinatarioDao
 import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.service.CsvService
+import br.com.correios.enderecador.tablemodel.IncorporaDestinatarioTableModel
 import br.com.correios.enderecador.util.*
 import br.com.correios.enderecador.util.FileExtension.CSV
 import br.com.correios.enderecador.util.FileExtension.TXT
