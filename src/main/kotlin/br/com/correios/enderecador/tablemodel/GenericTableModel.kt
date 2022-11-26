@@ -80,4 +80,14 @@ abstract class GenericTableModel<T>: AbstractTableModel(), IterableTableModel<T>
         dataTable.remove(data)
         fireTableDataChanged()
     }
+
+    override fun insertNotRepeated(values: List<T>, comparator: Comparator<T>) {
+        values.forEach { value ->
+            if (dataTable.contains(value).not()) {
+                dataTable.add(value)
+            }
+        }
+        dataTable.sortWith(comparator)
+        fireTableDataChanged()
+    }
 }

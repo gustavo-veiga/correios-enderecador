@@ -21,22 +21,32 @@ import javax.swing.ImageIcon
 import javax.swing.BorderFactory
 import javax.swing.DefaultComboBoxModel
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.service.PrintReportService
 import br.com.correios.enderecador.tablemodel.RecipientPrintTableModel
 import br.com.correios.enderecador.util.*
+import br.com.correios.enderecador.util.TypeDocumentFormat.ONLY_DIGITS
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
-import java.util.*
 
 @Singleton
 class PrintEnvelopeView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
+    private val logger by Logging()
+
     private val recipientPrintTableModel = RecipientPrintTableModel()
     private val recipientPrintTable = JTable()
+
+    private val recipientSearchView = RecipientSearchView()
+    private val groupSearchView = GroupSearchView()
 
     private val removeAllRecipient = JButton()
     private val removeRecipient = JButton()
@@ -58,7 +68,7 @@ class PrintEnvelopeView(
     private val repeatNumberSender = JTextField()
     private val senderLabel = JLabel()
     private val printFigure = JLabel()
-    private val print = Impressao()
+    private val print = PrintReportService()
 
     private var imprimirTratamento = false
     private var report = Report.ENVELOPE_A4_14
@@ -68,10 +78,19 @@ class PrintEnvelopeView(
         configuracoesAdicionais()
         carregaRemetente()
         setLocationRelativeTo(null)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            recipientSearchView.recipientListState.onEach { recipients ->
+                recipientPrintTableModel.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+            groupSearchView.recipientListState.onEach { recipients ->
+                recipientPrintTableModel.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+        }
     }
 
     private fun configuracoesAdicionais() {
-        var renderer = TextoCellRenderer(2)
+        var renderer = TextCellRenderer(2)
         var coluna = recipientPrintTable.columnModel.getColumn(0)
         coluna.cellRenderer = renderer
         coluna.preferredWidth = 300
@@ -82,7 +101,7 @@ class PrintEnvelopeView(
         coluna.preferredWidth = 120
         coluna.cellRenderer = renderer
         coluna = recipientPrintTable.columnModel.getColumn(3)
-        renderer = TextoCellRenderer(0)
+        renderer = TextCellRenderer(0)
         coluna.cellRenderer = renderer
         coluna.preferredWidth = 60
         coluna.width = 1
@@ -273,7 +292,7 @@ class PrintEnvelopeView(
                 })
 
                 add(fromTheTag.apply {
-                    document = DocumentoPersonalizado(3, 1)
+                    document = PersonalizedDocument(3, ONLY_DIGITS)
                 }, "wrap")
 
                 add(repeatNumberSenderLabel.apply {
@@ -282,7 +301,7 @@ class PrintEnvelopeView(
                 })
 
                 add(repeatNumberSender.apply {
-                    document = DocumentoPersonalizado(4, 1)
+                    document = PersonalizedDocument(4, ONLY_DIGITS)
                 }, "wrap")
 
                 add(JLabel().apply {
@@ -359,7 +378,7 @@ class PrintEnvelopeView(
     }
 
     private fun jbtVisualizarActionPerformed() {
-        val impressao = Impressao()
+        val impressao = PrintReportService()
         if ((selectRecipient.isSelected || selectRecipientAndSender.isSelected) && recipientPrintTableModel.rowCount < 1) {
             JOptionPane.showMessageDialog(
                 this,
@@ -394,7 +413,7 @@ class PrintEnvelopeView(
             }
             if (selectRecipient.isSelected) {
                 impressao.impressaoCarta(
-                    report.file,
+                    report,
                     null,
                     recipientPrintTableModel.getAll(),
                     0,
@@ -402,10 +421,7 @@ class PrintEnvelopeView(
                     false,
                     withPhoneRecipient.isSelected,
                     imprimirTratamento,
-                    (Objects.requireNonNull(
-                        fontSizeOptions.selectedItem
-                    ) as String).substring(0, 1)
-                )
+                    fontSizeOptions.selectedItem as FontSize)
             } else if (selectSender.isSelected) {
                 if (senderOptions.itemCount == 0) {
                     JOptionPane.showMessageDialog(
@@ -416,7 +432,7 @@ class PrintEnvelopeView(
                     return
                 }
                 impressao.impressaoCarta(
-                    report.file,
+                    report,
                     senderOptions.selectedItem as RemetenteBean,
                     null,
                     repeatNumberSender.text.toInt(),
@@ -424,10 +440,7 @@ class PrintEnvelopeView(
                     withPhoneSender.isSelected,
                     false,
                     imprimirTratamento,
-                    (Objects.requireNonNull(
-                        fontSizeOptions.selectedItem
-                    ) as String).substring(0, 1)
-                )
+                    fontSizeOptions.selectedItem as FontSize)
             } else {
                 if (senderOptions.itemCount == 0) {
                     JOptionPane.showMessageDialog(
@@ -438,7 +451,7 @@ class PrintEnvelopeView(
                     return
                 }
                 impressao.impressaoCarta(
-                    report.file,
+                    report,
                     senderOptions.selectedItem as RemetenteBean,
                     recipientPrintTableModel.getAll(),
                     repeatNumberSender.text.toInt(),
@@ -446,10 +459,7 @@ class PrintEnvelopeView(
                     withPhoneSender.isSelected,
                     withPhoneRecipient.isSelected,
                     imprimirTratamento,
-                    (Objects.requireNonNull(
-                        fontSizeOptions.selectedItem
-                    ) as String).substring(0, 1)
-                )
+                    fontSizeOptions.selectedItem as FontSize)
             }
         } catch (ex: EnderecadorExcecao) {
             logger.error(ex.message, ex as Throwable)
@@ -545,8 +555,7 @@ class PrintEnvelopeView(
                 this,
                 "Não existe nenhum destinatário selecionado.",
                 "Endereçador ECT",
-                JOptionPane.INFORMATION_MESSAGE
-            )
+                JOptionPane.INFORMATION_MESSAGE)
             return
         }
         recipientPrintTable.selectedRows.forEach { row ->
@@ -555,20 +564,12 @@ class PrintEnvelopeView(
     }
 
     private fun jbtSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = GroupSearchView()
-        telaPesquisarGrupo.isVisible = true
-        //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
+        groupSearchView.isVisible = true
     }
 
     private fun jbtSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = RecipientSearchView()
-        telaPesquisaDestinatario.isVisible = true
-        //ecipientPrintTableModel.setAll(vecDestinatarioImpressao)
+        recipientSearchView.isVisible = true
     }
 
     private fun jcmbTamanhoFonteActionPerformed() {}
-
-    companion object {
-        private val logger = Logger.getLogger(PrintEnvelopeView::class.java)
-    }
 }

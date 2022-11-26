@@ -28,7 +28,7 @@ class RecipientPrintTableModel(withDeliveryToNeighbor: Boolean = false) : Generi
         when (column) {
             3 -> {
                 if (value.isNumeric()) {
-                    destinatarioBean.quantidade = value
+                    destinatarioBean.copies = value.toInt()
                 }
             }
             4 -> {
@@ -59,7 +59,7 @@ class RecipientPrintTableModel(withDeliveryToNeighbor: Boolean = false) : Generi
             0 -> destinatarioBean.nome + " " + destinatarioBean.apelido
             1 -> destinatarioBean.endereco + " " + destinatarioBean.numeroEndereco + " " + destinatarioBean.complemento + " " + destinatarioBean.bairro
             2 -> destinatarioBean.cidade + " - " + destinatarioBean.uf
-            3 -> destinatarioBean.quantidade
+            3 -> destinatarioBean.copies.toString()
             4 -> destinatarioBean.maoPropria
             5 -> destinatarioBean.desConteudo
             6 -> destinatarioBean.desEntregaVizinho

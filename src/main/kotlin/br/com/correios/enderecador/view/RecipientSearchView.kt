@@ -7,8 +7,14 @@ import javax.swing.JList
 import javax.swing.JTextField
 import br.com.correios.enderecador.dao.DestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
+import br.com.correios.enderecador.util.Logging
 import br.com.correios.enderecador.util.getAllItems
 import br.com.correios.enderecador.util.setSelectedItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import net.miginfocom.swing.MigLayout
 import javax.swing.JOptionPane
 import javax.swing.JToolBar
@@ -17,7 +23,6 @@ import javax.swing.JPanel
 import javax.swing.JLabel
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
-import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.awt.Dimension
@@ -27,6 +32,11 @@ import java.awt.Font.SANS_SERIF
 import java.awt.Toolkit
 
 class RecipientSearchView : KoinComponent, JDialog() {
+    private val _recipientListState = MutableStateFlow<List<DestinatarioBean>>(emptyList())
+    val recipientListState: StateFlow<List<DestinatarioBean>> = _recipientListState
+
+    private val logger by Logging()
+
     private val recipientDao: DestinatarioDao = get()
 
     private val recipientList = JList<DestinatarioBean>()
@@ -147,9 +157,11 @@ class RecipientSearchView : KoinComponent, JDialog() {
                 JOptionPane.INFORMATION_MESSAGE)
             return
         }
-    }
 
-    companion object {
-        private val logger = Logger.getLogger(RecipientSearchView::class.java)
+        GlobalScope.launch(Dispatchers.Main) {
+            _recipientListState.emit(recipientList.selectedValuesList)
+        }
+
+        isVisible = false
     }
 }

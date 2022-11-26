@@ -6,7 +6,6 @@ import br.com.correios.enderecador.exception.ConnectException
 import br.com.correios.enderecador.exception.DaoException
 import org.koin.core.annotation.Singleton
 import java.sql.PreparedStatement
-import java.lang.StringBuilder
 import java.sql.SQLException
 import java.sql.Connection
 

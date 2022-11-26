@@ -8,7 +8,7 @@ import javax.help.CSH.DisplayHelpFromSource
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import br.com.correios.enderecador.conexao.ConexaoBD
 import br.com.correios.enderecador.exception.ConnectException
-import org.apache.log4j.Logger
+import br.com.correios.enderecador.util.Logging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.awt.Cursor
@@ -21,6 +21,8 @@ import kotlin.system.exitProcess
 class MainView : JFrame(), KoinComponent {
     private val helpSet = helpSet()
     private val helpBroker = helpSet.createHelpBroker()
+
+    private val logger by Logging()
 
     private val conexaoBD: ConexaoBD by inject()
 
@@ -56,11 +58,10 @@ class MainView : JFrame(), KoinComponent {
     }
 
     private fun initComponents() {
-        defaultCloseOperation = EXIT_ON_CLOSE
-        iconImage = FlatSVGIcon("images/logo.svg", 16, 16).image
-        isVisible = true
         title = "Endereçador Escritório"
-        state = 0
+        isVisible = true
+        iconImage = FlatSVGIcon("images/logo.svg", 16, 16).image
+        defaultCloseOperation = EXIT_ON_CLOSE
 
 
         jMenuBar = JMenuBar().apply {
@@ -136,13 +137,6 @@ class MainView : JFrame(), KoinComponent {
             })
         }
 
-        contentPane.add(JDesktopPane().apply {
-            add(JLabel().apply {
-                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/logo_enderecador.gif"))
-                setBounds(180, 100, 225, 100)
-            })
-        }, "North")
-
         contentPane.add(JToolBar().apply {
             add(JButton().apply {
                 icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/remetente.gif"))
@@ -205,6 +199,13 @@ class MainView : JFrame(), KoinComponent {
                 addActionListener { sairAplicacao() }
             })
         }, "North")
+
+        contentPane.add(JDesktopPane().apply {
+            add(JLabel().apply {
+                icon = ImageIcon(this@MainView.javaClass.getResource("/imagens/logo_enderecador.gif"))
+                setBounds(180, 100, 225, 100)
+            })
+        }, "Center")
 
         pack()
     }
@@ -305,9 +306,5 @@ class MainView : JFrame(), KoinComponent {
             logger.error(ex.message, ex)
         }
         exitProcess(0)
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(MainView::class.java)
     }
 }

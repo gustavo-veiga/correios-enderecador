@@ -1,5 +1,12 @@
 package br.com.correios.enderecador.bean
 
+import br.com.correios.enderecador.util.BrazilState
+import io.konform.validation.Validation
+import io.konform.validation.ValidationResult
+import io.konform.validation.jsonschema.enum
+import io.konform.validation.jsonschema.minLength
+import io.konform.validation.jsonschema.pattern
+
 data class RemetenteBean(
     var numeroRemetente: String,
     var apelido: String,
@@ -18,18 +25,39 @@ data class RemetenteBean(
     var cepCaixaPostal: String,
     var caixaPostal: String,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (other is RemetenteBean) {
-            return numeroRemetente == other.numeroRemetente
+    fun validate(): ValidationResult<RemetenteBean> {
+        val rules = Validation {
+            RemetenteBean::nome required {
+                minLength(2) hint "O campo Empresa/Nome (linha 1) deve ser preenchido!"
+            }
+
+            RemetenteBean::cep required {
+                pattern("^\\d{8}\$") hint "O campo CEP deve ser preenchido com 8 números!"
+            }
+
+            RemetenteBean::endereco required {
+                minLength(2) hint "O campo endereço deve ser preenchido!"
+            }
+
+            RemetenteBean::numeroEndereco required {
+                minLength(1) hint "O campo Numero/Lote deve ser preenchido!"
+            }
+
+            RemetenteBean::cidade required {
+                minLength(2) hint "O campo Cidade deve ser preenchido!"
+            }
+
+            RemetenteBean::uf required {
+                enum<BrazilState>() hint "O campo UF deve ser informado!"
+            }
+
+            RemetenteBean::email required {
+                pattern(".+@.+\\..+") hint "E-mail inválido!"
+            }
         }
-        return false
+
+        return rules.validate(this)
     }
 
-    override fun hashCode(): Int {
-        return numeroRemetente.hashCode() * 17
-    }
-
-    override fun toString(): String {
-        return nome
-    }
+    override fun toString() = nome
 }

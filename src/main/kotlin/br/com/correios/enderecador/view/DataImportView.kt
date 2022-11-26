@@ -27,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
@@ -41,6 +40,8 @@ class DataImportView(
     private val recipientDao: DestinatarioDao,
     private val recipientGroupDao: GrupoDestinatarioDao,
 ) : JFrame() {
+    private val logger by Logging()
+
     private val recipientImportTableModel = RecipientImportTableModel()
     private val recipientTable = JTable()
 
@@ -195,9 +196,5 @@ class DataImportView(
 
     private fun limpaTela() {
         messageArea.text = ""
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(DataImportView::class.java)
     }
 }

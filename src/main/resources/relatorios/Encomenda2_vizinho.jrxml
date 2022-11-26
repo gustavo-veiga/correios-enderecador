@@ -1,31 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"  ?>
-<!-- Created with iReport - A designer for JasperReports -->
-<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
-<jasperReport
-		 name="Encomenda2_vizinho"
-		 columnCount="2"
-		 printOrder="Vertical"
-		 orientation="Landscape"
-		 pageWidth="842"
-		 pageHeight="595"
-		 columnWidth="407"
-		 columnSpacing="0"
-		 leftMargin="14"
-		 rightMargin="14"
-		 topMargin="14"
-		 bottomMargin="14"
-		 whenNoDataType="NoPages"
-		 isTitleNewPage="false"
-		 isSummaryNewPage="false">
-	<property name="ireport.scriptlethandling" value="0" />
-	<property name="ireport.encoding" value="UTF-8" />
-	<import value="java.util.*" />
-	<import value="net.sf.jasperreports.engine.*" />
-	<import value="net.sf.jasperreports.engine.data.*" />
-
-	<parameter name="caminhoImagem" isForPrompting="true" class="java.lang.String"/>
-	<parameter name="caminhoImagem2D" isForPrompting="true" class="java.lang.String"/>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Encomenda2_vizinho" columnCount="2" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoPages" columnWidth="407" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" uuid="0cec8b30-c5d5-411a-962e-2ab651695ec0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<field name="rem_campo1" class="java.lang.String"/>
 	<field name="rem_campo2" class="java.lang.String"/>
 	<field name="rem_campo3" class="java.lang.String"/>
@@ -42,772 +22,444 @@
 	<field name="des_campo7" class="java.lang.String"/>
 	<field name="des_campo8" class="java.lang.String"/>
 	<field name="des_cep" class="java.lang.String"/>
-	<field name="des_codBarras" class="java.lang.String"/>
-	<field name="codigoDoisD" class="java.lang.String"/>
 	<field name="des_entrega" class="java.lang.String"/>
-
-	<variable name="test" class="java.lang.String" resetType="None" calculation="Nothing">
+	<field name="barcodeZip" class="java.awt.Image"/>
+	<field name="datamatrix" class="java.awt.Image"/>
+	<variable name="test" class="java.lang.String" resetType="None">
 		<variableExpression><![CDATA["test"]]></variableExpression>
 		<initialValueExpression><![CDATA["test"]]></initialValueExpression>
 	</variable>
-		<background>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</background>
-		<title>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</title>
-		<pageHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</pageHeader>
-		<columnHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</columnHeader>
-		<detail>
-			<band height="567"  isSplitAllowed="true" >
-				<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-				<staticText>
-					<reportElement
-						mode="Opaque"
-						x="9"
-						y="445"
-						width="57"
-						height="17"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-8">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="567" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
+			<staticText>
+				<reportElement key="staticText-8" mode="Opaque" x="9" y="445" width="57" height="17" forecolor="#000000" backcolor="#FFFFFF" uuid="99156bfc-36ab-4f07-86ec-991d08d047e2">
+					<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
 				<text><![CDATA[Remetente:]]></text>
-				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="260"
-						y="200"
-						width="137"
-						height="1"
-						key="line-11"/>
-					<graphicElement stretchType="NoStretch">
+			</staticText>
+			<line>
+				<reportElement key="line-11" x="260" y="200" width="137" height="1" uuid="303df509-853b-4fee-bda3-7a6d28d0bb74"/>
+				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="54"
-						y="200"
-						width="155"
-						height="2"
-						key="line-10"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-10" x="54" y="200" width="155" height="2" uuid="e160e211-f01c-4932-bf76-1438ea0b425f"/>
+				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<staticText>
-					<reportElement
-						x="215"
-						y="190"
-						width="48"
-						height="13"
-						key="staticText-7"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement key="staticText-7" x="215" y="190" width="48" height="13" uuid="08ad8bd6-6d49-42a1-8dbe-f95dcab6d61b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font size="8"/>
-					</textElement>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[Documento:]]></text>
-				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="54"
-						y="181"
-						width="343"
-						height="1"
-						key="line-9"/>
-					<graphicElement stretchType="NoStretch">
+			</staticText>
+			<line>
+				<reportElement key="line-9" x="54" y="181" width="343" height="1" uuid="6dbf75e2-1b5f-45e2-8b8b-bab941934e53"/>
+				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<staticText>
-					<reportElement
-						x="8"
-						y="190"
-						width="44"
-						height="13"
-						key="staticText-6"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement key="staticText-6" x="8" y="190" width="44" height="13" uuid="30c5270d-7cfb-4c62-9486-2f3c841f3062"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font size="8"/>
-					</textElement>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[Assinatura:]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="8"
-						y="173"
-						width="44"
-						height="11"
-						key="staticText-5"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-5" x="8" y="173" width="44" height="11" uuid="f106b4a9-8ed1-4877-8158-40c4d6626d0e"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font size="8"/>
-					</textElement>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[Recebedor:]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="89"
-						y="77"
-						width="234"
-						height="16"
-						key="staticText-4"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="89" y="77" width="234" height="16" uuid="aa69072c-4e37-41ae-9fa9-341e9abb2459"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center">
-						<font size="8"/>
-					</textElement>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[Cole aqui a etiqueta com o código identificador da encomenda]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="89"
-						y="62"
-						width="234"
-						height="15"
-						key="staticText-3"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-3" x="89" y="62" width="234" height="15" uuid="036b96d0-a743-44f9-992b-db7e02ac1401"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
+				</box>
+				<textElement textAlignment="Center"/>
 				<text><![CDATA[USO EXCLUSIVO DOS CORREIOS]]></text>
-				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="9"
-						y="154"
-						width="1"
-						height="14"
-						key="line-8"/>
-					<graphicElement stretchType="NoStretch">
+			</staticText>
+			<line>
+				<reportElement key="line-8" x="9" y="154" width="1" height="14" uuid="8b15c964-b0cd-44d6-a7ed-11f8382ef0c9"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="10"
-						y="167"
-						width="13"
-						height="1"
-						key="line-7"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-7" x="10" y="167" width="13" height="1" uuid="3b0e689a-bbff-46c6-9262-24b690771a5d"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="9"
-						y="7"
-						width="1"
-						height="12"
-						key="line-6"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-6" x="9" y="7" width="1" height="12" uuid="8d72e52d-8195-4dbc-b575-3eca9980c8b1"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="9"
-						y="7"
-						width="14"
-						height="1"
-						key="line-5"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-5" x="9" y="7" width="14" height="1" uuid="d755ac5b-c2d3-4aca-9c15-97c79f109f4f"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="380"
-						y="167"
-						width="16"
-						height="1"
-						key="line-4"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-4" x="380" y="167" width="16" height="1" uuid="40a31480-dbdd-4981-a396-346d96266e7e"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="396"
-						y="154"
-						width="1"
-						height="14"
-						key="line-3"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-3" x="396" y="154" width="1" height="14" uuid="743a6351-289a-4439-8d9c-8258e76fd549"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="396"
-						y="8"
-						width="1"
-						height="12"
-						key="line-2"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-2" x="396" y="8" width="1" height="12" uuid="05b97679-2b08-441e-be6f-39b203ea7b41"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="381"
-						y="7"
-						width="16"
-						height="1"
-						key="line-1"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-1" x="381" y="7" width="16" height="1" uuid="18a61757-82fc-42d5-bec0-ec334115dc13"/>
+				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
-</graphicElement>
-				</line>
-				<rectangle>
-					<reportElement
-						x="9"
-						y="259"
-						width="309"
-						height="176"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch">
+				</graphicElement>
+			</line>
+			<rectangle>
+				<reportElement key="rectangle-1" x="9" y="259" width="309" height="176" uuid="80522bad-fd9e-4b3c-8b33-839c73681c78"/>
+				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
-</graphicElement>
-				</rectangle>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="20"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-3">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-2" x="20" y="285" width="295" height="17" uuid="08ddae51-e973-4960-ae95-d955748f5b9a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(0,6) + ".jpeg"]]></imageExpression>
-				</image>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="77"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-4">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-3" x="21" y="303" width="292" height="17" uuid="8806e91f-8263-42e8-998a-3726b30480de"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(18,24) + ".jpeg"]]></imageExpression>
-				</image>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="39"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-5">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-4" x="21" y="321" width="295" height="17" uuid="407d9385-c9e7-4447-9691-1e0741010b12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(6,12) + ".jpeg"]]></imageExpression>
-				</image>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="58"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-6">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-5" x="21" y="338" width="148" height="17" uuid="d2c63c19-2efe-4e3d-b974-20f6776a1d78"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(12,18) + ".jpeg"]]></imageExpression>
-				</image>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="134"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-7">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-6" x="171" y="337" width="147" height="17" uuid="97a77959-1d55-4a61-9330-2a0498e2410c"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(36,43) + ".jpeg"]]></imageExpression>
-				</image>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="96"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-8">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-11" x="67" y="445" width="330" height="17" uuid="84cb8631-9652-4643-b5a3-e3b91ef017a4"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(24,30) + ".jpeg"]]></imageExpression>
-				</image>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="115"
-						y="377"
-						width="19"
-						height="51"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-9">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-12" x="9" y="499" width="388" height="17" uuid="6c9defe4-71bc-4a68-9836-c523898ef2f5"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem}+ $F{des_codBarras}.substring(30,36) + ".jpeg"]]></imageExpression>
-				</image>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="20"
-						y="285"
-						width="295"
-						height="17"
-						key="textField-2"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-13" x="9" y="463" width="388" height="17" uuid="52b9c390-64db-4c1f-b41e-d7c97dabe7a5"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo1}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="21"
-						y="303"
-						width="292"
-						height="17"
-						key="textField-3"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-14" x="9" y="481" width="388" height="17" uuid="f102ff58-cb47-45dd-bd30-be6de7fc3e2f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo2}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="21"
-						y="321"
-						width="295"
-						height="17"
-						key="textField-4"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo3}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="21"
-						y="338"
-						width="148"
-						height="17"
-						key="textField-5"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo4}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="171"
-						y="337"
-						width="147"
-						height="17"
-						key="textField-6"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo5}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="67"
-						y="445"
-						width="330"
-						height="17"
-						key="textField-11"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo1}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="9"
-						y="499"
-						width="388"
-						height="17"
-						key="textField-12"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo4}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="9"
-						y="463"
-						width="388"
-						height="17"
-						key="textField-13"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo2}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="9"
-						y="481"
-						width="388"
-						height="17"
-						key="textField-14"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo3}]]></textFieldExpression>
-				</textField>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="323"
-						y="260"
-						width="73"
-						height="73"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="image-10">
-							<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<graphicElement stretchType="NoStretch" fill="Solid" >
-					<pen lineWidth="0.0" lineStyle="Solid"/>
-</graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{caminhoImagem2D}+ "\\"+ $F{codigoDoisD}+ ".png"]]></imageExpression>
-				</image>
-				<staticText>
-					<reportElement
-						mode="Opaque"
-						x="9"
-						y="259"
-						width="114"
-						height="14"
-						forecolor="#FFFFFF"
-						backcolor="#000000"
-						key="staticText-9"/>
-					<box>					<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-9" mode="Opaque" x="9" y="259" width="114" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="2482ce29-093d-421c-823a-95ba1b0b214a"/>
+				<box>
+					<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
 				<text><![CDATA[DESTINATÁRIO]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="21"
-						y="354"
-						width="76"
-						height="19"
-						key="textField-17"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-17" x="21" y="354" width="76" height="19" uuid="1344bb9b-595e-4837-9214-acc103772f99"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo6}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="9"
-						y="535"
-						width="68"
-						height="17"
-						key="textField-18"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-18" x="9" y="535" width="68" height="17" uuid="4b18bac1-fad7-4a80-80d9-3a80d722ed9b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo6}]]></textFieldExpression>
-				</textField>
-				<line direction="TopDown">
-					<reportElement
-						x="406"
-						y="0"
-						width="1"
-						height="555"
-						forecolor="#999999"
-						key="line-12"/>
-					<graphicElement stretchType="NoStretch">
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo6}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-12" x="406" y="0" width="1" height="555" forecolor="#999999" uuid="731ba54d-e077-463a-b552-a760e2d14c90"/>
+				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Dashed"/>
-</graphicElement>
-				</line>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="9"
-						y="517"
-						width="388"
-						height="17"
-						key="textField-19"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-19" x="9" y="517" width="388" height="17" uuid="03a77b31-8535-4848-a44d-979d96a8ea56"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo5}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="96"
-						y="354"
-						width="219"
-						height="17"
-						key="textField-20"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-20" x="96" y="354" width="219" height="17" uuid="5712fd9a-80b6-4e33-a8de-3b47d2720c5c"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement>
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_campo7}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="77"
-						y="535"
-						width="319"
-						height="17"
-						key="textField-21"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_campo7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-21" x="77" y="535" width="319" height="17" uuid="ed0a5937-8f86-4c25-9ccb-b4cfda0ca8f1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rem_campo7}]]></textFieldExpression>
-				</textField>
-				<rectangle>
-					<reportElement
-						x="9"
-						y="208"
-						width="388"
-						height="47"
-						key="rectangle-2"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<staticText>
-					<reportElement
-						mode="Opaque"
-						x="9"
-						y="209"
-						width="191"
-						height="14"
-						forecolor="#FFFFFF"
-						backcolor="#000000"
-						key="staticText-10"/>
-					<box>					<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rem_campo7}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle-2" x="9" y="208" width="388" height="47" uuid="17135a4b-e7be-4abe-9b7d-93e52e2d4581"/>
+			</rectangle>
+			<staticText>
+				<reportElement key="staticText-10" mode="Opaque" x="9" y="209" width="191" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="a4278c97-f5a2-45b8-8dac-c4286d23c5eb"/>
+				<box>
+					<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
 				<text><![CDATA[ENTREGA NO VIZINHO AUTORIZADA]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="20"
-						y="232"
-						width="371"
-						height="18"
-						key="textField"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{des_entrega}]]></textFieldExpression>
-				</textField>
-			</band>
-		</detail>
-		<columnFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</columnFooter>
-		<pageFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</pageFooter>
-		<summary>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</summary>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="20" y="232" width="371" height="18" uuid="87034a68-2c09-4e31-84b9-568ad2c93a03"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_entrega}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Top" isUsingCache="false">
+				<reportElement key="image-3" mode="Opaque" x="20" y="380" width="150" height="50" forecolor="#000000" backcolor="#FFFFFF" uuid="d5752b7e-039e-4705-9688-d50fe7de27cb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</graphicElement>
+				<imageExpression><![CDATA[$F{barcodeZip}]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Top" isUsingCache="false">
+				<reportElement key="image-10" mode="Opaque" x="325" y="259" width="73" height="73" forecolor="#000000" backcolor="#FFFFFF" uuid="b338e8b2-e9a1-415a-a1ed-ec657e93cf5f">
+					<printWhenExpression><![CDATA[new Boolean($F{des_cep}.length() != 0)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</graphicElement>
+				<imageExpression><![CDATA[$F{datamatrix}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
 </jasperReport>

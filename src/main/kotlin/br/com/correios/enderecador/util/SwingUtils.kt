@@ -1,8 +1,26 @@
 package br.com.correios.enderecador.util
 
+import br.com.correios.enderecador.exception.EnderecadorExcecao
+import java.awt.Desktop
+import java.net.URI
+import java.net.URISyntaxException
+import java.util.*
 import javax.swing.JFormattedTextField
 import javax.swing.JList
 import javax.swing.text.MaskFormatter
+
+fun openBrowseLink(url: String) {
+    try {
+        if (Desktop.isDesktopSupported()) {
+            val desktop = Desktop.getDesktop()
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                desktop.browse(URI.create(url))
+            }
+        }
+    } catch (ex: URISyntaxException) {
+        throw EnderecadorExcecao("Não foi possível abrir o browser. " + ex.message)
+    }
+}
 
 fun List<String>.toComboBox(): Array<String> {
     return this.toMutableList().apply {
@@ -33,3 +51,18 @@ fun <T> JList<T>.setSelectedItem(value: T) {
         }
     }
 }
+
+fun <T> JList<T>.insertNotRepeated(values: List<T>, comparator: Comparator<T>) {
+    val items = mutableListOf<T>()
+    for (i in 0 until this.model.size) {
+        items.add(this.model.getElementAt(i))
+    }
+    values.forEach { value ->
+        if (items.contains(value).not()) {
+            items.add(value)
+        }
+    }
+    items.sortWith(comparator)
+    this.setListData(Vector(items))
+}
+

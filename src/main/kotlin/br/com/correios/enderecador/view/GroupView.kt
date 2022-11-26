@@ -5,10 +5,10 @@ import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.tablemodel.RecipientTableModel
+import br.com.correios.enderecador.util.Logging
 import br.com.correios.enderecador.util.getAllItems
 import br.com.correios.enderecador.util.setSelectedItem
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
@@ -23,6 +23,8 @@ class GroupView(
     private val groupDao: GrupoDao,
     private val recipientGroupDao: GrupoDestinatarioDao
 ) : JFrame() {
+    private val logger by Logging()
+
     private val recipientTableModel = RecipientTableModel()
     private val recipientTable = JTable()
     private val groupSearch = JTextField()
@@ -212,9 +214,5 @@ class GroupView(
             "Grupo não encontrado!",
             "Endereçador",
             JOptionPane.INFORMATION_MESSAGE)
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(GroupView::class.java)
     }
 }

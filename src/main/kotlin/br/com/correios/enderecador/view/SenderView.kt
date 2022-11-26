@@ -3,9 +3,9 @@ package br.com.correios.enderecador.view
 import br.com.correios.enderecador.dao.RemetenteDao
 import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.tablemodel.SenderTableModel
+import br.com.correios.enderecador.util.Logging
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
@@ -21,6 +21,8 @@ import javax.swing.table.DefaultTableCellRenderer
 class SenderView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
+    private val logger by Logging()
+
     private val senderTableModel = SenderTableModel()
     private val senderSearch = JTextField()
     private val senderTable = JTable()
@@ -240,9 +242,5 @@ class SenderView(
             "Remetente não encontrado!",
             "Endereçador",
             JOptionPane.INFORMATION_MESSAGE)
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(SenderView::class.java)
     }
 }

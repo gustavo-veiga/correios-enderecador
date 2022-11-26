@@ -18,4 +18,6 @@ interface IterableTableModel<E> {
     fun getAll(): List<E>
 
     fun moveTo(other: IterableTableModel<E>, row: Int)
+
+    fun insertNotRepeated(values: List<E>, comparator: Comparator<E>)
 }

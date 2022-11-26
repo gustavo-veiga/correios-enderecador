@@ -10,7 +10,6 @@ import javax.swing.JLabel
 import javax.swing.JRadioButton
 import javax.swing.JTable
 import javax.swing.JTextField
-import br.com.correios.enderecador.util.TextoCellRenderer
 import javax.swing.DefaultCellEditor
 import br.com.correios.enderecador.dao.RemetenteDao
 import br.com.correios.enderecador.exception.DaoException
@@ -20,13 +19,17 @@ import javax.swing.JButton
 import javax.swing.JScrollPane
 import javax.swing.ImageIcon
 import javax.swing.BorderFactory
-import br.com.correios.enderecador.util.DocumentoPersonalizado
-import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.service.PrintReportService
 import br.com.correios.enderecador.tablemodel.RecipientPrintTableModel
-import br.com.correios.enderecador.util.Report
+import br.com.correios.enderecador.util.*
+import br.com.correios.enderecador.util.TypeDocumentFormat.ONLY_DIGITS
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.awt.Font.PLAIN
@@ -36,8 +39,13 @@ import java.awt.Font.SANS_SERIF
 class PrintOrderView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
+    private val logger by Logging()
+
     private val recipientPrintTableModel = RecipientPrintTableModel(true)
     private val recipientPrintTable = JTable()
+
+    private val recipientSearchView = RecipientSearchView()
+    private val groupSearchView = GroupSearchView()
 
     private val senderOptions = JComboBox<RemetenteBean>()
     private val withPhoneRecipient = JCheckBox()
@@ -46,7 +54,7 @@ class PrintOrderView(
     private val sheetWith4Labels = JRadioButton()
     private val fromTheTag = JTextField()
     private val printFigure = JLabel()
-    private val print = Impressao()
+    private val print = PrintReportService()
 
     private var report = Report.ORDER_2_NEIGHBOR
 
@@ -55,10 +63,19 @@ class PrintOrderView(
         configuracoesAdicionais()
         carregaRemetente()
         setLocationRelativeTo(null)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            recipientSearchView.recipientListState.onEach { recipients ->
+                recipientPrintTableModel.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+            groupSearchView.recipientListState.onEach { recipients ->
+                recipientPrintTableModel.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+        }
     }
 
     private fun configuracoesAdicionais() {
-        var renderer = TextoCellRenderer(2)
+        var renderer = TextCellRenderer(2)
 
         recipientPrintTable.columnModel.getColumn(0).apply {
             cellRenderer = renderer
@@ -73,7 +90,7 @@ class PrintOrderView(
             cellRenderer = renderer
         }
 
-        renderer = TextoCellRenderer(0)
+        renderer = TextCellRenderer(0)
 
         recipientPrintTable.columnModel.getColumn(3).apply {
             cellRenderer = renderer
@@ -227,7 +244,7 @@ class PrintOrderView(
                 })
 
                 add(fromTheTag.apply {
-                    document = DocumentoPersonalizado(3, 1)
+                    document = PersonalizedDocument(3, ONLY_DIGITS)
                 }, "wrap")
 
                 add(JLabel().apply {
@@ -348,8 +365,8 @@ class PrintOrderView(
                     JOptionPane.WARNING_MESSAGE)
                 return
             }
-            print.impressaoEncomenda(
-                report.file,
+            print.order(
+                report,
                 senderOptions.selectedItem as RemetenteBean,
                 recipientPrintTableModel.getAll(),
                 fromTheTag.text.toInt())
@@ -359,7 +376,7 @@ class PrintOrderView(
                 this,
                 "Não foi possível imprimir o relatório.",
                 "Endereçador",
-                2)
+                JOptionPane.WARNING_MESSAGE)
         }
     }
 
@@ -382,17 +399,11 @@ class PrintOrderView(
     }
 
     private fun jbtnSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = GroupSearchView()
-        telaPesquisarGrupo.isVisible = true
-        //model.setAll(vecDestinatarioImpressao)
-        //jtblDestinatarioImpressao.model = model
+        groupSearchView.isVisible = true
     }
 
     private fun jbtnSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = RecipientSearchView()
-        telaPesquisaDestinatario.isVisible = true
-        //recipientModel.setAll(telaPesquisaDestinatario.recipientsSelected)
-        //jtblDestinatarioImpressao.model = model
+        recipientSearchView.isVisible = true
     }
 
     private fun jButton2ActionPerformed() {
@@ -417,9 +428,5 @@ class PrintOrderView(
             (senderOptions.selectedItem as RemetenteBean)
         )
         contentDeclarationView.isVisible = true
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(PrintOrderView::class.java)
     }
 }

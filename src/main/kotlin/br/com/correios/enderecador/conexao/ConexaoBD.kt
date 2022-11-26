@@ -3,9 +3,9 @@ package br.com.correios.enderecador.conexao
 import kotlin.Throws
 import br.com.correios.enderecador.bean.ConfiguracaoBean
 import br.com.correios.enderecador.exception.ConnectException
+import br.com.correios.enderecador.util.Logging
 import java.sql.DriverManager
 import java.lang.ClassNotFoundException
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.lang.Exception
 import java.sql.Connection
@@ -14,19 +14,22 @@ import kotlin.system.exitProcess
 
 @Singleton
 class ConexaoBD {
-    private lateinit var conexao: Connection
+    private val logger by Logging()
+
+    private lateinit var connection: Connection
 
     @Throws(ConnectException::class)
     fun recuperaConexao(): Connection {
         try {
             Class.forName(ConfiguracaoBean.driverBanco)
-            conexao = DriverManager.getConnection(
+            connection = DriverManager.getConnection(
                 ConfiguracaoBean.urlBanco,
                 ConfiguracaoBean.usuarioBanco,
                 ConfiguracaoBean.senhaBanco
             ).apply {
                 autoCommit = true
             }
+            logger.info(ConfiguracaoBean.urlBanco)
         } catch (e: ClassNotFoundException) {
             throw ConnectException("Não foi possível localizar o driver")
         } catch (e: Exception) {
@@ -38,18 +41,14 @@ class ConexaoBD {
             )
             exitProcess(0)
         }
-        return conexao
+        return connection
     }
 
     @Throws(ConnectException::class)
     fun liberarConexao() {
-        conexao.apply {
+        connection.apply {
             createStatement().execute("SHUTDOWN")
             close()
         }
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(ConexaoBD::class.java)
     }
 }

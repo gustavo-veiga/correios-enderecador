@@ -5,7 +5,6 @@ import java.io.File
 object ConfiguracaoBean {
     var caminhoImagem = "/imagens/"
     var caminhoImagem2d = File("").absolutePath
-    var novaVersao = ""
     var versao = "2.4.4"
     var caminhoRelatorio = "relatorios/"
     var chave = ""
@@ -17,7 +16,6 @@ object ConfiguracaoBean {
     var usuarioBanco = "SA"
     var paginaPesquisaCep = "http://www.buscacep.correios.com.br/"
     var paginaFaleConosco = "http://www2.correios.com.br/sistemas/falecomoscorreios/"
-    val banco = "DNEC"
 
     val userDir = System.getProperty("user.dir")
     val fileSeparator = System.getProperty("file.separator")

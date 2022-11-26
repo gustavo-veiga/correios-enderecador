@@ -17,8 +17,8 @@ import br.com.correios.enderecador.bean.GrupoDestinatarioBean
 import br.com.correios.enderecador.dao.GrupoDao
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.tablemodel.RecipientTableModel
+import br.com.correios.enderecador.util.Logging
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.awt.Dimension
@@ -29,6 +29,8 @@ import java.awt.Frame
 import javax.swing.JTable.AUTO_RESIZE_OFF
 
 class GroupEditView : KoinComponent, JDialog {
+    private val logger by Logging()
+
     private val recipientGroupDao: GrupoDestinatarioDao = get()
     private val recipientDao: DestinatarioDao = get()
     private val groupDao: GrupoDao = get()
@@ -208,9 +210,5 @@ class GroupEditView : KoinComponent, JDialog {
                     JOptionPane.WARNING_MESSAGE)
             }
         }
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(GroupEditView::class.java)
     }
 }

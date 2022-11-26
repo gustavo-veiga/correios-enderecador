@@ -1,5 +1,6 @@
 package br.com.correios.enderecador.view
 
+import br.com.correios.enderecador.bean.DestinatarioBean
 import javax.swing.JDialog
 import br.com.correios.enderecador.bean.GrupoBean
 import javax.swing.JScrollPane
@@ -15,10 +16,15 @@ import javax.swing.JLabel
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import br.com.correios.enderecador.dao.DestinatarioDao
+import br.com.correios.enderecador.util.Logging
 import br.com.correios.enderecador.util.getAllItems
 import br.com.correios.enderecador.util.setSelectedItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.awt.Dimension
@@ -27,6 +33,11 @@ import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 
 class GroupSearchView : KoinComponent, JDialog() {
+    private val _recipientListState = MutableStateFlow<List<DestinatarioBean>>(emptyList())
+    val recipientListState: StateFlow<List<DestinatarioBean>> = _recipientListState
+
+    private val logger by Logging()
+
     private val recipientDao: DestinatarioDao = get()
     private val groupDao: GrupoDao = get()
 
@@ -133,28 +144,11 @@ class GroupSearchView : KoinComponent, JDialog() {
                     val group = groupList.model.getElementAt(row)
                     val recipientGroup = recipientDao.recuperaDestinatarioPorGrupo(group.numeroGrupo)
 
-                    recipientGroup.forEach { recipient ->
-                        //searchResultList.add(recipient)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        _recipientListState.emit(recipientGroup)
                     }
                 }
 
-                /*
-                val modelGrupo: ListModel<GrupoBean> = jlstGrupo.model
-                val arrayIndex = jlstGrupo.selectedIndices
-                for (index in arrayIndex) {
-                    val grupoBean = modelGrupo.getElementAt(index)
-                    val arrayDestinatarioGrupo = destinatarioDao.recuperaDestinatarioPorGrupo(
-                        grupoBean.numeroGrupo
-                    )
-                    for (bean in arrayDestinatarioGrupo) {
-                        val destinatarioBean = bean
-                        if (!vecDestinatarioRetorno.contains(destinatarioBean)) {
-                            vecDestinatarioRetorno.add(destinatarioBean)
-                        }
-                    }
-                }
-                 */
-                //Geral.ordenarVetor(vecDestinatarioRetorno, destinatarioBean)
                 isVisible = false
             } else {
                 JOptionPane.showMessageDialog(
@@ -166,9 +160,5 @@ class GroupSearchView : KoinComponent, JDialog() {
         } catch (ex: DaoException) {
             logger.error(ex.message, ex)
         }
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(GroupSearchView::class.java)
     }
 }

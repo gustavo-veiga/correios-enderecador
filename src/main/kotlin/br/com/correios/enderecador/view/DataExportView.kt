@@ -18,9 +18,12 @@ import br.com.correios.enderecador.service.CsvService
 import br.com.correios.enderecador.util.FileExtension.CSV
 import br.com.correios.enderecador.util.FileExtension.TXT
 import br.com.correios.enderecador.util.FileTypeFilter
+import br.com.correios.enderecador.util.Logging
 import br.com.correios.enderecador.util.getAllItems
-import kotlinx.coroutines.CancellationException
-import org.apache.log4j.Logger
+import br.com.correios.enderecador.util.insertNotRepeated
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.awt.Font.PLAIN
@@ -28,10 +31,16 @@ import java.awt.Font.SANS_SERIF
 import javax.swing.JFileChooser.CANCEL_OPTION
 
 @Singleton
+@OptIn(DelicateCoroutinesApi::class)
 class DataExportView(
     private val csvService: CsvService,
-    private val recipientDao: DestinatarioDao,
+    private val recipientDao: DestinatarioDao
 ) : JFrame() {
+    private val logger by Logging()
+
+    private val recipientSearchView = RecipientSearchView()
+    private val groupSearchView = GroupSearchView()
+
     private val recipientList = JList<DestinatarioBean>()
     private val exportAllCheckBox = JCheckBox()
     private val recipientSelectButton = JButton()
@@ -40,6 +49,15 @@ class DataExportView(
     init {
         initComponents()
         setLocationRelativeTo(null)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            recipientSearchView.recipientListState.onEach { recipients ->
+                recipientList.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+            groupSearchView.recipientListState.onEach { recipients ->
+                recipientList.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+        }
     }
 
     fun carregaListaDestinatario() {
@@ -122,7 +140,7 @@ class DataExportView(
     }
 
     private fun jbntExcluirActionPerformed() {
-        recipientList.setListData(arrayOf())
+        recipientList.setListData(emptyArray())
         exportAllCheckBox.isSelected = false
         recipientSelectButton.isEnabled = true
         groupSelectButton.isEnabled = true
@@ -130,18 +148,13 @@ class DataExportView(
 
     private fun jbntGrupoActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val groupSearchView = GroupSearchView()
         groupSearchView.isVisible = true
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
     private fun jbntDestinatarioActionPerformed() {
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-        val telaPesquisaDestinatario = RecipientSearchView()
-        telaPesquisaDestinatario.isVisible = true
-
-        //jlstDestinatarios.setListData(result.toTypedArray())
-
+        recipientSearchView.isVisible = true
         cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
@@ -199,9 +212,5 @@ class DataExportView(
                     JOptionPane.WARNING_MESSAGE)
             }
         }
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(DataExportView::class.java)
     }
 }

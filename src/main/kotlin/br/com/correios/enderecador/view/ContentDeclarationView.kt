@@ -6,12 +6,12 @@ import br.com.correios.enderecador.bean.RemetenteBean
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.awt.Color
-import br.com.correios.enderecador.util.Impressao
+import br.com.correios.enderecador.service.PrintReportService
 import br.com.correios.enderecador.exception.EnderecadorExcecao
 import br.com.correios.enderecador.tablemodel.ContentDeclarationTableModel
+import br.com.correios.enderecador.util.Logging
 import br.com.correios.enderecador.util.Report
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.awt.Dimension
@@ -24,7 +24,9 @@ class ContentDeclarationView(
     private val vecDestinatario: List<DestinatarioBean>,
     private val remetente: RemetenteBean
 ) : KoinComponent, JDialog() {
-    private val print: Impressao = get()
+    private val logger by Logging()
+
+    private val print: PrintReportService = get()
 
     private val contentDeclarationTableModel = ContentDeclarationTableModel()
     private val contentDeclarationTable = JTable()
@@ -100,9 +102,9 @@ class ContentDeclarationView(
     private fun jButton1ActionPerformed() {
         val items = contentDeclarationTableModel.getAll()
         try {
-            print.imprimirDeclaracao(Report.DECLARATION.file, items, remetente, vecDestinatario, totalWeight.text)
+            print.imprimirDeclaracao(Report.DECLARATION, items, remetente, vecDestinatario, totalWeight.text)
         } catch (ex: EnderecadorExcecao) {
-            LOGGER.error(ex.message, ex)
+            logger.error(ex.message, ex)
             JOptionPane.showMessageDialog(
                 this,
                 "Não foi possível imprimir a declaração de conteúdo",
@@ -129,9 +131,5 @@ class ContentDeclarationView(
         if (result == JOptionPane.YES_NO_OPTION) {
             defaultCloseOperation = DISPOSE_ON_CLOSE
         }
-    }
-
-    companion object {
-        private val LOGGER = Logger.getLogger(ContentDeclarationView::class.java)
     }
 }

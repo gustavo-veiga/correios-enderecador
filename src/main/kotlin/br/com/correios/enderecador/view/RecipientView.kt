@@ -4,8 +4,8 @@ import br.com.correios.enderecador.dao.DestinatarioDao
 import br.com.correios.enderecador.exception.DaoException
 import br.com.correios.enderecador.dao.GrupoDestinatarioDao
 import br.com.correios.enderecador.tablemodel.RecipientTableModel
+import br.com.correios.enderecador.util.Logging
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.Dimension
 import java.awt.Font
@@ -21,6 +21,8 @@ class RecipientView(
     private val recipientDao: DestinatarioDao,
     private val recipientGroupDao: GrupoDestinatarioDao,
 ) : JFrame() {
+    private val logger by Logging()
+
     private val recipientTableModel = RecipientTableModel()
     private val recipientSearch = JTextField()
     private val recipientTable = JTable()
@@ -232,9 +234,5 @@ class RecipientView(
                 }
             }
         }
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(RecipientView::class.java)
     }
 }

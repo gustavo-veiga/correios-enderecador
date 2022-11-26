@@ -9,10 +9,10 @@ import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.ImageIcon
 import java.awt.event.MouseAdapter
-import br.com.correios.enderecador.util.Geral
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.util.Logging
+import br.com.correios.enderecador.util.openBrowseLink
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.awt.Font.*
@@ -20,6 +20,8 @@ import java.awt.event.MouseEvent
 
 @Singleton
 class AboutView: JDialog() {
+    private val logger by Logging()
+
     init {
         title = "Endereçador Escritório"
         size = Dimension(390, 400)
@@ -64,7 +66,7 @@ class AboutView: JDialog() {
                     foreground = Color.BLUE
                     addMouseListener(object : MouseAdapter() {
                         override fun mouseClicked(evt: MouseEvent) {
-                            openLink()
+                            openLinkClk()
                         }
 
                         override fun mouseEntered(evt: MouseEvent) {
@@ -134,9 +136,9 @@ class AboutView: JDialog() {
         }, "Center")
     }
 
-    private fun openLink() {
+    private fun openLinkClk() {
         try {
-            Geral.displayURL(ConfiguracaoBean.paginaFaleConosco)
+            openBrowseLink(ConfiguracaoBean.paginaFaleConosco)
         } catch (ex: EnderecadorExcecao) {
             logger.error(ex.message, ex)
             JOptionPane.showMessageDialog(
@@ -155,9 +157,5 @@ class AboutView: JDialog() {
 
     private fun mouseHandCursor() {
         cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(AboutView::class.java)
     }
 }

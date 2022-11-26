@@ -1,5 +1,4 @@
 plugins {
-    id 'java'
     id 'application'
     id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
@@ -38,8 +37,7 @@ dependencies {
     testImplementation group: 'io.insert-koin', name: 'koin-test', version: '3.2.0'
 
     // Database
-    implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
-    implementation group: 'org.ktorm', name: 'ktorm-core', version: '3.5.0'
+    implementation group: 'com.couchbase.lite', name: 'couchbase-lite-java', version: '3.0.2'
 
     // UI
     implementation group: 'com.formdev', name: 'flatlaf', version: '2.4'
@@ -47,9 +45,16 @@ dependencies {
     implementation group: 'com.formdev', name: 'flatlaf-intellij-themes', version: '2.4'
     implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.0'
 
+    // Barcode
+    implementation(group: 'com.google.zxing', name: 'javase', version: '3.5.0') {
+        exclude(group: 'com.beust', module: 'jcommander')
+    }
 
     // HTTP Library
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
+
+    // CLI
+    implementation group: 'com.github.ajalt.clikt', name: 'clikt', version: '3.5.0'
 
     // Coroutine
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-swing', version: '1.6.4'
@@ -61,6 +66,9 @@ dependencies {
     // Validation
     implementation group: 'io.konform', name: 'konform-jvm', version: '0.4.0'
 
+    // Logging
+    implementation group: 'org.slf4j', name: 'slf4j-reload4j', version: '2.0.2'
+
     // Serialization
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.13.3'
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.3'
@@ -70,8 +78,6 @@ dependencies {
 
     // Old
     implementation group: 'hsqldb', name: 'hsqldb', version: '1.8.0.1'
-    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
-    implementation group: 'net.sf.barcode4j', name: 'barcode4j', version: '2.1'
     implementation group: 'javax.help', name: 'javahelp', version: '2.0.05'
 }
 

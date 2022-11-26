@@ -20,8 +20,9 @@ import br.com.correios.enderecador.exception.ConfiguracaoProxyException
 import br.com.correios.enderecador.exception.ConnectionException
 import br.com.correios.enderecador.service.AddressService
 import br.com.correios.enderecador.util.*
+import br.com.correios.enderecador.util.TypeDocumentFormat.NONE
+import br.com.correios.enderecador.util.TypeDocumentFormat.ONLY_DIGITS
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.awt.*
@@ -29,6 +30,8 @@ import java.awt.Font.PLAIN
 import java.awt.Font.SANS_SERIF
 
 class RecipientEditView : KoinComponent, JDialog {
+    private val logger by Logging()
+
     private val addressService: AddressService = get()
     private val destinatarioDao: DestinatarioDao = get()
 
@@ -120,113 +123,58 @@ class RecipientEditView : KoinComponent, JDialog {
     }
 
     private fun gravaDestinatario() {
-        var dadosValidos = false
-        if (jtxtNomeDestinatario.text.isBlank()) {
+        val destinatarioBean = DestinatarioBean(
+            numeroDestinatario = numeroDestinatario,
+            apelido = jtxtApelidoDestinatario.text,
+            titulo = jtxtTituloDestinatario.text,
+            nome = jtxtNomeDestinatario.text,
+            cep = jtxtCepDestinatario.text.replace("[-_]".toRegex(), ""),
+            endereco = jtxtEnderecoDestinatario.text,
+            numeroEndereco = jtxtNumeroDestinatario.text,
+            complemento = jtxtComplementoDestinatario.text,
+            bairro = jtxtBairroDestinatario.text,
+            cidade = jtxtCidadeDestinatario.text,
+            uf = (jcmbUfDestinatario.selectedItem as String),
+            email = jtxtEmailDestinatario.text,
+            telefone = jtxtTelefoneDestinatario.text,
+            fax = jtxtFaxDestinatario.text,
+            cepCaixaPostal = jtxtCepCaixaPostalDestinatario.text,
+            caixaPostal = jtxtCaixaPostalDestinatario.text)
+
+        destinatarioBean.validate().errors.firstOrNull()?.let { error ->
             JOptionPane.showMessageDialog(
                 this,
-                "O campo Empresa/Nome (linha 1) deve ser preenchido!",
+                error.message,
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE)
-            jtxtNomeDestinatario.requestFocus()
-        } else if (jtxtCepDestinatario.text.isBlank()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "O campo CEP deve ser preenchido!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE)
-            jtxtCepDestinatario.requestFocus()
-        } else if (jtxtEnderecoDestinatario.text.isBlank()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "O campo endereço deve ser preenchido!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE)
-            jtxtEnderecoDestinatario.requestFocus()
-        } else if (jtxtNumeroDestinatario.text.isBlank()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "O campo Numero/Lote deve ser preenchido!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE)
-            jtxtNumeroDestinatario.requestFocus()
-        } else if (jtxtCidadeDestinatario.text.isBlank()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "O campo Cidade deve ser preenchido!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE
-            )
-            jtxtCidadeDestinatario.requestFocus()
-        } else if ((jcmbUfDestinatario.selectedItem as String).isBlank()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "O campo UF deve ser informado!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE)
-            jcmbUfDestinatario.requestFocus()
-        } else if (jtxtEmailDestinatario.text.isBlank() && !Geral.validaEmail(jtxtEmailDestinatario.text.trim())) {
-            JOptionPane.showMessageDialog(
-                this,
-                "E-mail inválido!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE)
-            jtxtEmailDestinatario.requestFocus()
-        } else if (jtxtCepDestinatario.text.trim().replace("[-_]".toRegex(), "").length == 8) {
-            dadosValidos = true
-        } else {
-            JOptionPane.showMessageDialog(
-                this,
-                "O campo CEP deve ser preenchido com 8 números!",
-                "Endereçador",
-                JOptionPane.WARNING_MESSAGE)
-            jtxtCepDestinatario.requestFocus()
+            return
         }
-        if (dadosValidos) {
-            try {
-                val destinatarioBean = DestinatarioBean(
-                    numeroDestinatario = numeroDestinatario,
-                    apelido = jtxtApelidoDestinatario.text,
-                    titulo = jtxtTituloDestinatario.text,
-                    nome = jtxtNomeDestinatario.text,
-                    cep = jtxtCepDestinatario.text.replace("[-_]".toRegex(), ""),
-                    endereco = jtxtEnderecoDestinatario.text,
-                    numeroEndereco = jtxtNumeroDestinatario.text,
-                    complemento = jtxtComplementoDestinatario.text,
-                    bairro = jtxtBairroDestinatario.text,
-                    cidade = jtxtCidadeDestinatario.text,
-                    uf = (jcmbUfDestinatario.selectedItem as String),
-                    email = jtxtEmailDestinatario.text,
-                    telefone = jtxtTelefoneDestinatario.text,
-                    fax = jtxtFaxDestinatario.text,
-                    cepCaixaPostal = jtxtCepCaixaPostalDestinatario.text,
-                    caixaPostal = jtxtCaixaPostalDestinatario.text
-                )
-                if (blnIncluir) {
-                    destinatarioDao.incluirDestinatario(destinatarioBean)
-                } else {
-                    destinatarioBean.numeroDestinatario = numeroDestinatario
-                    destinatarioDao.alterarDestinatario(destinatarioBean)
-                }
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Dados Gravados com sucesso",
-                    "Enderecador",
-                    JOptionPane.INFORMATION_MESSAGE
-                )
-                limparCampos()
-                //enderecadorObservable.notifyObservers(destinatarioBean)
-                if (!blnIncluir) {
-                    this.isVisible = false
-                }
-            } catch (ex: DaoException) {
-                logger.error(ex.message, ex)
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Não foi possível gravar esse destinatario, verifique se todos " +
-                            "os dados foram preenchidos corretamente.",
-                    "Enderecador",
-                    JOptionPane.WARNING_MESSAGE)
+
+        try {
+            if (blnIncluir) {
+                destinatarioDao.incluirDestinatario(destinatarioBean)
+            } else {
+                destinatarioBean.numeroDestinatario = numeroDestinatario
+                destinatarioDao.alterarDestinatario(destinatarioBean)
             }
+            JOptionPane.showMessageDialog(
+                this,
+                "Dados Gravados com sucesso",
+                "Enderecador",
+                JOptionPane.INFORMATION_MESSAGE
+            )
+            limparCampos()
+            if (!blnIncluir) {
+                this.isVisible = false
+            }
+        } catch (ex: DaoException) {
+            logger.error(ex.message, ex)
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível gravar esse destinatario, verifique se todos " +
+                        "os dados foram preenchidos corretamente.",
+                "Enderecador",
+                JOptionPane.WARNING_MESSAGE)
         }
     }
 
@@ -286,7 +234,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtNomeDestinatario.apply {
-                document = DocumentoPersonalizado(42, 5)
+                document = PersonalizedDocument(42, NONE)
             }, "span, grow")
 
             add(JLabel().apply {
@@ -295,7 +243,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtApelidoDestinatario.apply {
-                document = DocumentoPersonalizado(42, 5)
+                document = PersonalizedDocument(42, NONE)
             }, "span, grow")
 
             add(JLabel().apply {
@@ -323,7 +271,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtEnderecoDestinatario.apply {
-                document = DocumentoPersonalizado(33, 5)
+                document = PersonalizedDocument(33, NONE)
             }, "span, grow")
 
             add(JLabel().apply {
@@ -332,7 +280,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtNumeroDestinatario.apply {
-                document = DocumentoPersonalizado(8, 5)
+                document = PersonalizedDocument(8, ONLY_DIGITS)
             }, "wrap")
 
             add(JLabel().apply {
@@ -341,7 +289,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtComplementoDestinatario.apply {
-                document = DocumentoPersonalizado(35, 5)
+                document = PersonalizedDocument(35, NONE)
             }, "span, grow")
 
             add(JLabel().apply {
@@ -350,7 +298,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtBairroDestinatario.apply {
-                document = DocumentoPersonalizado(42, 5)
+                document = PersonalizedDocument(42, NONE)
             }, "span, grow")
 
             add(JLabel().apply {
@@ -359,7 +307,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtCidadeDestinatario.apply {
-                document = DocumentoPersonalizado(30, 5)
+                document = PersonalizedDocument(30, NONE)
             })
 
             add(JLabel().apply {
@@ -382,7 +330,7 @@ class RecipientEditView : KoinComponent, JDialog {
             })
 
             add(jtxtTelefoneDestinatario.apply {
-                document = DocumentoPersonalizado(15, 5)
+                document = PersonalizedDocument(15, NONE)
             })
 
             add(JLabel().apply {
@@ -465,7 +413,7 @@ class RecipientEditView : KoinComponent, JDialog {
 
     private fun jbtnNaoSeiCepActionPerformed() {
         try {
-            Geral.displayURL(ConfiguracaoBean.paginaPesquisaCep)
+            openBrowseLink(ConfiguracaoBean.paginaPesquisaCep)
         } catch (ex: EnderecadorExcecao) {
             JOptionPane.showMessageDialog(
                 this,
@@ -474,9 +422,5 @@ class RecipientEditView : KoinComponent, JDialog {
                 "Endereçador",
                 JOptionPane.WARNING_MESSAGE)
         }
-    }
-
-    companion object {
-        private val logger = Logger.getLogger(RecipientEditView::class.java)
     }
 }

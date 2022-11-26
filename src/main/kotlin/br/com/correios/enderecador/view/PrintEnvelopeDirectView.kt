@@ -1,16 +1,18 @@
 package br.com.correios.enderecador.view
 
-import br.com.correios.enderecador.util.TextoCellRenderer
 import br.com.correios.enderecador.bean.RemetenteBean
 import br.com.correios.enderecador.dao.RemetenteDao
 import br.com.correios.enderecador.exception.DaoException
-import br.com.correios.enderecador.util.Impressao
 import br.com.correios.enderecador.exception.EnderecadorExcecao
+import br.com.correios.enderecador.service.PrintReportService
 import br.com.correios.enderecador.tablemodel.RecipientPrintTableModel
-import br.com.correios.enderecador.util.FontSize
-import br.com.correios.enderecador.util.Report
+import br.com.correios.enderecador.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import net.miginfocom.swing.MigLayout
-import org.apache.log4j.Logger
 import org.koin.core.annotation.Singleton
 import java.awt.*
 import java.awt.Font.*
@@ -20,8 +22,13 @@ import javax.swing.*
 class PrintEnvelopeDirectView(
     private val senderDao: RemetenteDao,
 ) : JFrame() {
+    private val logger by Logging()
+
     private val recipientPrintTableModel = RecipientPrintTableModel()
     private val recipientPrintTable = JTable()
+
+    private val recipientSearchView = RecipientSearchView()
+    private val groupSearchView = GroupSearchView()
 
     private val withPrintSender = JCheckBox()
     private val withPhoneRecipient = JCheckBox()
@@ -37,10 +44,19 @@ class PrintEnvelopeDirectView(
         configuracoesAdicionais()
         carregaRemetente()
         setLocationRelativeTo(null)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            recipientSearchView.recipientListState.onEach { recipients ->
+                recipientPrintTableModel.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+            groupSearchView.recipientListState.onEach { recipients ->
+                recipientPrintTableModel.insertNotRepeated(recipients, compareBy { it.numeroDestinatario })
+            }.launchIn(scope = this)
+        }
     }
 
     private fun configuracoesAdicionais() {
-        var renderer = TextoCellRenderer(2)
+        var renderer = TextCellRenderer(2)
         recipientPrintTable.columnModel.getColumn(0).apply {
             cellRenderer = renderer
             preferredWidth = 300
@@ -54,7 +70,7 @@ class PrintEnvelopeDirectView(
             cellRenderer = renderer
         }
 
-        renderer = TextoCellRenderer(0)
+        renderer = TextCellRenderer(0)
         recipientPrintTable.columnModel.getColumn(3).apply {
             cellRenderer = renderer
             preferredWidth = 60
@@ -85,7 +101,7 @@ class PrintEnvelopeDirectView(
     private fun imprimirEnvelope(report: Report) {
         try {
             cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
-            val impressao = Impressao()
+            val impressao = PrintReportService()
             if (withPrintSender.isSelected) {
                 if (senderOptions.itemCount == 0) {
                     JOptionPane.showMessageDialog(
@@ -96,14 +112,14 @@ class PrintEnvelopeDirectView(
                     return
                 }
                 impressao.imprimirEnvelope(
-                    report.file,
+                    report,
                     senderOptions.selectedItem as RemetenteBean,
                     recipientPrintTableModel.getAll(),
                     withPhoneRecipient.isSelected,
                     fontSizeOptions.selectedItem as FontSize)
             } else {
                 impressao.imprimirEnvelope(
-                    report.file,
+                    report,
                     null,
                     recipientPrintTableModel.getAll(),
                     withPhoneRecipient.isSelected,
@@ -273,7 +289,7 @@ class PrintEnvelopeDirectView(
     }
 
     private fun jbtnVisializarARActionPerformed() {
-        val impressao = Impressao()
+        val impressao = PrintReportService()
         if (senderOptions.itemCount == 0) {
             JOptionPane.showMessageDialog(
                 this,
@@ -354,20 +370,12 @@ class PrintEnvelopeDirectView(
     }
 
     private fun jbtSelecionarGrupoActionPerformed() {
-        val telaPesquisarGrupo = GroupSearchView()
-        telaPesquisarGrupo.isVisible = true
-        //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
+        groupSearchView.isVisible = true
     }
 
     private fun jbtSelecionarDestinatarioActionPerformed() {
-        val telaPesquisaDestinatario = RecipientSearchView()
-        telaPesquisaDestinatario.isVisible = true
-        //recipientPrintTableModel.setAll(vecDestinatarioImpressao)
+        recipientSearchView.isVisible = true
     }
 
     private fun jcmbTamanhoFonteActionPerformed() {}
-
-    companion object {
-        var logger = Logger.getLogger(SenderEditView::class.java)
-    }
 }

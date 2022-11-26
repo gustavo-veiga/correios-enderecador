@@ -38,4 +38,6 @@ enum class BrazilState(val stateName: String) {
             return values().map { it.name }
         }
     }
+
+    override fun toString() = name
 }
